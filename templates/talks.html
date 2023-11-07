@@ -1,0 +1,28 @@
+---
+layout: default
+author: "jyn"
+---
+
+<div class="home">
+
+  <h1 class="page-heading">Talks</h1>
+
+  {{ content }}
+
+  <ul class="post-list">
+    {% for talk in site.talks %}
+      <li>
+        {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
+        <span class="post-meta">
+          {{ talk.date | date: date_format }} •
+          {{ talk.audience | default: "everyone" }}
+        </span>
+
+        <h2>
+          <a class="post-link" href="{{ talk.url | relative_url }}">{{ talk.title | escape }}</a>
+        </h2>
+      </li>
+    {% endfor %}
+  </ul>
+
+</div>
