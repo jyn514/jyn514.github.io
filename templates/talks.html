@@ -12,10 +12,9 @@ author: "jyn"
   <ul class="post-list">
     {% for talk in site.talks %}
       <li>
-        {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
         <span class="post-meta">
-          {{ talk.date | date: date_format }} •
-          {{ talk.audience | default: "everyone" }}
+          {{ talk.date }} •
+          {{ talk.audience | default(value = "everyone") }}
         </span>
 
         <h2>
