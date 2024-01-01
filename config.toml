@@ -1,6 +1,9 @@
 # The URL the site will be built for
 base_url = "https://jyn.dev"
 
+# used in feeds by default
+title = "the website of jyn"
+
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
 

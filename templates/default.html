@@ -5,11 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   
-    <title>{% if page.title %}{{ page.title | escape }}{% else %}{{ site.title | escape }}{% endif %}</title>
-    <meta name="description" content="{{ page.excerpt | default (value = "site.description") | strip_html | normalize_whitespace | truncate (value = 160) | escape }}">
+    <title>{% if page.title %}{{ page.title | escape }}{% else %}{{ config.title | escape }}{% endif %}</title>
+    <meta name="description" content="{{ page.excerpt | default (value = "config.description") | strip_html | normalize_whitespace | truncate (value = 160) | escape }}">
     <meta name="author" content="jyn">
   
-    <link rel="alternate" type="application/atom+xml" title="{{ site.title | escape }}" href="{{ "/feed.xml" | relative_url }}">
+    <link rel="alternate" type="application/atom+xml" title="{{ config.title | escape }}" href="{{ "/feed.xml" | relative_url }}">
     <link rel="icon" type="image/x-icon" href="{{ get_url(path='@/assets/favicon.ico') }}">
   
   </head>
@@ -20,7 +20,7 @@
     <header class="site-header" role="banner">
 
       <div class="wrapper">
-        <a class="site-title" href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>
+        <a class="site-title" href="{{ "/" | relative_url }}">{{ config.title | escape }}</a>
     
         {% if page_paths %}
           <nav class="site-nav">
@@ -37,7 +37,7 @@
     
             <div class="trigger">
               {% for path in page_paths %}
-                {% set my_page = site.pages | filter(attribute="path", value=path) | first %}
+                {% set my_page = config.pages | filter(attribute="path", value=path) | first %}
                 {% if my_page.title %}
                 <a class="page-link" href="{{ my_page.url | relative_url }}">{{ my_page.title | escape }}</a>
                 {% endif %}
