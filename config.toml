@@ -4,6 +4,9 @@ base_url = "https://jyn.dev"
 # used in feeds by default
 title = "the website of jyn"
 
+theme = "after-dark"
+output_dir = "build"
+
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
 
