@@ -12,35 +12,37 @@ The obvious solution was to combine the three.
 
 It ended up being much simpler than I expected to set up.
 On my old laptop, I installed an SSH server:
-{% highlight sh %}sudo apt-get install openssh-server{% endhighlight %}
+```sh
+sudo apt-get install openssh-server
+```
 
 I made a few changes to the default config:
-{% highlight sh %}
+```sh
 sed -i '
 s/Port: 22/Port: 666/
 s/PermitRootLogin without-password/PermitRootLogin no/
 s/#PasswordAuthentication yes/PasswordAuthentication no/
 s/PrintMotd no/PrintMotd yes/
 ' /etc/ssh/sshd_config
-{% endhighlight %}
+```
 
 Created and added an SSH key:
-{% highlight sh %}
+```sh
 ssh-keygen
 eval $(ssh-agent)
 ssh-add
 ssh-copy-id
 sudo service ssh restart
-{% endhighlight %}
+```
 
 And copied it to my new computer:
-{% highlight sh %}
+```sh
 jyn@debian-acer:~$ cp ~/.ssh/id_rsa* /media/jyn/usb
 jyn@debian-acer:~$ sudo umount $_
 jyn@debian-thinkpad:~$ sudo mount /dev/sdb1 /mnt
 cp /mnt/id_rsa* ~/.ssh
 ssh-add
-{% endhighlight %}
+```
 
 SSH now worked perfectly when I typed in the IP address.
 I was moving back to USC in a few weeks though,
@@ -53,16 +55,16 @@ Worked like a charm.
 # Appendix
 - If, like me, you have an outdated laptop
 which refuses to start networking at boot, try this:
-{% highlight sh %}
+```sh
 sudo sh -c 'echo "# Ethernet
 auto eth0
 iface eth0 inet dhcp
 " >> /etc/network/interfaces'
-{% endhighlight %}
+```
 
 - More elegant way to specify ssh ports:
-{% highlight sh %}
+```sh
 sudo sh -c 'echo "192.168.1.13   home >> /etc/hosts"'
 echo 'Host home
 Port 666' >> ~/.ssh/config
-{% endhighlight %}
+```

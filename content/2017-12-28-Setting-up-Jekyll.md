@@ -26,16 +26,16 @@ If you don't have [rubygems](https://www.ruby-lang.org/en/documentation/installa
 installed, you'll need it. See also 
 [footnote 1]({{ site.baseurl }}{% link _posts/2017-12-28-Setting-up-Jekyll.md %}#appendix).
 
-{% highlight sh %}
+```sh
 gem install jekyll
-{% endhighlight %}
+```
 
 ## Creating a site
-{% highlight sh %}
+```sh
 jekyll new <directory>
 cd $_
 jekyll serve
-{% endhighlight %}
+```
 
 Congratulations! Your site is now live
 (at [http://localhost:4000](http://localhost:4000) by default).
@@ -49,9 +49,9 @@ quick rundown [here](https://jekyllrb.com/docs/configuration/).
 ### Other things to edit
 Jekyll uses [minima](https://jekyll.github.io/minima/)
 by default; find where it is with `bundle show minima`.
-{% highlight sh %}
+```sh
 cp -r $(bundle show minima)/* <directory>
-{% endhighlight %}
+```
 
 - CSS: `_sass/minima/`
 - Page layouts: `_layouts/`
@@ -73,11 +73,11 @@ of my site is also available as an example.
 
 ## Appendix
 - If, like me, you got a permissions error -
-{% highlight sh %}
+```sh
 jyn@debian-thinkpad:/usr/local/src/second-website$ gem install jekyll
 ERROR:  While executing gem ... (Errno::EACCES)
     Permission denied @ dir_s_mkdir - /var/lib/ruby/2.3.0/gem/specs
-{% endhighlight %}
+```
 then you probably installed with a package manager. Unfortunately,
 you'll have to reinstall gem; I'm not aware of any way around this.
 Since installing on a system-wide basis requires root permissions,
@@ -85,7 +85,7 @@ Since installing on a system-wide basis requires root permissions,
 
 - If you want to edit where gems are stored, you'll have to edit
 the rubygem script itself. Find the ruby library (in my case,
-`/usr/lib/ruby`) and {% highlight sh %}
+`/usr/lib/ruby`) and ```sh
 cd 2.3.0/rubygems
 sed -i "s/File.join Gem.user_home, '.gem'/File.join Gem.user_home, '.local', 'lib', 'gem'/" **
-{% endhighlight %}
+```

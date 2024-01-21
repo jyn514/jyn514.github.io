@@ -11,24 +11,24 @@ excerpt: The problem that's been bothering me for a week
 Copying an array.
 It sounds so simple - run a quick `for` loop,
 or better yet, `System.arraycopy`.
-{% highlight java %}
+```java
 System.arraycopy(array, 0, tmp, 0, array.length);
-{% endhighlight %}
+```
 
 What if you need to perform a destructive operation? <sup><a href="#1">[1]</a></sup>
 In my Data Structures class, we're asked to implement heap sort
 without modifying the original array.
 This is simple enough: use `array.clone`.
 It preserves the order of the original array while giving you a new instance.
-{% highlight java %}
+```java
 T[] tmp = array.clone();
-{% endhighlight %}
+```
 
 Remember that this is a destructive operation, however;
 you need a new third array in which to store the result. 
 Only one problem: Java doesn't allow generic arrays to be created.
 Trying to do so is a compile-time error:
-{% highlight java %}
+```java
 class Generic<T> {
     Generic () {
         System.out.println(new T[0]);
@@ -38,14 +38,14 @@ class Generic<T> {
         new Generic<String>();
     }
 }
-{% endhighlight %}
-{% highlight sh %}
+```
+```sh
  % javac Generic.java
 Generic.java:3: error: generic array creation
         System.out.println(new T[0]);
                            ^
 1 error
-{% endhighlight %}
+```
 
 Fine, let's do some [ugly casting](https://stackoverflow.com/a/530289).
 
@@ -56,7 +56,7 @@ So far, this has all been pretty standard.
 Java has [type erasure](https://docs.oracle.com/javase/tutorial/java/generics/erasure.html), Java generics are a pain, yadda yadda.
 Now we get to the strange part of this post.
 
-{% highlight java %}
+```java
 class Copy<T> {
     private final T[] array;
     Copy(T[] array) {
@@ -75,15 +75,15 @@ class Copy<T> {
         Integer[] arr = new Copy<Integer>(new Integer[] {1, 2, 3}).getNew();
     }
 }
-{% endhighlight %}
-{% highlight sh %}
+```
+```sh
  % javac copy.java
 Note: copy.java uses unchecked or unsafe operations.
 Note: Recompile with -Xlint:unchecked for details.
  % java copy 
 Exception in thread "main" java.lang.ClassCastException: [Ljava.lang.Object; cannot be cast to [Ljava.lang.Integer;
         at copy.main(copy.java:16)
-{% endhighlight %}
+```
 
 What?!‽
 Not only are we getting a `ClassCastException` trying to convert `Integer` to `Integer`,
@@ -102,7 +102,7 @@ Type parameters don't cut it.
 Well, if you have an instance of the class, you can call `instance.getClass()`.
 If you don't, you can (in this particular case) return a null pointer,
 since the array must be empty.
-{% highlight java %}
+```java
  % cat copy.java
 class Copy<T> {
 
@@ -127,15 +127,15 @@ class Copy<T> {
         System.out.println(new Copy<Integer>(new Integer[] {1, 2, 3}).getNew());
     }
 }
-{% endhighlight %}
-{% highlight sh %}
+```
+```sh
 % javac $_
 Note: copy.java uses unchecked or unsafe operations.
 Note: Recompile with -Xlint:unchecked for details.
 jyn@debian-thinkpad ~/Documents/Programming/Java/test
  % java copy 
 [Ljava.lang.Integer;@28d93b30
-{% endhighlight %}
+```
 
 # Conclusion
 I still have no idea what's going on here - my best guess is that due to type erasure,
