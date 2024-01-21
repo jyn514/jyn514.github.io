@@ -3,7 +3,7 @@ layout:	post
 title:	"the rust project has a burnout problem"
 date:	2024-01-16
 audience: developers
-excerpt:
+description:
 preview_image: /assets/burned%20out%20rust%20club.png
 ---
 

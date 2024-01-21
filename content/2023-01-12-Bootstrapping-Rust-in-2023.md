@@ -3,7 +3,7 @@ layout:	post
 title:	"Why is Rust's build system uniquely hard to use?"
 date:	2023-01-12
 audience: developers
-excerpt: Goals for improving Rust's build system and making it easier to understand
+description: Goals for improving Rust's build system and making it easier to understand
 ---
 
 *This post will assume you have watched <https://www.youtube.com/watch?v=oUIjG-y4zaA>.

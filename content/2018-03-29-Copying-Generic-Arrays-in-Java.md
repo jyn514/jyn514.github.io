@@ -3,7 +3,7 @@ layout:	post
 title:	"Copying Generic Arrays in Java"
 date:	2018-03-29
 audience: developers
-excerpt: The problem that's been bothering me for a week
+description: The problem that's been bothering me for a week
 ---
 
 # Intro

@@ -3,7 +3,7 @@ layout:	post
 title:	"Object Oriented Python"
 date:	2018-03-03
 audience: developers
-excerpt: creating classes and objects in Python
+description: creating classes and objects in Python
 ---
 
 # Intro

@@ -3,7 +3,7 @@ layout:	post
 title:	"borrow-checker-faqs"
 date:	2021-03-20
 audience: developers
-excerpt: tips and tricks for dealing with the borrow-checker
+description: tips and tricks for dealing with the borrow-checker
 ---
 
 I got lots of positive feedback about [the FAQ

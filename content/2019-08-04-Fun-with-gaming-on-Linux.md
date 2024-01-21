@@ -3,7 +3,7 @@ layout:	post
 title:	"Fun with gaming on Linux"
 date:	2019-08-04
 audience: techies
-excerpt: "How I got Multiplayer Civilization 5 to work on Linux"
+description: "How I got Multiplayer Civilization 5 to work on Linux"
 ---
 
 ## The Problem

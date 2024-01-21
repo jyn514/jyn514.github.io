@@ -3,7 +3,7 @@ layout:	post
 title:	"The intra-doc links saga"
 date:	2020-10-23
 audience: developers
-excerpt: How I helped stabilize intra-doc links
+description: How I helped stabilize intra-doc links
 ---
 
 One of my projects for the last 4 months or so has been working on

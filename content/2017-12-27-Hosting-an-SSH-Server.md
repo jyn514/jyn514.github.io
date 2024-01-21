@@ -2,7 +2,7 @@
 layout:	post
 title:	"Hosting an SSH Server"
 date:	2017-12-27
-excerpt: I decided one day that I really wanted a remote server.
+description: I decided one day that I really wanted a remote server.
 audience: tech-savvy
 ---
 

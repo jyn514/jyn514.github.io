@@ -2,7 +2,7 @@
 layout:	post
 title:	"Password Safety"
 date:	2018-02-24
-excerpt: What a password manager is and how to use one
+description: What a password manager is and how to use one
 ---
 
 # Introduction

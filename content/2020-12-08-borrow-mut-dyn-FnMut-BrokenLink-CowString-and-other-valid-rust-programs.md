@@ -3,7 +3,7 @@ layout:	post
 title:	"`&'borrow mut dyn FnMut(BrokenLink<'input>) -> CowStr<'input>` and other valid rust programs"
 date:	2020-12-08
 audience: everyone
-excerpt: Why HRTB are my least-favorite part of Rust
+description: Why HRTB are my least-favorite part of Rust
 ---
 
 This is a story about type signatures, Higher Ranked Trait Bounds ([HRTB]), and the most

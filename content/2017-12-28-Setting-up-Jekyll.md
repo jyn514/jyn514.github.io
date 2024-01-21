@@ -2,7 +2,7 @@
 layout:	post
 title:	"Setting up Jekyll for GitHub Pages"
 date:	2017-12-28
-excerpt:	The story of how I set up this site
+description:	The story of how I set up this site
 audience: developers
 ---
 

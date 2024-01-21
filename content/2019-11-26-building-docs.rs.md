@@ -3,7 +3,7 @@ layout:	post
 title:	"Building Docs.rs"
 date:	2019-11-26
 audience: developers
-excerpt: How I because the 2nd-most prolific contributor to docs.rs
+description: How I because the 2nd-most prolific contributor to docs.rs
 ---
 
 ## What is docs.rs?
