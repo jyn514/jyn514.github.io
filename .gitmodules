@@ -4,3 +4,6 @@
 [submodule "themes/after-dark"]
 	path = themes/after-dark
 	url = https://github.com/getzola/after-dark
+[submodule "themes/abridge"]
+	path = themes/abridge
+	url = https://github.com/jieiku/abridge.git
