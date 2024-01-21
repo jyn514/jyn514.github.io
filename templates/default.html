@@ -6,21 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   
     <title>{% if page.title %}{{ page.title | escape }}{% else %}{{ config.title | escape }}{% endif %}</title>
-    <meta name="description" content="{{ page.excerpt | default (value = "config.description") | strip_html | normalize_whitespace | truncate (value = 160) | escape }}">
+    <meta name="description" content="{{ page.excerpt | default (value = "config.description") | truncate (value = 160) | escape }}">
     <meta name="author" content="jyn">
   
-    <link rel="alternate" type="application/atom+xml" title="{{ config.title | escape }}" href="{{ "/feed.xml" | relative_url }}">
-    <link rel="icon" type="image/x-icon" href="{{ get_url(path='@/assets/favicon.jpg') }}">
+    <link rel="alternate" type="application/atom+xml" title="{{ config.title | escape }}" href="/feed.xml">
+    <link rel="icon" type="image/x-icon" href="{{ get_url(path='/favicon.jpg') }}">
   
   </head>
 <body>
-    <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
+    <link rel="stylesheet" href="/assets/main.css">
 
 
     <header class="site-header" role="banner">
 
       <div class="wrapper">
-        <a class="site-title" href="{{ "/" | relative_url }}">{{ config.title | escape }}</a>
+        <a class="site-title" href="/">{{ config.title | escape }}</a>
     
         {% if page_paths %}
           <nav class="site-nav">
@@ -50,7 +50,8 @@
 
     <main class="page-content" aria-label="Content">
       <div class="wrapper">
-        {{ content }}
+        {% block content %}
+        {% endblock content %}
       </div>
     </main>
 

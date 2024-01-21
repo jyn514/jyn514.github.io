@@ -1,6 +1,4 @@
----
-layout: default
----
+{% extends "default.html" %}
 
 <div class="home">
 
@@ -25,6 +23,7 @@ layout: default
     {% endfor %}
   </ul>
 
-  <p class="rss-subscribe">subscribe <a type="application/atom+xml" href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
+  {# <p class="rss-subscribe">subscribe <a type="application/atom+xml" href="{{ "/feed.xml" | relative_url }}">via RSS</a></p> #}
+  <p class="rss-subscribe">subscribe <a type="application/atom+xml" href="{{ "/feed.xml" }}">via RSS</a></p>
 
 </div>
