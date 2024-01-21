@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   
     <title>{% if page.title %}{{ page.title | escape }}{% else %}{{ config.title | escape }}{% endif %}</title>
-    <meta name="description" content="{{ page.excerpt | default (value = "config.description") | truncate (value = 160) | escape }}">
+    <meta name="description" content="{{ page.excerpt | default (value = config.description) | truncate (value = 160) | escape }}">
     <meta name="author" content="jyn">
   
     <link rel="alternate" type="application/atom+xml" title="{{ config.title | escape }}" href="/feed.xml">
@@ -14,7 +14,8 @@
   
   </head>
 <body>
-    <link rel="stylesheet" href="/assets/main.css">
+    <!-- <link rel="stylesheet" href="/assets/main.css"> -->
+    <link rel="stylesheet" href="{{ get_url(path="/minima.css") }}">
 
 
     <header class="site-header" role="banner">
