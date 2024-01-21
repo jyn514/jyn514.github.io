@@ -1,10 +1,8 @@
 {% extends "default.html" %}
-
+{% block content %}
 <div class="home">
 
   <h1 class="page-heading">Posts</h1>
-
-  {# {{ content }} #}
 
   <ul class="post-list">
     {% for post in section.pages %}
@@ -16,8 +14,7 @@
         </span>
 
         <h2>
-          {# <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a> #}
-          <a class="post-link" href="{{ post.url }}">{{ post.title | escape }}</a>
+          <a class="post-link" href="{{ post.path }}">{{ post.title }}</a>
         </h2>
       </li>
     {% endfor %}
@@ -27,3 +24,4 @@
   <p class="rss-subscribe">subscribe <a type="application/atom+xml" href="{{ "/feed.xml" }}">via RSS</a></p>
 
 </div>
+{% endblock content %}
