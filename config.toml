@@ -18,6 +18,8 @@ build_search_index = false
 # Whether to do syntax highlighting
 # Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
 highlight_code = true
+# We don't use use `highlight_themes_css` because we have a custom theme (and textmate grammar is annoying and less flexible than CSS classes)
+highlight_theme = "css"
 
 [extra]
 # Put all your custom variables here
