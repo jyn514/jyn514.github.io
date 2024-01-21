@@ -1,0 +1,68 @@
+<footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">{{ config.title | escape }}</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <!--
+          <li>
+            {% if config.author %}
+              {{ config.author | escape }}
+            {% else %}
+              {{ config.title | escape }}
+            {% endif %}
+            </li>-->
+            {% if config.extra.email %}
+            <li><a href="mailto:{{ config.extra.email }}">{{ config.extra.email }}</a></li>
+            {% endif %}
+            {#
+            {% if config.public_key %}
+            <li>{% include "icon-gnupg.html" key=config.public_key %}</li>{% endif %}
+            #}
+            <li><a href="{{ get_url(path="/assets/Resume.pdf") }}">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          {% if config.extra.github_username %}
+          <li>
+            <a href="https://github.com/{{ config.extra.github_username }}"><span class="icon icon--github">{{ load_data(path="templates/icon-github.svg") | safe }}</span><span class="username">{{ config.extra.github_username }}</span></a>
+          </li>
+          {% endif %}
+
+          {#
+          {% if config.extra.twitter_username %}
+          <li>{% include "icon-twitter.html" username=config.extra.twitter_username %}</li>{% endif %}
+          #}
+
+          {% if config.extra.keybase_username %}
+          <li>
+            <a href="https://keybase.io/{{ config.extra.keybase_username }}"><span class="icon icon--keybase">{% include "icon-keybase.svg" %}</span><span class="username">{{ config.extra.keybase_username }}</span></a>
+          </li>
+          {% endif %}
+
+          {% if config.extra.linkedin_username %}
+          <li>
+            <a href="https://www.linkedin.com/in/{{ config.extra.linkedin_username }}">
+              <span class="icon icon--linkedin">{{ load_data(path="templates/icon-linkedin.svg") | safe }}</span>
+              <span class="username">{{ config.extra.linkedin_username }}</span>
+            </a>
+          </li>
+          {% endif %}
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>{{ page.excerpt | default(value=config.description) }}</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
