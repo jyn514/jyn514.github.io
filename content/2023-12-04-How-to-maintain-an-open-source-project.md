@@ -3,7 +3,7 @@ layout:	post
 title:	"How to maintain an Open Source project"
 date:	2023-12-04
 audience: developers
-excerpt: How to maintain a project without burning yourself out
+description: How to maintain a project without burning yourself out
 ---
 
 Open source is unique in that *energy*, not time or money, is the limiting factor. The existential threats are maintainer burnout and an imploding community, not failing to make payroll. As a result, it’s very important to do three things:

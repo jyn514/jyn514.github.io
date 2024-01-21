@@ -2,7 +2,7 @@
 layout: post
 title:  "Hello, World!"
 date:   2017-12-23
-excerpt: "Hello, World!"
+description: "Hello, World!"
 ---
 **Hello, World!**
 

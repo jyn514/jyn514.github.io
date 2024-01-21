@@ -3,7 +3,7 @@ layout:	post
 title:	"Running clippy on rustc"
 date:	2023-12-17
 audience: developers
-excerpt: How I got clippy to lint on the code for the compiler itself
+description: How I got clippy to lint on the code for the compiler itself
 ---
 
 Clippy is an official tool for linting your code. It's named after the venerable *Clippit Office

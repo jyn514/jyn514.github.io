@@ -3,7 +3,7 @@ layout:	post
 title:	"Reverse Engineering x86 assembly"
 date:	2018-09-29
 audience: developers
-excerpt: "Basics of decompiling binaries on linux with GDB"
+description: "Basics of decompiling binaries on linux with GDB"
 ---
 
 ## Intro

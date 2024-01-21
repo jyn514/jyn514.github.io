@@ -3,7 +3,7 @@ layout:	post
 title:	"Rewriting Jython"
 date:	2018-06-09
 audience: developers
-excerpt: I got bored one day and started rewriting Jython
+description: I got bored one day and started rewriting Jython
 ---
 
 ## Intro

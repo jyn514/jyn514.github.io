@@ -3,7 +3,7 @@ layout:	post
 title:	"Keepass on Linux and Android"
 date:	2018-08-24
 audience: linux users
-excerpt: File synchronization on Linux
+description: File synchronization on Linux
 ---
 
 Previously, I wrote about

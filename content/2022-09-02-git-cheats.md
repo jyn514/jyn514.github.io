@@ -3,7 +3,7 @@ layout:	post
 title:	"Git cheats"
 date:	2022-09-02
 audience: developers
-excerpt:
+description:
 ---
 
 A small note: this will be much less organized and thought out than my other blog posts because I have been unable to convince myself to write a blog in about 2 years. Instead these are some notes to myself that happen to be public for anyone who finds them useful.

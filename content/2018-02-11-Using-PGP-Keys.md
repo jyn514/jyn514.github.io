@@ -2,7 +2,7 @@
 layout:	post
 title:	"Using PGP Keys"
 date:	2018-02-11
-excerpt:	Why and How to use encryption
+description:	Why and How to use encryption
 audience: developers
 ---
 

@@ -2,7 +2,7 @@
 layout:	post
 title:	"Using DNSSEC"
 date:	2018-01-06
-excerpt: How and why to enable DNSSEC
+description: How and why to enable DNSSEC
 audience: tech-savvy
 ---
 
