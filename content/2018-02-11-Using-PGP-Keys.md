@@ -36,11 +36,11 @@ GPG is only fully-featured when used from the [command line][cli].
 If that sounds foreign to you, I have a quick-and-dirty guide on [GitHub][shell intro].
 
 Some binary releases:
-- Debian/Ubuntu: {% highlight sh %} sudo apt-get install gnupg {% endhighlight %}
+- Debian/Ubuntu: `sudo apt-get install gnupg`
 - Windows: [GPG4Win](https://gpg4win.org/download.html)
 - macOS:
     - without brew: [GPGtools.org](https://gpgtools.org/)
-    - with `brew` installed: {% highlight sh %} brew install gnupg {% endhighlight %}
+    - with `brew` installed: `brew install gnupg `
 
 ## How do I use GPG?
 Now we get to the fun stuff! GPG uses what's called [asymmetric encryption][public-key crypto],
@@ -54,13 +54,15 @@ In order to take full advantage, you'll need to
 You need a [passphrase](https://whatisapassphrase.com/) to use a GPG key.
 This prevents anyone from using your key.
 
-{% highlight sh %} gpg --quick-gen-key "Joe Shmoe <joe@email.example.com>" {% endhighlight %}
+```sh
+gpg --quick-gen-key "Joe Shmoe <joe@email.example.com>"
+```
 Enter your passphrase into the prompt that pops up.
 
 ### Publish your key
-{% highlight sh %}
+```sh
 gpg --send-keys
-{% endhighlight %}
+```
 
 ### Start signing things
 
@@ -98,8 +100,7 @@ This is because there are actually two keys being generated:
 securely. The public you will upload to a keyserver for anyone to see.
 
 ### What if I'm not comfortable with shell quoting?
-Use {% highlight sh %} gpg --gen-key {% endhighlight %} or
-{% highlight sh %} gpg --full-gen-key {% endhighlight %}
+Use `gpg --gen-key` or `gpg --full-gen-key`.
 
 [thunderbird]: https://www.mozilla.org/en-US/thunderbird/
 [enigmail]: https://www.enigmail.net/index.php/en/
