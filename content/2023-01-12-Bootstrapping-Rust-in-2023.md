@@ -1,6 +1,5 @@
 ---
 aliases: ['/2023/01/12/Bootstrapping-Rust-in-2023.html']
-layout:	post
 title:	"Why is Rust's build system uniquely hard to use?"
 date:	2023-01-12
 audience: developers

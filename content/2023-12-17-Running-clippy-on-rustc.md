@@ -1,5 +1,4 @@
 ---
-layout:	post
 title:	"Running clippy on rustc"
 date:	2023-12-17
 audience: developers

@@ -1,6 +1,5 @@
 ---
 aliases: ['/2019/11/26/building-docs.rs.html']
-layout:	post
 title:	"Building Docs.rs"
 date:	2019-11-26
 audience: developers

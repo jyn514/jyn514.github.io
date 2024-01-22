@@ -1,6 +1,5 @@
 ---
 aliases: ['/2018/08/24/Keepass-on-Linux-and-Android.html']
-layout:	post
 title:	"Keepass on Linux and Android"
 date:	2018-08-24
 audience: linux users

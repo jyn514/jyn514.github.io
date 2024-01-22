@@ -1,6 +1,5 @@
 ---
 aliases: ['/2021/03/20/borrow-checker-faqs.html']
-layout:	post
 title:	"borrow-checker-faqs"
 date:	2021-03-20
 audience: developers

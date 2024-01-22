@@ -1,6 +1,5 @@
 ---
 aliases: ['/2024/01/16/the-rust-project-has-a-burnout-problem.html']
-layout:	post
 title:	"the rust project has a burnout problem"
 date:	2024-01-16
 audience: developers
