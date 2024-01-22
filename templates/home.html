@@ -18,6 +18,9 @@
         </h2>
       </li>
     {% endfor %}
+    {% for page in section.assets %}
+    <li>{{page}}</li>
+    {% endfor %}
   </ul>
 
   <p class="rss-subscribe">subscribe <a type="application/atom+xml" href="{{ "/atom.xml" }}">via RSS</a></p>
