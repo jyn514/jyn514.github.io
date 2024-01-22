@@ -7,18 +7,18 @@
 
                 <title>How to use the command line</title>
 
-                <link rel="stylesheet" href="css/reveal.css">
-                <link rel="stylesheet" href="css/theme/black.css">
+                <link rel="stylesheet" href="/talks/css/reveal.css">
+                <link rel="stylesheet" href="/talks/css/theme/black.css">
 
                 <!-- Theme used for syntax highlighting of code -->
-                <link rel="stylesheet" href="lib/css/zenburn.css">
+                <link rel="stylesheet" href="/talks/lib/css/zenburn.css">
 
                 <!-- Printing and PDF exports -->
                 <script>
                         var link = document.createElement( 'link' );
                         link.rel = 'stylesheet';
                         link.type = 'text/css';
-                        link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+                        link.href = window.location.search.match( /print-pdf/gi ) ? '/talks/css/print/pdf.css' : '/talks/css/print/paper.css';
                         document.getElementsByTagName( 'head' )[0].appendChild( link );
                 </script>
         </head>
@@ -47,7 +47,7 @@
                             </section>
                             <section>
                               <h3>Terminals are on Windows, too!</h3>
-                              <img src="img/cmd.exe.jpg">
+                              <img src="/talks/img/cmd.exe.jpg">
                             </section>
                           </section>
                           <section>
@@ -73,10 +73,10 @@
                               <h2>But first, the basics</h2>
                               <h4>Directories, a.k.a. folders</h4>
                               <div class="left">
-                                <img src="img/tree.png">
+                                <img src="/talks/img/tree.png">
                               </div>
                               <div class="right">
-                                <img src="img/file-manager.png">
+                                <img src="/talks/img/file-manager.png">
                               </div>
                             </section>
                             <section>
@@ -94,10 +94,10 @@
                             <section>
                               <h2>Files</h2>
                               <div class="left">
-                                <img src="img/vim.png">
+                                <img src="/talks/img/vim.png">
                               </div>
                               <div class="right">
-                                <img src="img/kate.png">
+                                <img src="/talks/img/kate.png">
                               </div>
                             </section>
                             <section>
@@ -165,8 +165,8 @@
                         </div>
                 </div>
 
-                <script src="lib/js/head.min.js"></script>
-                <script src="dist/reveal.js"></script>
+                <script src="/talks/lib/js/head.min.js"></script>
+                <script src="/talks/dist/reveal.js"></script>
 
                 <script>
                         // More info about config & dependencies:
@@ -174,11 +174,11 @@
                         // - https://github.com/hakimel/reveal.js#dependencies
                         Reveal.initialize({
                                 dependencies: [
-                                        { src: 'plugin/zoom-js/zoom.js', async: true },
-                                        { src: 'plugin/markdown/marked.js' },
-                                        { src: 'plugin/markdown/markdown.js' },
-                                        { src: 'plugin/notes/notes.js', async: true },
-                                        { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+                                        { src: '/talks/plugin/zoom-js/zoom.js', async: true },
+                                        { src: '/talks/plugin/markdown/marked.js' },
+                                        { src: '/talks/plugin/markdown/markdown.js' },
+                                        { src: '/talks/plugin/notes/notes.js', async: true },
+                                        { src: '/talks/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
                                 ]
                         });
                 </script>

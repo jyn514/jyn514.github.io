@@ -7,18 +7,18 @@
 
                 <title>Into to Python</title>
 
-                <link rel="stylesheet" href="css/reveal.css">
-                <link rel="stylesheet" href="css/theme/black.css">
+                <link rel="stylesheet" href="/talks/css/reveal.css">
+                <link rel="stylesheet" href="/talks/css/theme/black.css">
 
                 <!-- Theme used for syntax highlighting of code -->
-                <link rel="stylesheet" href="lib/css/zenburn.css">
+                <link rel="stylesheet" href="/talks/lib/css/zenburn.css">
 
                 <!-- Printing and PDF exports -->
                 <script>
                         var link = document.createElement( 'link' );
                         link.rel = 'stylesheet';
                         link.type = 'text/css';
-                        link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+                        link.href = window.location.search.match( /print-pdf/gi ) ? '/talks/css/print/pdf.css' : '/talks/css/print/paper.css';
                         document.getElementsByTagName( 'head' )[0].appendChild( link );
                 </script>
         </head>
@@ -103,7 +103,7 @@ print(d['Monday'])  # prints 'MATH 374'
                             <h2>What's GrepMe?</h2>
                             <p>GroupMe doesn’t have a working search and it made me sad. So I wrote my own in Python!</p>
                             <p><small>Yes, I absolutely used this talk to advertise on of my side projects.</small></p>
-                            <img src="img/groupme-no-search.png">
+                            <img src="/talks/img/groupme-no-search.png">
                           </section>
                           <section>
                             <h2>What does it look like?</h2>
@@ -114,7 +114,7 @@ print(d['Monday'])  # prints 'MATH 374'
                               <li>Can search by who liked a message</li>
                               <li>Can search multiple groups at a time </li>
                             </ul>
-                            <img src="img/grepme-demo.png">
+                            <img src="/talks/img/grepme-demo.png">
                           </section>
                           <section>
                             <h2>How does it work?</h2>
@@ -313,8 +313,8 @@ call_with_one(i -&gt; System.out.println(i));
                         </div>
                 </div>
 
-                <script src="lib/js/head.min.js"></script>
-                <script src="dist/reveal.js"></script>
+                <script src="/talks/lib/js/head.min.js"></script>
+                <script src="/talks/dist/reveal.js"></script>
                 <script>
                         // More info about config & dependencies:
                         // - https://github.com/hakimel/reveal.js#configuration
@@ -322,11 +322,11 @@ call_with_one(i -&gt; System.out.println(i));
                         Reveal.initialize({
                                 width: "90%",
                                 dependencies: [
-                                        { src: 'plugin/zoom-js/zoom.js', async: true },
-                                        { src: 'plugin/markdown/marked.js' },
-                                        { src: 'plugin/markdown/markdown.js' },
-                                        { src: 'plugin/notes/notes.js', async: true },
-                                        { src: 'plugin/highlight/highlight.js', async: true }
+                                        { src: '/talks/plugin/zoom-js/zoom.js', async: true },
+                                        { src: '/talks/plugin/markdown/marked.js' },
+                                        { src: '/talks/plugin/markdown/markdown.js' },
+                                        { src: '/talks/plugin/notes/notes.js', async: true },
+                                        { src: '/talks/plugin/highlight/highlight.js', async: true }
                                 ]
                         });
                 </script>

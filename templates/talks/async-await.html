@@ -6,12 +6,12 @@
 
     <title>async() => { await }</title>
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+		<link rel="stylesheet" href="/talks/dist/reset.css">
+		<link rel="stylesheet" href="/talks/dist/reveal.css">
+		<link rel="stylesheet" href="/talks/dist/theme/black.css">
 
 		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+		<link rel="stylesheet" href="/talks/plugin/highlight/monokai.css">
 	</head>
 	<body>
 		<div class="reveal">
@@ -21,7 +21,7 @@
 				</section>
 				<section><h3>This is a talk about websites</h3>
 					<p>Most of the internet is websites!</p>
-					<img src="./assets/internet traffic.png">
+					<img src="/talks/./assets/internet traffic.png">
 					<small>source: https://radar.cloudflare.com</small>
 				</section>
 				<section>
@@ -44,11 +44,11 @@
 				<section>
 					<section><h3>How do websites work?</h3>
 						<p>A client sends HTTP requests to a server. Servers send a response back.</p>
-						<img src="./assets/client-server-1.png">
+						<img src="/talks/./assets/client-server-1.png">
 					</section>
 					<section><h3>How do websites work?</h3>
 						<p>Usually there are many clients.</p>
-						<img src="./assets/client-server-2.png" class="r-stretch">
+						<img src="/talks/./assets/client-server-2.png" class="r-stretch">
 					</section>
 				</section>
 				<section><h3>How do big websites serve so many clients?</h3>
@@ -58,20 +58,20 @@
 				</section>
 				<section><h3>Serving multiple clients at once: parallelism</h3>
 					<p>Operating system threads run at the same time.</p>
-					<img src="./assets/threads.jpg">
+					<img src="/talks/./assets/threads.jpg">
 				</section>
 				<section>
 					<section><h3>Digression: JS on the backend</h3>
 						<p>JS is used a lot!</p>
 						<p>It would be nice to use it on the backend too.</p>
-						<img src="./assets/node.png" class="r-stretch">
+						<img src="/talks/./assets/node.png" class="r-stretch">
 					</section>
 					<section><h3>Digression: JS on the backend</h3>
 						<p>Problem: JS doesn't have threads</p>
 					</section>
 					<section><h3>Digression: JS on the backend</h3>
 						<p>Solution: concurrency using callbacks</p>
-						<img src="./assets/event loop.png">
+						<img src="/talks/./assets/event loop.png">
 					</section>
 				</section>
 				<section>
@@ -137,10 +137,10 @@
 			</div>
 		</div>
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
+		<script src="/talks/dist/reveal.js"></script>
+		<script src="/talks/plugin/notes/notes.js"></script>
+		<script src="/talks/plugin/markdown/markdown.js"></script>
+		<script src="/talks/plugin/highlight/highlight.js"></script>
 		<script>
 			// More info about initialization & config:
 			// - https://revealjs.com/initialization/
