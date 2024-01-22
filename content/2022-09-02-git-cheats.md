@@ -2,7 +2,7 @@
 aliases: ['/2022/09/02/git-cheats.html']
 title:	"Git cheats"
 date:	2022-09-02
-audience: developers
+extra: {audience: developers}
 description:
 ---
 

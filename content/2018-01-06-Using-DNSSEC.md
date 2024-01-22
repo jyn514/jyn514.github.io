@@ -3,7 +3,7 @@ aliases: ['/2018/01/06/Using-DNSSEC.html']
 title:	"Using DNSSEC"
 date:	2018-01-06
 description: How and why to enable DNSSEC
-audience: tech-savvy
+extra: {audience: tech-savvy}
 ---
 
 I was on StackOverflow the other day when I saw

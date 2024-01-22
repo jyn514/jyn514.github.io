@@ -3,7 +3,7 @@ aliases: ['/2017/12/27/Hosting-an-SSH-Server.html']
 title:	"Hosting an SSH Server"
 date:	2017-12-27
 description: I decided one day that I really wanted a remote server.
-audience: tech-savvy
+extra: {audience: tech-savvy}
 ---
 
 I decided one day over break that I really wanted a remote server.

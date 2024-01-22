@@ -2,7 +2,7 @@
 aliases: ['/2021/03/20/borrow-checker-faqs.html']
 title:	"borrow-checker-faqs"
 date:	2021-03-20
-audience: developers
+extra: {audience: developers}
 description: tips and tricks for dealing with the borrow-checker
 ---
 

@@ -3,7 +3,7 @@ aliases: ['/2018/02/11/Using-PGP-Keys.html']
 title:	"Using PGP Keys"
 date:	2018-02-11
 description:	Why and How to use encryption
-audience: developers
+extra: {audience: developers}
 ---
 
 # What is GPG?

@@ -2,7 +2,7 @@
 aliases: ['/2019/11/26/building-docs.rs.html']
 title:	"Building Docs.rs"
 date:	2019-11-26
-audience: developers
+extra: {audience: developers}
 description: How I because the 2nd-most prolific contributor to docs.rs
 ---
 
