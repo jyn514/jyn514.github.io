@@ -2,7 +2,7 @@
 aliases: ['/2020/10/23/the-intra-doc-links-saga.html']
 title:	"The intra-doc links saga"
 date:	2020-10-23
-audience: developers
+extra: {audience: developers}
 description: How I helped stabilize intra-doc links
 ---
 

@@ -2,7 +2,7 @@
 aliases: ['/2020/12/08/borrow-mut-dyn-FnMut-BrokenLink-CowString-and-other-valid-rust-programs.html']
 title:	"<pre><code>&'borrow mut dyn FnMut(BrokenLink<'input>) -> CowStr<'input></code></pre> and other valid rust programs"
 date:	2020-12-08
-audience: everyone
+extra: {audience: everyone}
 description: Why HRTB are my least-favorite part of Rust
 ---
 

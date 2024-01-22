@@ -1,7 +1,7 @@
 ---
 title:	"Running clippy on rustc"
 date:	2023-12-17
-audience: developers
+extra: {audience: developers}
 description: How I got clippy to lint on the code for the compiler itself
 draft: true
 ---

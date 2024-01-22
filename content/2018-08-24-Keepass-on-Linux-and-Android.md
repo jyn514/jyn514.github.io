@@ -2,7 +2,7 @@
 aliases: ['/2018/08/24/Keepass-on-Linux-and-Android.html']
 title:	"Keepass on Linux and Android"
 date:	2018-08-24
-audience: linux users
+extra: {audience: linux users}
 description: File synchronization on Linux
 ---
 

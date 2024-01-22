@@ -2,7 +2,7 @@
 aliases: ['/2024/01/16/the-rust-project-has-a-burnout-problem.html']
 title:	"the rust project has a burnout problem"
 date:	2024-01-16
-audience: developers
+extra: {audience: developers}
 description:
 preview_image: /assets/burned%20out%20rust%20club.png
 ---

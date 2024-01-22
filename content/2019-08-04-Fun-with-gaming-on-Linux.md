@@ -2,7 +2,7 @@
 aliases: ['/2019/08/04/Fun-with-gaming-on-Linux.html']
 title:	"Fun with gaming on Linux"
 date:	2019-08-04
-audience: techies
+extra: {audience: techies}
 description: "How I got Multiplayer Civilization 5 to work on Linux"
 ---
 
