@@ -2,7 +2,7 @@
 {% block content %}
 <div class="home">
 
-  <h1 class="page-heading">Posts</h1>
+  <h1 class="page-heading">{{ section.title }}</h1>
 
   <ul class="post-list">
     {% for post in section.pages %}
@@ -14,7 +14,7 @@
         </span>
 
         <h2>
-          <a class="post-link" href="{{ post.path }}">{{ post.title }}</a>
+          <a class="post-link" href="{{ post.path }}">{{ post.title | safe }}</a>
         </h2>
       </li>
     {% endfor %}
