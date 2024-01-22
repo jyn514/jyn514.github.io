@@ -1,4 +1,5 @@
 ---
+aliases: ['/2017/12/28/Setting-up-Jekyll.html']
 layout:	post
 title:	"Setting up Jekyll for GitHub Pages"
 date:	2017-12-28

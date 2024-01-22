@@ -1,4 +1,5 @@
 ---
+aliases: ['/2021/09/10/I&#39;ll-Rust-With-You-the-song.html']
 layout:	post
 title:	"I'll Rust With You: the song"
 date:	2021-09-10

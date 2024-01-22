@@ -1,4 +1,5 @@
 ---
+aliases: ['/2018/03/29/Copying-Generic-Arrays-in-Java.html']
 layout:	post
 title:	"Copying Generic Arrays in Java"
 date:	2018-03-29

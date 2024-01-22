@@ -1,4 +1,5 @@
 ---
+aliases: ['/2018/02/11/Using-PGP-Keys.html']
 layout:	post
 title:	"Using PGP Keys"
 date:	2018-02-11

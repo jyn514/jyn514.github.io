@@ -1,4 +1,5 @@
 ---
+aliases: ['/2018/06/09/Rewriting-Jython.html']
 layout:	post
 title:	"Rewriting Jython"
 date:	2018-06-09

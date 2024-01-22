@@ -1,4 +1,5 @@
 ---
+aliases: ['/2019/04/29/Buffer-Overflows-and-Stacks-and-Assembly-Oh-My.html']
 layout:	post
 title:	"Buffer Overflows and Stacks and Assembly, Oh My!"
 date:	2019-04-29
