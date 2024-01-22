@@ -1,6 +1,5 @@
 ---
 aliases: ['/2018/01/06/Using-DNSSEC.html']
-layout:	post
 title:	"Using DNSSEC"
 date:	2018-01-06
 description: How and why to enable DNSSEC

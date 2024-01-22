@@ -1,6 +1,5 @@
 ---
 aliases: ['/2019/08/04/Fun-with-gaming-on-Linux.html']
-layout:	post
 title:	"Fun with gaming on Linux"
 date:	2019-08-04
 audience: techies

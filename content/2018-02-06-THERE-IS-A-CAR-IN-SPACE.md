@@ -1,6 +1,5 @@
 ---
 aliases: ['/2018/02/06/THERE-IS-A-CAR-IN-SPACE.html']
-layout:	post
 title:	"THERE IS A CAR IN SPACE"
 date:	2018-02-06
 excerpt: On the Falcon Heavy test launch

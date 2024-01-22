@@ -1,6 +1,5 @@
 ---
 aliases: ['/2018/03/03/Object-Oriented-Python.html']
-layout:	post
 title:	"Object Oriented Python"
 date:	2018-03-03
 audience: developers

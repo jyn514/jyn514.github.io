@@ -1,6 +1,5 @@
 ---
 aliases: ['/2023/12/04/How-to-maintain-an-open-source-project.html']
-layout:	post
 title:	"How to maintain an Open Source project"
 date:	2023-12-04
 audience: developers
