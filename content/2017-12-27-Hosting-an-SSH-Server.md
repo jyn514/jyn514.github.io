@@ -1,4 +1,5 @@
 ---
+aliases: ['/2017/12/27/Hosting-an-SSH-Server.html']
 layout:	post
 title:	"Hosting an SSH Server"
 date:	2017-12-27

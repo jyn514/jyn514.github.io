@@ -1,4 +1,5 @@
 ---
+aliases: ['/2017/12/23/first-post.html']
 layout: post
 title:  "Hello, World!"
 date:   2017-12-23
