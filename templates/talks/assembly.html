@@ -7,21 +7,21 @@
 
                 <title>Intro to Reverse Engineering</title>
 
-                <link rel="stylesheet" href="css/reveal.css">
-                <link rel="stylesheet" href="css/theme/black.css">
+                <link rel="stylesheet" href="/talks/css/reveal.css">
+                <link rel="stylesheet" href="/talks/css/theme/black.css">
 
                 <!-- styling for asciinema -->
-                <link rel="stylesheet" type="text/css" href="css/asciinema-player.css" />
+                <link rel="stylesheet" type="text/css" href="/talks/css/asciinema-player.css" />
 
                 <!-- Theme used for syntax highlighting of code -->
-                <link rel="stylesheet" href="lib/css/zenburn.css">
+                <link rel="stylesheet" href="/talks/lib/css/zenburn.css">
 
                 <!-- Printing and PDF exports -->
                 <script>
                         var link = document.createElement( 'link' );
                         link.rel = 'stylesheet';
                         link.type = 'text/css';
-                        link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+                        link.href = window.location.search.match( /print-pdf/gi ) ? '/talks/css/print/pdf.css' : '/talks/css/print/paper.css';
                         document.getElementsByTagName( 'head' )[0].appendChild( link );
                 </script>
         </head>
@@ -60,15 +60,15 @@
                       <section>
                         <h1>Examples</h1>
                         <h3>If you have source code</h3>
-                        <asciinema-player src="examples/printf-src/how-to.cast"></asciinema-player>
+                        <asciinema-player src="/talks/examples/printf-src/how-to.cast"></asciinema-player>
                       </section>
                       <section>
                         <h3>If you're looking at strings</h3>
-                        <asciinema-player src="examples/printf/how-to.cast"></asciinema-player>
+                        <asciinema-player src="/talks/examples/printf/how-to.cast"></asciinema-player>
                       </section>
                       <section>
                         <h2>What if it's not that simple?</h2>
-                        <asciinema-player src="examples/if/help.cast"></asciinema-player>
+                        <asciinema-player src="/talks/examples/if/help.cast"></asciinema-player>
                       </section>
                     </section>
                     <section>
@@ -79,18 +79,18 @@
                       </section>
                       <section>
                         <h3>How do compilers use the stack?</h3>
-                        <img src="img/stack.png">
+                        <img src="/talks/img/stack.png">
                       </section>
                       <section>
                         <h2>What is linking?</h2>
                         <p>The standard library needs to be compiled in somehow</p>
                         <p>A program called a 'linker' merges your code with the standard library</p>
-                        <img src="img/linker.jpg">
+                        <img src="/talks/img/linker.jpg">
                       </section>
                       <section>
                         <h2>What is dynamic linking?</h2>
                         <p>Putting the standard library in every program is expensive. What if we could avoid that?</p>
-                        <img src="img/dynamic-linking.gif">
+                        <img src="/talks/img/dynamic-linking.gif">
                       </section>
                     </section>
                     <section>
@@ -103,7 +103,7 @@
                       <section>
                         <h3>ABI Examples</h3>
                         <p>IP Packets</p>
-                        <img src="img/ip-abi.jpg">
+                        <img src="/talks/img/ip-abi.jpg">
                       </section>
                       <section>
                         <h3>ABI Examples</h3>
@@ -119,7 +119,7 @@
                       </section>
                       <section>
                         <h3>Registers</h3>
-                        <img src="img/registers.jpg">
+                        <img src="/talks/img/registers.jpg">
                       </section>
                       <section>
                         <h3>CISC vs RISC</h3>
@@ -288,7 +288,7 @@ power:
                       </section>
                       <section>
                         <h3>Can we make this easier?</h3>
-                        <asciinema-player src="examples/printf/gdb.cast"></asciinema-player>
+                        <asciinema-player src="/talks/examples/printf/gdb.cast"></asciinema-player>
                       </section>
                     </section>
                     <section>
@@ -347,7 +347,7 @@ power:
                       </section>
                       <section>
                         <h3>The answer:</h3>
-                        <asciinema-player src="examples/if/how-to.cast"></asciinema-player>
+                        <asciinema-player src="/talks/examples/if/how-to.cast"></asciinema-player>
                       </section>
                       <section>
                         <h3><code>while</code></h3>
@@ -377,7 +377,7 @@ power:
                       </section>
                       <section>
                         <h3>Answer</h3>
-                        <asciinema-player src="examples/while/how-to.cast"></asciinema-player>
+                        <asciinema-player src="/talks/examples/while/how-to.cast"></asciinema-player>
                       </section>
                       <section>
                         <h3>argv</h3>
@@ -409,7 +409,7 @@ power:
                       </section>
                       <section>
                         <h3>Answer</h3>
-                        <asciinema-player src="examples/argv/how-to.cast"></asciinema-player>
+                        <asciinema-player src="/talks/examples/argv/how-to.cast"></asciinema-player>
                       </section>
                       <section>
                         <h3><code>for</code></h3>
@@ -639,9 +639,9 @@ pop %ebp</code></pre> at the start and end of functions?</p>
                   </div>
                 </div>
 
-                <script src="lib/js/head.min.js"></script>
-                <script src="dist/reveal.js"></script>
-                <script src="js/asciinema-player.js"></script>
+                <script src="/talks/lib/js/head.min.js"></script>
+                <script src="/talks/dist/reveal.js"></script>
+                <script src="/talks/js/asciinema-player.js"></script>
 
                 <script>
                         // More info about config & dependencies:
@@ -649,11 +649,11 @@ pop %ebp</code></pre> at the start and end of functions?</p>
                         // - https://github.com/hakimel/reveal.js#dependencies
                         Reveal.initialize({
                                 dependencies: [
-                                        { src: 'plugin/zoom-js/zoom.js', async: true },
-                                        { src: 'plugin/markdown/marked.js' },
-                                        { src: 'plugin/markdown/markdown.js' },
-                                        { src: 'plugin/notes/notes.js', async: true },
-                                        { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+                                        { src: '/talks/plugin/zoom-js/zoom.js', async: true },
+                                        { src: '/talks/plugin/markdown/marked.js' },
+                                        { src: '/talks/plugin/markdown/markdown.js' },
+                                        { src: '/talks/plugin/notes/notes.js', async: true },
+                                        { src: '/talks/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
                                 ],
                                 margin: .05,
                                 minScale: 0.2,
