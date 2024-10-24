@@ -1,6 +1,6 @@
 ---
 title: building your own <code>rustc_driver</code>
-date: 2024-10-23
+date: 2024-10-24
 extra:
   audience: developers
 description: what happens when you run <code>cargo clippy</code>?

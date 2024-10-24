@@ -1,9 +1,6 @@
 // https://github.com/getzola/zola/issues/1070#issuecomment-1166637092
 
-// The DOMContentLoaded event fires when the initial HTML
-// document has been completely loaded and parsed, without
-// waiting for stylesheets, images, and subframes to finish loading.
-document.addEventListener('DOMContentLoaded', (_event) => {
+function addFootnotes() {
   const references = document.getElementsByClassName('footnote-reference')
   // For each footnote reference, set an id so we can refer to it from the definition.
   // If the definition had an id of 'some_id', then the reference has id `some_id_ref`.
@@ -37,4 +34,13 @@ document.addEventListener('DOMContentLoaded', (_event) => {
   let hr = document.createElement('hr');
   content.appendChild(hr);
   content.appendChild(section);
-});
+}
+
+// The DOMContentLoaded event fires when the initial HTML
+// document has been completely loaded and parsed, without
+// waiting for stylesheets, images, and subframes to finish loading.
+if (document.readyState !== 'loading') {
+  addFootnotes();
+} else {
+  document.addEventListener('DOMContentLoaded', (_event) => addFootnotes());
+}
