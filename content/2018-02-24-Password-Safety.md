@@ -24,8 +24,7 @@ and [multi-factor auth](https://en.wikipedia.org/wiki/Multi-factor_authenticatio
 but most peoples' response is to either write sticky notes of passwords,
 or ignore the problem altogether.
 
-This does work if you don't [leave your passwords lying around](
-{{ site.baseurl }}{% link /assets/password.jpg %}).
+This does work if you don't [leave your passwords lying around](/assets/password.jpg).
 It is inconvenient, however, and doesn't scale to a large password database.
 What you should be using is a [password manager][manager].
 
