@@ -11,7 +11,7 @@ output_dir = "build"
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
 
-generate_feed = true
+generate_feeds = true
 
 [markdown]
 # Whether to do syntax highlighting

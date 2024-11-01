@@ -9,7 +9,7 @@ extra: {audience: developers}
 Jekyll is a wonderful program. The more I use it, the more I like it.
 It's customizable, automatically parses markdown, and uses a template system
 that makes it very easy to create a consistent style. Its only flaw is that
-it depends on [rubygems]({{ site.baseurl }}{% link _posts/2017-12-28-Setting-up-Jekyll.md %}#appendix).
+it depends on [rubygems](@/2017-12-28-Setting-up-Jekyll.md#appendix).
 
 Jekyll does get a little getting used to, however.
 In this article, I'll go over the basics:
@@ -24,7 +24,7 @@ and the commandline, which will be covered in another post.
 ## Installing
 If you don't have [rubygems](https://www.ruby-lang.org/en/documentation/installation/)
 installed, you'll need it. See also 
-[footnote 1]({{ site.baseurl }}{% link _posts/2017-12-28-Setting-up-Jekyll.md %}#appendix).
+[footnote 1](@/2017-12-28-Setting-up-Jekyll.md#appendix).
 
 ```sh
 gem install jekyll

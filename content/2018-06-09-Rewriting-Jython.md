@@ -14,7 +14,7 @@ You can reuse Java code and still get the readability and conciseness of python.
 
 I was thinking about types in Python, particularly how it allows
 primitive operators to be overridden (+-/*%). For those unfamiliar with Python classes,
-check out my [previous post]({% link _posts/2018-03-03-Object-Oriented-Python.md %});
+check out my [previous post](@/2018-03-03-Object-Oriented-Python.md);
 essentially it uses methods like `__add__`, `__sub__`, etc. as interfaces.
 This lets you do things like
 ```python
@@ -56,7 +56,7 @@ duck typing more clearly.
 Because this is a toy project (and because parsing is hard), I have not implemented
 an interpreter; the sample usage would be `add(new NumberWrapper(5), new NumberWrapper(-.14))`.
 
-The full code is available [here]({% link assets/jython.java %}).
+The full code is available [here](/assets/jython.java).
 Its output is as follows:
 ```
 $ javac jython.java -Xlint:unchecked

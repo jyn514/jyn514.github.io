@@ -102,4 +102,4 @@ Continuing.
 [Inferior 1 (process 29542) exited normally]
 ```
 
-This post is continued in [Buffer Overflows and Stacks and Assembly, Oh My]({% link _posts/2019-04-29-Buffer-Overflows-and-Stacks-and-Assembly-Oh-My.md %}).
+This post is continued in [Buffer Overflows and Stacks and Assembly, Oh My](@/2019-04-29-Buffer-Overflows-and-Stacks-and-Assembly-Oh-My.md).
