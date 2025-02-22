@@ -19,6 +19,8 @@ generate_feeds = true
 highlight_code = true
 # We don't use use `highlight_themes_css` because we have a custom theme (and textmate grammar is annoying and less flexible than CSS classes)
 highlight_theme = "css"
+bottom_footnotes = true
+insert_anchor_links = "heading"
 
 [extra]
 # Put all your custom variables here
