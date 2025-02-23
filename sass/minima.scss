@@ -34,8 +34,8 @@ $grey-color-dark:  darken($grey-color, 25%) !default;
 // Width of the content area
 $content-width:    70vw !default;
 /**/
-$on-palm:          90vw !default;
-$on-laptop:        70vw !default;
+$on-palm:          5in !default;
+$on-laptop:        12in !default;
 
 // Use media queries like this:
 // @include media-query($on-palm) {
