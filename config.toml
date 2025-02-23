@@ -21,6 +21,7 @@ highlight_code = true
 highlight_theme = "css"
 bottom_footnotes = true
 insert_anchor_links = "heading"
+extra_syntaxes_and_themes = ["./syntax"]
 
 [extra]
 # Put all your custom variables here
