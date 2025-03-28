@@ -4,6 +4,10 @@ div.footnote {
     font-size: 8pt;
 }
 
+details > summary {
+  cursor: pointer;
+}
+
 // latin Open Sans, loads from google
 // replaces @import(https://fonts.googleapis.com/css?family=Open+Sans)
 @font-face {
