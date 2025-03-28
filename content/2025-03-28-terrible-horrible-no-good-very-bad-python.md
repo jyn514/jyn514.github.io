@@ -45,6 +45,24 @@ normally, `os._exit` exits the process without running "cleanup handlers" (`fina
 
 one might be mislead that `import os` comes after the function is defined. but python has dynamic scoping, so that's fine.
 
+one might also mix up `sys.exit` with `os._exit`. `sys.exit` works by raising a [`SystemExit`](https://docs.python.org/3/library/exceptions.html#SystemExit) exception, which would be caught and swallowed by the `finally` block. but [`_exit`](https://docs.python.org/3/library/os.html#os._exit) directly exits the process:
+
+> Exit the process with status n, without calling cleanup handlers, flushing stdio buffers, etc.
+
+in fact, it doesn't even call atexit handlers, not even if we directly use libc:
+```
+>>> import atexit
+>>> atexit.register(lambda: print('hi'))
+<function <lambda> at 0x73c740cf2830>
+>>> from ctypes import *
+>>> libc = cdll.LoadLibrary("libc.so.6")
+>>> libc.on_exit(CFUNCTYPE(c_int, c_voidp)(lambda status, _: print(status)))
+0
+>>> import os
+>>> os._exit(1)
+# no output
+```
+
 yes someone did write this code by accident and yes they were very confused. i thought it was a bug in cpython until i figured it out.
 
 </details>
