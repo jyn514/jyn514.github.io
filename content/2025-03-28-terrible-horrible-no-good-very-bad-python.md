@@ -43,6 +43,8 @@ returns `False`. want to know why?
 
 normally, `os._exit` exits the process without running "cleanup handlers" (`finally` blocks). however, it takes one argument. this snippet forgets to pass in the exit code, so instead of exiting, it throws `TypeError`. then the `finally` block silently swallows the exception because of the `return`.
 
+one might be mislead that `import os` comes after the function is defined. but python has dynamic scoping, so that's fine.
+
 yes someone did write this code by accident and yes they were very confused. i thought it was a bug in cpython until i figured it out.
 
 </details>
