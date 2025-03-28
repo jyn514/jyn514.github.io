@@ -41,7 +41,7 @@ returns `False`. want to know why?
 
 <details><summary>yes just tell me already >:(</summary>
 
-`os._exit` takes one argument. this snippet forgets to pass in the exit code, so instead of exiting, it throws `TypeError`. then the `finally` block silently swallows the exception because of the `return`.
+normally, `os._exit` exits the process without running "cleanup handlers" (`finally` blocks). however, it takes one argument. this snippet forgets to pass in the exit code, so instead of exiting, it throws `TypeError`. then the `finally` block silently swallows the exception because of the `return`.
 
 yes someone did write this code by accident and yes they were very confused. i thought it was a bug in cpython until i figured it out.
 
