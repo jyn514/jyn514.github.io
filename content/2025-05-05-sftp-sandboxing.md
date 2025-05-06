@@ -91,6 +91,6 @@ this is Very Bad (tm).
 cool cool cool. love unix. this sure is a tool we use to build software.
 
 [`Match`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man5/sshd_config.5#Match) is surprisingly complicated in the general case but simple enough here.
-[`DisableForwarding`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man5/sshd_config.5#DisableForwarding) is probably not *strictly* necessary but we don't want people using this file server as a jumpbox to whatever other networks it's connected to, nor as e.g. a tor exit not.
+[`DisableForwarding`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man5/sshd_config.5#DisableForwarding) is probably not *strictly* necessary but we don't want people using this file server as a jumpbox to whatever other networks it's connected to, nor as e.g. a tor exit node.
 
 lastly i want to point out that `useradd` by default creates a user with no login password, which takes care of people guessing passwords for this without the proper ssh public key. i have `PasswordAuthentication no` set in `sshd_config`, but this allows disabling the password for just your sftp access without disabling it altogether. alternatively you could put it under the `Match User`.
