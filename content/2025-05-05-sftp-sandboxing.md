@@ -1,5 +1,5 @@
 ---
-title: sftp-sandboxing
+title: sftp sandboxing
 date: 2025-05-05
 description: unix sure is a system
 ---
