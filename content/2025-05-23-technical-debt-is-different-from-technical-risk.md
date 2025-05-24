@@ -42,6 +42,17 @@ Note that you cannot overcome technical risk simply by spending more time; in th
 The common understanding of "tech debt" is that it only applies to programs that were built hastily or without planning. "tech risk" is much more broad than that, though.
 It also applies to old programs which no longer have anyone that [understands their theory][programming as theory building]; new code if it's sufficiently complicated (stateful, non-local, "just a complicated algorithm", etc); and large programs that are too big for any one person to understand in full.
 In fact, most code has some amount of risk, simply because it isn't usually worth making readability the number 1 priority (and readability differs from programmer to programmer).
+## "bad code" misses the point
+Hillel Wayne recently wrote a post titled [Write the most clever code you possibly can][hillel]. At one point he says this:
+> I've also talked to people who think that datatypes besides lists and hashmaps are too clever to use, that most optimizations are too clever to bother with, and even that functions and classes are too clever and code should be a linear script.
+
+This is an extreme example, but it reflects a pattern I often see: people think any code that uses complicated features is "too clever" and therefore bad.
+This comes up a lot for "weird" syscalls or libc functions, like `setjmp`/`longjmp` and `fork`.
+I think this misses the point. What makes something technical risk is the *risk*, the inertia when you try to modify it, the likelihood of bugs.
+Having a steep learning curve is not the same as being hard to modify, because once you learn it once, future changes become easier.
+
+[hillel]: https://buttondown.com/hillelwayne/archive/write-the-most-clever-code-you-possibly-can/
+
 ## feature flags are the taste of the lotus
 Once your risk is high enough, and if you don't have the option of reducing complexity, people tend to work around the risk with feature flags or configuration options. These flags avoid the new behavior altogether in the default case, such that "changing the program" is decoupled from "changing the behavior".
 
