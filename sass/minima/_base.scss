@@ -188,7 +188,24 @@ pre {
   clear: both;
 }
 
+/**
+ * Notes
+ */
+.note-content {
+    padding-inline: .6em;
+    padding-top: 12px;
+    max-width: min(93%, 45em);
+    border-style: solid;
+    border-color: tan;
+    border-width: .1em;
+    border-radius: 1em;
+}
 
+.note-container {
+    display: flex;
+    flex-direction: row-reverse;
+    padding-bottom: .4em;
+}
 
 /**
  * Icons
