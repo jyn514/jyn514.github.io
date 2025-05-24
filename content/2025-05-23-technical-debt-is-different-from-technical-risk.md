@@ -68,7 +68,13 @@ this post is kinda scary! it tells a story of codebases that grow more and more 
 
 i think things are not actually so dire as they seem. firstly, you always have the option to do ongoing refactors, reducing the risk of changes. with ongoing maintenance like this, even extremely complex programs can be maintained for years or decades; i think [the rust compiler][rustc-constant-change] is a good example of such a program.
 
-secondly, rebuilding systems is good, actually, because it lets us learn from the lessons of the past. oracledb, tmux, and vim all have younger competitors (e.g. sqlite, zellij, and helix) that are more nimble. even more than that, new systems have the opportunity to be built on a different paradigm (e.g. sqlite runs in-process instead of as a daemon) with different tradeoffs. to some extent, people or teams can get "locked in" to existing systems, especially if they are highly configurable or changing to a new system would be high risk for the organization (e.g. migrating to a new database is extremely high risk for almost anyone), but this can be mitigated by open file formats (such as [sqlite's database file]) and backwards compatibility for the old options (such as in neovim).
+secondly, rebuilding systems is good, actually, because it lets us learn from the lessons of the past. oracledb, tmux, and vim all have younger competitors (e.g. sqlite, zellij, and helix) that are more nimble. even more than that, new systems have the opportunity to be built on a different paradigm (e.g. sqlite runs in-process instead of as a daemon) with different tradeoffs. this is the classic case of [disruptive innovation].
+
+[disruptive innovation]: https://en.wikipedia.org/wiki/Disruptive_innovation
+
+to some extent, people or teams can get "locked in" to existing systems, especially if they are highly configurable or changing to a new system would be high risk for the organization (e.g. migrating to a new database is extremely high risk for almost anyone), but this can be mitigated by open file formats (such as [sqlite's database file]) and backwards compatibility for the old options (such as in neovim).
+
+[Platform Envelopment]: https://www.hbs.edu/ris/Publication%20Files/07-104.pdf
 
 ## in conclusion
 
