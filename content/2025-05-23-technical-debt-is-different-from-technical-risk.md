@@ -33,7 +33,7 @@ Whenever you modify a program's behavior, you incur a risk that you introduce a 
 
 [android vulnerabilities]: https://security.googleblog.com/2024/09/eliminating-memory-safety-vulnerabilities-Android.html#:~:text=the%20math
 
-When people talk about "technical debt", what I am calling "technical risk", they mean "modifying the code has a very high risk"—any kind of modification has a high chance of introducing bugs, not only when adding new features but also when doing refactors and bug fixes. Furthermore, even the most trivial changes become painful and time-consuming, and the right tail of your time distribution increases dramatically.
+When people talk about "technical debt", what I am calling "technical risk", they mean "modifying the code has a very high risk"—any kind of modification has a high chance of introducing bugs, not only when adding new features but also when doing refactors and bug fixes. Even the most trivial changes become painful and time-consuming, and the right tail of your time distribution increases dramatically.
 
 Furthermore, when we say "this program has a lot of tech debt", we are implicitly arguing "the risk of a refactor is lower than the risk of it eventually breaking when we make _some other change_". We are *gambling* that the risk of a refactor (either in time or breakage) is worth the decreased risk going forward.
 
