@@ -7,19 +7,20 @@ fi
 realpath() { readlink -f "$@"; }
 
 date=$(date -I)
-title=$(echo $@ | tr '\t \r' '---' | tr -d '\n!,?:')
-dst=content/$date-$title.md
+title=$(echo "$@" | tr - ' ')
+path=$(echo "$@" | tr '\t \r' '---' | tr -d '\n!,?:')
+dst=content/$path.md
 
 if ! [ -e "$dst" ]; then
-    echo "creating new post at $(realpath $dst)"
+    echo "creating new post at $(realpath "$dst")"
     echo "---
-title:  "$title"
+title:  $title
 date:   $date
 #extra: {audience: everyone}
-#description: ""
+#description: \"\"
 ---
 " > "$dst"
 else
-    echo "updating date for existing post $(realpath $dst)"
-	sed -i "s/date:	.*/date:	$date/" $dst
+    echo "updating date for existing post $(realpath "$dst")"
+	sed -i "s/date:	.*/date:	$date/" "$dst"
 fi
