@@ -200,7 +200,7 @@ pre {
     border-width: .1em;
     border-radius: 1em;
 }
-details.note-content:has(> summary > code) {
+details:not([open]).note-content:has(> summary > code) {
   background-color: #000;
 }
 

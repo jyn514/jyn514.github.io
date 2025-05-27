@@ -133,7 +133,7 @@ for more complicated code, i like to use a debugger, which lets you see much mor
 {% note(hide="<code>:drop</code>") %}
 for `:drop`, i was quite confident i had found the right code, so i didn't bother with any experiments. there are other cases where it's more useful; i made an earlier [PR to tmux][grid padding] where there were many different places search happened, so verifying i was looking at the right one was very helpful. specifically i added `exit(1)` to the function i thought was the right place, since debug logging in tmux is non-trivial to access.
 
-i rarely use a debugger for adding new code; mostly i use itTdis for debugging existing code. programs complicated enough that i need a debugger just to understand control flow usually have a client/server model that also makes them harder to debug, so i don't bother and just read the source code.
+i rarely use a debugger for adding new code; mostly i use it for debugging existing code. programs complicated enough that i need a debugger just to understand control flow usually have a client/server model that also makes them harder to debug, so i don't bother and just read the source code.
 
 [grid padding]: https://github.com/tmux/tmux/pull/4399
 
