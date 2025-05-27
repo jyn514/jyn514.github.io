@@ -193,12 +193,15 @@ pre {
  */
 .note-content {
     padding-inline: .6em;
-    padding-top: 12px;
+    padding: 12px;
     max-width: min(93%, 45em);
     border-style: solid;
     border-color: tan;
     border-width: .1em;
     border-radius: 1em;
+}
+details.note-content:has(> summary > code) {
+  background-color: #000;
 }
 
 .note-container {
