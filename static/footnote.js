@@ -3,6 +3,7 @@
 
 function addFootnoteLine() {
   let footer = document.querySelector('footer.footnotes');
+  if (footer === null) return;
   let hr = document.createElement('hr');
   footer.before(hr);
 }

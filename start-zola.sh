@@ -1,2 +1,2 @@
 #!/bin/sh
-zola serve --base-url /
+zola serve --base-url / "$@"

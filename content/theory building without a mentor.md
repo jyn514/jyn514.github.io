@@ -45,8 +45,12 @@ this post is about creating theories at the "micro" level, for small portions of
 
 {% note() %}
 i recently made a [PR to neovim][drop-cmd], having never worked on neovim before; i'll use that as an example going forward.
+i highly recommend following along with a piece of code you want to learn more about. if you don't have one in mind, i have hidden all the examples behind a drop-down menu, so you can try to apply the ideas on your own before seeing how i use them.
+
+the investigation i did in this blog post was based off [neovim commit 57d99a5].
 
 [drop-cmd]: https://github.com/neovim/neovim/pull/33339/
+[neovim commit 57d99a5]: https://github.com/neovim/neovim/tree/57d99a515f57454370b6c122545ea53685d22d1b
 {% end %}
 
 ### where to start
@@ -63,7 +67,7 @@ there are several ways to get started here. the simplest is just finding the rel
 
 [treat-err-as-bug]: https://rustc-dev-guide.rust-lang.org/compiler-debugging.html#getting-a-backtrace-for-errors
 
-{% note() %}
+{% note(hide="neovim") %}
 for `:drop`, this didn't work: it was documented on [neovim's site][`:drop`], but i didn't know a `:drop`-specific error to search for.
 {% end %}
 
@@ -72,7 +76,7 @@ for `:drop`, this didn't work: it was documented on [neovim's site][`:drop`], bu
 
 if this doesn't print an error message, or if it's not possible to get a recording of the program, things are harder. you want to look for something you already know the name of; search for literal strings with that name, or substrings that might form part of a template.
 
-{% note() %}
+{% note(hide="neovim") %}
 for `:drop` i searched for the literal string `"drop"`, since *something* needs to parse commands and it's not super common for it to be on its own in a string. that pulled up the following hits:
 ```
 $ rg '"drop"' src
@@ -85,7 +89,7 @@ src/nvim/eval.c:7146:    len += 7 + 4;  // " ++bad=" + "keep" or "drop"
 {% end %}
 ### reading source code
 sometimes triggering the condition is hard, so instead i read the source code to reverse-engineer the stack trace. seeing all possible call sites of a function is instructive in itself, and you can usually narrow it down to only a few callers by skimming what the callers are doing. i highly recommend using an LSP for this part since the advantage comes from seeing *all* possible callers, not just most, and regex is less reliable than proper name resolution.
-{% note() %}
+{% note(hide="neovim") %}
 it turned out that none of the code i found in my search was for `:drop` itself, but i did find it was in a function named `get_bad_opt`. `get_bad_opt` had only one caller, `getargopt`. that was called by `do_one_cmd`. the doc-comment on `do_one_cmd` mentions that it parses the string, but i am not used to having documentation so i went up one level too far to `do_cmdline`. at that point, looking at the call site of `do_one_cmd`, i realized i had gone too far because it was passing in the whole string of the Ex command line. i found a more relevant part of the code by looking at the uses of `cmdlinep` in `do_one_cmd`:
 ```c
       char *cmdname = after_modifier ? after_modifier : *cmdlinep;
@@ -126,7 +130,7 @@ for more complicated code, i like to use a debugger, which lets you see much mor
 [nvim-dap-ui]: https://github.com/rcarriga/nvim-dap-ui
 [rr reverse watchpoint]: https://rr-project.org/#:~:text=more%20powerful%20is%20reverse%20execution
 
-{% note() %}
+{% note(hide="neovim") %}
 for `:drop`, i was quite confident i had found the right code, so i didn't bother with any experiments. there are other cases where it's more useful; i made an earlier [PR to tmux][grid padding] where there were many different places search happened, so verifying i was looking at the right one was very helpful. specifically i added `exit(1)` to the function i thought was the right place, since debug logging in tmux is non-trivial to access.
 
 i rarely use a debugger for adding new code; mostly i use itTdis for debugging existing code. programs complicated enough that i need a debugger just to understand control flow usually have a client/server model that also makes them harder to debug, so i don't bother and just read the source code.
@@ -139,7 +143,7 @@ reading source code is also useful for finding examples of how to use an API. of
 
 when i write new code, i will usually copy a small snippet from elsewhere in the codebase and modify it to my needs. i try to copy at most 10-15 lines; more than that indicates that i should try to reuse or create a higher-level API.
 
-{% note() %}
+{% note(hide="neovim") %}
 once in `ex_drop`, i skimmed the code and found a snippet looked like it was handling existing files:
 ```c
   FOR_ALL_TAB_WINDOWS(tp, wp) {
@@ -200,7 +204,7 @@ i care a lot about iteration times, so i try and find how to run individual test
  
  run your tests! ideally, create and run your tests *before* modifying the code so that you can see that they start to pass after your change. tests are extra important when you don't already understand the code, because they help you verify that your new theory is correct. run existing tests as well; run those before you make changes so you know which failures are spurious (a surprisingly high number of codebases have flaky or environment-dependent tests).
 
-{% note() %} 
+{% note(hide="neovim") %}
 i started by looking for existing tests for `:drop`:
 ```sh
 $ rg :drop test

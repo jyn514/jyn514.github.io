@@ -1,5 +1,5 @@
-<div class=note-container><div class=note-content>
+<div class=note-container>{% if hide %}<details class=note-content><summary>{{hide}}</summary>{% else %}<div class=note-content>{% endif %}
 
   {{ body }}
 
-</div></div>
+</{% if hide %}details{% else %}div{% endif %}></div>
