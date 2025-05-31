@@ -7,7 +7,7 @@ description: Goals for improving Rust's build system and making it easier to und
 ---
 
 *This post will assume you have watched <https://www.youtube.com/watch?v=oUIjG-y4zaA>.
-You may also find it helpful to read <https://rustc-dev-guide.rust-lang.org/building/bootstrapping.html#stages-of-bootstrapping>, but I won't assume prior knowledge of the information there.*
+You may also find it helpful to read <https://rustc-dev-guide.rust-lang.org/building/bootstrapping/what-bootstrapping-does.html#stages-of-bootstrapping>, but I won't assume prior knowledge of the information there.*
 
 <!-- This is a post about how I would like Rust's bootstrapping system to work in an ideal world. -->
 <!-- I am not sure all these changes are feasible - they certainly can be done at a technical -->
@@ -82,7 +82,7 @@ compiler that haven't yet landed on beta.
 Supporting two versions is not an intrinsic requirement. We do it for two reasons:
 1. It allows testing changes to the standard library without having to first build the compiler.
    [Building the compiler is painfully slow](https://github.com/rust-lang/rust/issues/65031).
-2. It allows [using nightly standard library features](https://rustc-dev-guide.rust-lang.org/building/bootstrapping.html#complications-of-bootstrapping) in the compiler before they land on beta.
+2. It allows [using nightly standard library features](https://rustc-dev-guide.rust-lang.org/building/bootstrapping/what-bootstrapping-does.html#complications-of-bootstrapping) in the compiler before they land on beta.
 
 1 is "just" implementation work to fix: if there are no changes to the compiler, we can download CI artifacts for that commit and use those instead. There are [a few bugs to fix](https://github.com/rust-lang/rust/issues/81930) but they're surmountable.
 
@@ -151,7 +151,8 @@ and after:
 For GHC, `build stage1:exe:ghc-bin` builds stage1 GHC with the stage0 compiler.
  <!-- https://discourse.llvm.org/t/how-to-run-individual-phases-of-a-2-or-3-stage-build/2596/2 -->
 For Clang, `ninja stage2` builds the stage2 clang with the stage1 compiler and `ninja clang-bootstrap-deps` builds the stage1 clang with the stage0 compiler.
-<!-- https://github.com/ocaml/ocaml/blob/trunk/Makefile#L222 -->
+<!-- https://github.com/ocaml/ocaml/blob/64ef2d0ce1eb7d5f09ac6cde1a78f74b62804cc6/Makefile#L698-L702 -->
+<!-- https://github.com/ocaml/ocaml/blob/64ef2d0ce1eb7d5f09ac6cde1a78f74b62804cc6/Makefile#L833-L841 -->
 OCaml uses `make coreall` to build the stage1 OCaml with the bootstrap compiler and `make bootstrap` to build a full bootstrap compiler.
 <!-- zig is a pain in the ass to build on windows because it needs llvm installed -->
 <!-- pypy doesn't have stages -->
@@ -165,7 +166,7 @@ OCaml uses `make coreall` to build the stage1 OCaml with the bootstrap compiler 
 
 This is off-by-one from how *every other modern compiler* counts stages.
 
-<https://rustc-dev-guide.rust-lang.org/building/bootstrapping.html#understanding-stages-of-bootstrap>
+<https://rustc-dev-guide.rust-lang.org/building/bootstrapping/what-bootstrapping-does.html#understanding-stages-of-bootstrap>
 spends several paragraphs talking about how `build --stage N` means "build with stage N", not "create the
 compiler that lives in the stage N sysroot".  All the people I've talked to who say this
 meaning of `--stage N` is intuitive have been using `x.py` for several years and are experts in the
