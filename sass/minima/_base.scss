@@ -231,3 +231,8 @@ details:not([open]).note-content:has(> summary > code) {
     padding-top: 5px;
   }
 }
+
+video {
+  width: 100%;
+  object-fit: contain;
+}
