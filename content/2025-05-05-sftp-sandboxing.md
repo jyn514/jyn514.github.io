@@ -18,10 +18,10 @@ so! here is how to set up a read-only sftp server which doesn't allow any other 
 
 First, add the following to `/etc/ssh/sshd_config`:
 ```ssh
-Subsystem       sftp    internal-sftp -R
+Subsystem       sftp    internal-sftp
 Match User myuser
 	ChrootDirectory %h
-	ForceCommand internal-sftp
+	ForceCommand internal-sftp -R
 	DisableForwarding yes
 ```
 Then run the following commands in a root shell (e.g. with `sudo -i`):
@@ -94,3 +94,7 @@ cool cool cool. love unix. this sure is a tool we use to build software.
 [`DisableForwarding`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man5/sshd_config.5#DisableForwarding) is probably not *strictly* necessary but we don't want people using this file server as a jumpbox to whatever other networks it's connected to, nor as e.g. a tor exit node.
 
 lastly i want to point out that `useradd` by default creates a user with no login password, which takes care of people guessing passwords for this without the proper ssh public key. i have `PasswordAuthentication no` set in `sshd_config`, but this allows disabling the password for just your sftp access without disabling it altogether. alternatively you could put it under the `Match User`.
+
+---
+
+**NOTE:** an earlier version of this post suggested `Subsystem sftp internal-sftp -R` and `ForceCommand internal-sftp`. that disables write access for *all* users, not just the selected user. the new version only disables it for the selected user.
