@@ -16,6 +16,7 @@ if ! [ -e "$dst" ]; then
     echo "---
 title:  $title
 date:   $date
+draft:  true
 #extra: {audience: everyone}
 #description: \"\"
 ---

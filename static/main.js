@@ -1,6 +1,8 @@
 function run() {
   addFootnoteLine();
   addTimestamps();
+  closeDraftPopup();
+  expandDetails();
 }
 
 function addFootnoteLine() {
@@ -22,6 +24,37 @@ function addTimestamps() {
       video.currentTime = sec;
     };
   }
+}
+
+function closeDraftPopup() {
+  const close = document.querySelector('aside.secret > button.close');
+  if (!close) return;
+  close.onclick = function() {
+    close.parentElement.style.display = 'none';
+  }
+}
+
+function expandDetails() {
+  let expanded = false;
+  let button = document.getElementById("expandAll");
+  if (!button) return;
+  let elems = document.querySelectorAll("details.note-content");
+  button.onclick = function() {
+    if (!expanded) {
+      for (let detail of elems) {
+        detail.setAttribute("open", "true");
+      }
+      button.textContent = button.textContent.replace('open', 'close');
+      expanded = true;
+    } else {
+      for (let detail of elems) {
+        detail.removeAttribute("open");
+      }
+      button.textContent = button.textContent.replace('close', 'open');
+      expanded = false;
+    }
+  }
+  button.click();
 }
 
 // The DOMContentLoaded event fires when the initial HTML

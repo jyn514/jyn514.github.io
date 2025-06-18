@@ -49,6 +49,8 @@ i highly recommend following along with a piece of code you want to learn more a
 
 the investigation i did in this blog post was based off [neovim commit 57d99a5].
 
+{{ expandButton() }}
+
 [drop-cmd]: https://github.com/neovim/neovim/pull/33339/
 [neovim commit 57d99a5]: https://github.com/neovim/neovim/tree/57d99a515f57454370b6c122545ea53685d22d1b
 {% end %}

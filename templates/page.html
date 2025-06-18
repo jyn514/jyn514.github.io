@@ -15,6 +15,11 @@
       • audience - {{ page.extra.audience | default (value = "everyone") }}
     </p>
   </header>
+  {% if page.draft %}
+  <aside class=secret><button class=close aria-label=Close title="Click here to dismiss">
+    <strong>This is a draft post.</strong>
+  </button></aside>
+  {% endif %}
 
   <div class="post-content" itemprop="articleBody">
     {{ page.content | safe }}
