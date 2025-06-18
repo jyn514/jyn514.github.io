@@ -117,11 +117,42 @@ my $cmd = $editor eq 'nvim' ? 'drop' : 'open';
 `tmux send-keys -t $pane ":$cmd $args" Enter`;
 `tmux select-pane -t $pane -Z`;
 ```
+## consequences of this setup
+- i don't need a fancy terminal locally; something with nice fonts is enough. all the fancy things are done through tmux, which is good because it means they work on Windows too without needing to install a separate terminal.
+- the editor thing works even if the editor doesn't support remote scripting. nvim *does* support RPC, but this setup also worked back when i used `helix` and `kakoune`.
+- i *could* have written this such that the fancy terminal emulator scripts were in my editor, not in tmux (e.g. `:terminal` in nvim). but again this locks me into the editor; and the built-in terminals in editors are usually not very good.
 ## ok, but do you really want to use tmux
 well. well. now that you mention it. the last thing keeping me on tmux was session persistence and [Ansuz has just released a standalone tool that does persistence and nothing else](https://ansuz.sooke.bc.ca/entry/389). so. i plan to switch to [kitty](https://sw.kovidgoyal.net/kitty/) in the near future, which lets me keep all these scripts and does not require shoving a whole second terminal emulator inside my terminal emulator, which hopefully will reduce the number of weird mysterious bugs i encounter on a regular basis.
 
 the reason i picked kitty over [wezterm](https://wezterm.org/) is that ssh integration works by integrating with the shell, not by launching a server process, so it doesn't need to be installed on the remote. this mattered less for tmux because tmux is everywhere, but hardly anywhere has wezterm installed by default.
 ## ... was it worth it?
-honestly, yeah. i spend quite a lot less time fighting my editor these days, and it's *much* easier to debug when something goes wrong (vscode's debugging tools are mostly for plugin extension authors and running them is non-trivial). with vim plugins i can just add `print` statements to the lua source and see what's happening. and all my keybinds make sense to me! and it's less laggy.
+honestly, yeah. i spend quite a lot less time fighting my editor these days.
+- it's *much* easier to debug when something goes wrong (vscode's debugging tools are mostly for plugin extension authors and running them is non-trivial). with vim plugins i can just add `print` statements to the lua source and see what's happening.
+- all my keybinds make sense to me!
+- my editor is less laggy.
+- my terminal is much easier to script through tmux than through writing a VSCode plugin, which usually involves setting up a whole typescript toolchain and context-switching into a new project
 
 that said, i cannot in good conscience recommend this to anyone else. all my scripts are fragile and will probably break if you look at them wrong, which is not ideal if you haven't written them yourself and don't know where to start debugging them.
+
+## ok but this looks nice i want this
+
+if you do want something similar without writing your own tools, i can recommend:
+- [fish] + [zoxide] + [fzf]. that gets you steps 4, 5, and kinda sorta-ish 6.
+- "builtin functionality in your editor" - fuzzy find, full text search, tabs and windows, and "open recent file" are all commonly supported.
+- [qf], which gets you the "select files in terminal output" part of 6, kinda. you have to remember to pipe your output to it though, so it doesn't work after the fact and it doesn't work if your tool is interactive. note that it hard-codes a vi-like CLI (`vi +line file.ext`), so you may need to fork it or still add a script that takes the place of $EDITOR. see [julia evans' most recent post][jvns] for more info.
+- [e], which gets you the "translate `file:line` into something your editor recognizes" part of 8, kinda. i had never heard of this tool until i wrote my own with literally the exactly the same name that did literally exactly the same thing, forgot to put it in PATH, and got a suggestion from `command-not-found` asking if i wanted to install it, lol.
+- `vim --remote filename` or `code filename` or `emacsclient filename`, all of which get you 12, kinda. the problem with this is that they don't all support `file:line`, and it means you have to modify this whenever you switch editors. admittedly most people don't switch editors that often, lol.
+## what have we learned?
+- terminals are a lot more powerful than people think! by using terminals that let you script them, you can do quite a lot of things.
+- you can kinda sorta replicate most of these features without scripting your terminal, as long as you don't mind tying yourself to an editor.
+- doing this requires quite a lot of work, because no one who builds these tools thought of these features ahead of time.
+
+hopefully this was interesting! i am always curious what tools people use and how - feel free to [email me] about your own setup :)
+
+[email me]: mailto:blog@jyn.dev
+[fish]: https://fishshell.com/
+[zoxide]: https://github.com/ajeetdsouza/zoxide/
+[fzf]: https://github.com/junegunn/fzf
+[qf]: https://git.causal.agency/src/tree/bin/qf.c
+[jvns]: https://jvns.ca/blog/2025/06/10/how-to-compile-a-c-program/
+[e]: https://github.com/kilobyte/e
