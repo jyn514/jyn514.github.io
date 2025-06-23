@@ -1,0 +1,1 @@
+<kbd>{{ key | replace(from=" ", to="</kbd><kbd>") | replace(from="+", to=" + ") }}</kbd>

@@ -260,6 +260,70 @@ tbody > tr > td:first-child {
   user-select: none;
 }
 
+/* kdb styling; see https://dylanatsmith.com/wrote/styling-the-kbd-element */
+kbd {
+  $kbd-color-background: lighten($grey-color, 20%);
+  $kbd-color-border:     $grey-color;
+  $kbd-color-text:       $grey-color-dark;
+
+  background-color: $kbd-color-background;
+  color: $kbd-color-text;
+
+  // Round off the corners like physical keys have
+  border-radius: 0.25rem;
+
+  // Add a simple border
+  border: 1px solid $kbd-color-border;
+
+  // A sharp shadow (with no blur) really gives
+  // the old school keyboard look
+  box-shadow: 0 2px 0 1px $kbd-color-border;
+
+  // Remove the text cursor — totally optional
+  // but I wanted it for my hover effect
+  cursor: default;
+
+  // By default, browsers style <kbd> with a monospace typeface
+  font-family: $base-font-family;
+  font-weight: bold;
+  text-transform: capitalize;
+
+  // If we do all this with the default font size
+  // (mine is 18px on desktop) it’ll look massive
+  // and bump into lines above and below
+  font-size: 0.75em;
+
+  // Remove any extra space so I can accurately tweak the padding
+  line-height: 1;
+
+  // Make narrow numbers and letters look less odd
+  min-width: 0.75rem;
+  // `min-width` doesn’t work on inline elements
+  display: inline-block;
+  // Keep the characters centred when narrower than the `max-width`
+  text-align: center;
+
+  // Seemed to look more key-like with more horizontal padding 🤷
+  padding: 2px 5px;
+
+  // These two lines pull the whole element up now that they’re
+  // bottom-heavy due to the `box-shadow`. This looks better
+  // against the cap height of regular paragraph text.
+  position: relative;
+  top: -1px;
+
+  // This is my favourite part of the whole thing. The key gets
+  // “pushed” down and the shadow gets reduced so it looks like
+  // it might when typing on a physical keyboard.
+  &:hover {
+    box-shadow: 0 1px 0 0.5px $kbd-color-border;
+    top: 1px;
+  }
+}
+kbd + kbd {
+  margin-left: .4em;
+}
+
 
 /**
  * Icons
