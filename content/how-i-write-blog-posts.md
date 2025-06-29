@@ -1,6 +1,7 @@
 ---
 title: how i write blog posts
 date: 2025-06-18
+description: "the trick is to make it as easy as possible"
 ---
 
 this isn’t about about blogging engines, don’t worry. there’s already plenty of writing about those. i use zola, i am mildly dissatisfied with it, i don’t care enough to switch.
