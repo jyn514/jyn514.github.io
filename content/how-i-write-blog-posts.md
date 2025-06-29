@@ -62,3 +62,4 @@ the one downside of this is that i get very little visibility on mobile onto why
 note some things about this setup:
 - i have live reloading all the way through, regardless of the editor or device i am using to edit the post.
 - because it's just a public url, it's very easy to share with my friends and ask for feedback on early posts, without making the posts visible to random people on hacker news.
+- if i ever want to take down the site, i just kill the zola server. it defaults to off when i start my computer.
