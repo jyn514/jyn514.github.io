@@ -20,7 +20,7 @@ highlight_code = true
 # We don't use use `highlight_themes_css` because we have a custom theme (and textmate grammar is annoying and less flexible than CSS classes)
 highlight_theme = "css"
 bottom_footnotes = true
-insert_anchor_links = "heading"
+insert_anchor_links = "right"
 extra_syntaxes_and_themes = ["./syntax"]
 
 [extra]

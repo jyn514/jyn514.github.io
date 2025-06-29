@@ -324,6 +324,13 @@ kbd + kbd {
   margin-left: .4em;
 }
 
+/* paragraph symbols */
+a:not(:hover).zola-anchor {
+  opacity: 0.18;
+}
+a.zola-anchor {
+  margin-left: .2em;
+}
 
 /**
  * Icons
