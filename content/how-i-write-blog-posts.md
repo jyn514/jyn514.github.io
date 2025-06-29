@@ -17,6 +17,23 @@ how does this work? i’m glad you asked.
 
 works great!
 
-normally i write outlines and ideas down on mobile, and then clean them up into prose on desktop. this post however was short and simple enough that i wrote it entirely on mobile.
+normally i write outlines and ideas down on mobile, and then clean them up into prose on desktop. when i edit on desktop, i sometimes use nvim (e.g. for posts like [how i use my terminal](@/how-i-use-my-terminal.md) that have complicated html fragments). unlike obsidian, nvim doesn't have autosave, so i [added it myself](https://github.com/jyn514/dotfiles/blob/45f6702de2608a972615cd877993a41521f76348/config/nvim.lua#L242-L268):
+```lua
+-- autosave on cursor hold
+local timers = {}
+function autosave_enable()
+  local buf = vim.api.nvim_get_current_buf()
+  if timers[buf] then return end
 
+  local buf_name = vim.fn.expand '%'
+  vim.notify("autosaving "..buf_name)
+  timers[buf] = vim.api.nvim_create_autocmd("CursorHold", {
+    desc = "Save "..buf_name.." on change",
+    callback = function() vim.api.nvim_buf_call(buf,
+      function() vim.cmd "silent update" end
+    ) end })
+end
+vim.api.nvim_create_user_command('AutoSave', autosave_enable,
+	{desc = "Start saving each second on change"})
+```
 the one downside of this is that i get very little visibility on mobile onto why things are not syncing to the desktop. to make up for this, my phone and desktop are on the same tailnet, which allows me to ssh in remotely to check up on the zola server (i’ve never had to check up on the Caddy server). i like Termius for this.
