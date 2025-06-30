@@ -4,6 +4,10 @@ title:	"Building Docs.rs"
 date:	2019-11-26
 extra: {audience: developers}
 description: How I because the 2nd-most prolific contributor to docs.rs
+taxonomies:
+  tags:
+    - stories
+    - rust
 ---
 
 ## What is docs.rs?

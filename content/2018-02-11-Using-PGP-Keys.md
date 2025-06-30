@@ -4,6 +4,9 @@ title:	"Using PGP Keys"
 date:	2018-02-11
 description:	Why and How to use encryption
 extra: {audience: developers}
+taxonomies:
+  tags:
+    - walkthroughs
 ---
 
 # What is GPG?

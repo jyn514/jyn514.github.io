@@ -4,6 +4,9 @@ title:	"Buffer Overflows and Stacks and Assembly, Oh My!"
 date:	2019-04-29
 extra: {audience: security}
 excerpt: Reverse Engineering for fun and profit
+taxonomies:
+  tags:
+    - stories
 ---
 
 Google has a 'Intro' Capture The Flag competition at

@@ -4,6 +4,9 @@ title:	"Copying Generic Arrays in Java"
 date:	2018-03-29
 extra: {audience: developers}
 description: The problem that's been bothering me for a week
+taxonomies:
+  tags:
+    - java
 ---
 
 # Intro

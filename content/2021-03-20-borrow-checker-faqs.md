@@ -1,9 +1,13 @@
 ---
 aliases: ['/2021/03/20/borrow-checker-faqs.html']
-title:	"borrow-checker-faqs"
+title:	"borrow-checker FAQs"
 date:	2021-03-20
 extra: {audience: developers}
 description: tips and tricks for dealing with the borrow-checker
+taxonomies:
+  tags:
+    - walkthroughs
+    - rust
 ---
 
 I got lots of positive feedback about [the FAQ

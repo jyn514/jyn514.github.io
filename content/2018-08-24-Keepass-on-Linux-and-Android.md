@@ -4,6 +4,9 @@ title:	"Keepass on Linux and Android"
 date:	2018-08-24
 extra: {audience: linux users}
 description: File synchronization on Linux
+taxonomies:
+  tags:
+    - walkthroughs
 ---
 
 Previously, I wrote about

@@ -4,6 +4,10 @@ title:	"<pre><code>&'borrow mut dyn FnMut(BrokenLink<'input>) -> CowStr<'input><
 date:	2020-12-08
 extra: {audience: everyone}
 description: Why HRTB are my least-favorite part of Rust
+taxonomies:
+  tags:
+    - stories
+    - rust
 ---
 
 This is a story about type signatures, Higher Ranked Trait Bounds ([HRTB]), and the most

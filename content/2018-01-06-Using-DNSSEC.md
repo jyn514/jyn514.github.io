@@ -4,6 +4,9 @@ title:	"Using DNSSEC"
 date:	2018-01-06
 description: How and why to enable DNSSEC
 extra: {audience: tech-savvy}
+taxonomies:
+  tags:
+    - walkthroughs
 ---
 
 I was on StackOverflow the other day when I saw

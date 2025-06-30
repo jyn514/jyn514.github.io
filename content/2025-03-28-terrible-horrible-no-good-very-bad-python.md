@@ -3,6 +3,9 @@ title:  Terrible Horrible No Good Very Bad Python
 date:   2025-03-28
 extra: {audience: programmers}
 description: new and exciting ways to write buggy code
+taxonomies:
+  tags:
+    - python
 ---
 
 time for everyone's favorite game!!

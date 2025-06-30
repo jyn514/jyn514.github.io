@@ -15,6 +15,11 @@
       {% if page.extra.audience %}
         • audience—{{ page.extra.audience }}
       {% endif %}
+      {% for term, tags in page.taxonomies %}
+        {% for tag in tags %}
+      • <a href="{{ get_taxonomy_url(kind=term, name=tag) }}">{{ tag }}</a>
+        {% endfor %}
+      {% endfor %}
     </p>
   </header>
   {% if page.draft %}

@@ -4,6 +4,10 @@ date: 2025-05-24
 extra:
   audience: developers
 description: learning how a program is intended to work is hard. here's how to do it.
+taxonomies:
+  tags:
+    - ideas
+    - walkthroughs
 ---
 **NOTE: if you are just here for the how-to guide, [click here](#recreating-a-theory) to skip the philosophizing.**
 ## theory building

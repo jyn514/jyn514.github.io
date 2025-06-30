@@ -1,6 +1,10 @@
 ---
 title: Scheduling Do-Not-Disturb in GNOME
 date: 2025-02-22
+taxonomies:
+  tags:
+    - walkthroughs
+    - workflows
 ---
 ## Do Not Disturb
 GNOME has a little button that lets you turn on Do-Not-Disturb for notifications:

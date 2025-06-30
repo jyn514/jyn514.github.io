@@ -4,6 +4,9 @@ title:	"Setting up Jekyll for GitHub Pages"
 date:	2017-12-28
 description:	The story of how I set up this site
 extra: {audience: developers}
+taxonomies:
+  tags:
+    - walkthroughs
 ---
 
 Jekyll is a wonderful program. The more I use it, the more I like it.

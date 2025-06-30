@@ -4,6 +4,10 @@ date: 2024-10-24
 extra:
   audience: developers
 description: what happens when you run <code>cargo clippy</code>?
+taxonomies:
+  tags:
+    - walkthroughs
+    - rust
 ---
 ## a deeper rabbit hole than expected
 

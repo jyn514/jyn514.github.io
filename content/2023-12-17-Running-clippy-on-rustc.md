@@ -4,6 +4,9 @@ date:	2023-12-17
 extra: {audience: developers}
 description: How I got clippy to lint on the code for the compiler itself
 draft: true
+taxonomies:
+  tags:
+    - rust
 ---
 
 Clippy is an official tool for linting your code. It's named after the venerable *Clippit Office
@@ -52,5 +55,3 @@ but we *can* jerry-rig that into the build system.
 
 ```
 ```
-
-

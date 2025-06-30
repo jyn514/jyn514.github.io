@@ -4,6 +4,10 @@ title:	"The intra-doc links saga"
 date:	2020-10-23
 extra: {audience: developers}
 description: How I helped stabilize intra-doc links
+taxonomies:
+  tags:
+    - stories
+    - rust
 ---
 
 One of my projects for the last 4 months or so has been working on

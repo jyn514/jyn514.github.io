@@ -2,6 +2,9 @@
 title: sftp sandboxing
 date: 2025-05-05
 description: unix sure is a system
+taxonomies:
+  tags:
+    - walkthroughs
 ---
 consider the following problem:
 - you want to share a 300 MB directory

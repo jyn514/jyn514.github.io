@@ -3,6 +3,9 @@ title:  how i use my terminal
 date:   2025-06-16
 extra: {audience: developers}
 description: "i have gone a little above and beyond trying to get all the features of VSCode"
+taxonomies:
+  tags:
+    - workflows
 ---
 
 this is a whole blog post because it is "outside the overton window"; it usually takes at least a video before people even understand the thing i am trying to describe. so, here's the video:

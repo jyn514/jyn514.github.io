@@ -332,6 +332,13 @@ a.zola-anchor {
   margin-left: .2em;
 }
 
+/* tags */
+div.all-tags > ul {
+  margin-left: inherit;
+  display: inline;
+  li { display: inline }
+}
+
 /**
  * Icons
  */

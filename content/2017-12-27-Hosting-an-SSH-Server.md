@@ -4,6 +4,9 @@ title:	"Hosting an SSH Server"
 date:	2017-12-27
 description: I decided one day that I really wanted a remote server.
 extra: {audience: tech-savvy}
+taxonomies:
+  tags:
+    - walkthroughs
 ---
 
 I decided one day over break that I really wanted a remote server.

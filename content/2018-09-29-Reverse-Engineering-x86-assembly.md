@@ -4,6 +4,9 @@ title:	"Reverse Engineering x86 assembly"
 date:	2018-09-29
 extra: {audience: developers}
 description: "Basics of decompiling binaries on linux with GDB"
+taxonomies:
+  tags:
+    - walkthroughs
 ---
 
 ## Intro

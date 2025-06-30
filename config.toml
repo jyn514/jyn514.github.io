@@ -13,6 +13,10 @@ compile_sass = true
 
 generate_feeds = true
 
+taxonomies = [
+    { name = "tags" },
+]
+
 [markdown]
 # Whether to do syntax highlighting
 # Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
