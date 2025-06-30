@@ -9,8 +9,10 @@
       <li>
         {% set date_format = site.minima.date_format | default(value = "%b %-d, %Y") %}
         <span class="post-meta">
-          {{ post.date | date(value = date_format) }} •
-          {{ post.extra.audience | default(value = "everyone") }}
+          {{ post.date | date(value = date_format) }}
+          {% if post.extra.audience %}
+            • audience—{{ post.extra.audience | default(value = "everyone") }}
+          {% endif %}
           {% for term, tags in post.taxonomies %}
             {% for tag in tags %}
           • <a href="{{ get_taxonomy_url(kind=term, name=tag) }}">{{ tag }}</a>

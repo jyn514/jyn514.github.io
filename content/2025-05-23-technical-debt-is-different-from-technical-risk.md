@@ -1,7 +1,6 @@
 ---
 title:  technical debt is different from technical risk
 date:   2025-05-23
-extra: {audience: developers}
 description: "\"technical debt\" is about updating your understanding of the program over time. \"technical risk\" is about sacrificing your ability to make changes for speed of development in the short term."
 taxonomies:
   tags:

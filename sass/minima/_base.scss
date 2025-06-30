@@ -338,6 +338,9 @@ div.all-tags > ul {
   display: inline;
   li { display: inline }
 }
+span.post-meta > a {
+  color: $grey-color;
+}
 
 /**
  * Icons

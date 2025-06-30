@@ -1,8 +1,6 @@
 ---
 title: theory building without a mentor
 date: 2025-05-24
-extra:
-  audience: developers
 description: learning how a program is intended to work is hard. here's how to do it.
 taxonomies:
   tags:

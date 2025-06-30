@@ -2,7 +2,6 @@
 aliases: ['/2019/04/29/Buffer-Overflows-and-Stacks-and-Assembly-Oh-My.html']
 title:	"Buffer Overflows and Stacks and Assembly, Oh My!"
 date:	2019-04-29
-extra: {audience: security}
 excerpt: Reverse Engineering for fun and profit
 taxonomies:
   tags:

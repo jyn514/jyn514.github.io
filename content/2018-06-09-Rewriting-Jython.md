@@ -2,7 +2,6 @@
 aliases: ['/2018/06/09/Rewriting-Jython.html']
 title:	"Rewriting Jython"
 date:	2018-06-09
-extra: {audience: developers}
 description: I got bored one day and started rewriting Jython
 taxonomies:
   tags:

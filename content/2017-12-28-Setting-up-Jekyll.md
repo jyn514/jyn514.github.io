@@ -3,7 +3,6 @@ aliases: ['/2017/12/28/Setting-up-Jekyll.html']
 title:	"Setting up Jekyll for GitHub Pages"
 date:	2017-12-28
 description:	The story of how I set up this site
-extra: {audience: developers}
 taxonomies:
   tags:
     - walkthroughs

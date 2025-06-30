@@ -2,7 +2,6 @@
 aliases: ['/2023/01/12/Bootstrapping-Rust-in-2023.html']
 title:	"Why is Rust's build system uniquely hard to use?"
 date:	2023-01-12
-extra: {audience: developers}
 description: Goals for improving Rust's build system and making it easier to understand
 taxonomies:
   tags:

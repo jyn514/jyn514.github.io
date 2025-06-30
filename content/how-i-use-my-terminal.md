@@ -1,7 +1,6 @@
 ---
 title:  how i use my terminal
 date:   2025-06-16
-extra: {audience: developers}
 description: "i have gone a little above and beyond trying to get all the features of VSCode"
 taxonomies:
   tags:

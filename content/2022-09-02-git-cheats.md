@@ -2,7 +2,6 @@
 aliases: ['/2022/09/02/git-cheats.html']
 title:	"Git cheats"
 date:	2022-09-02
-extra: {audience: developers}
 description: tips and tricks for dealing with git's horrible error messages
 taxonomies:
   tags:

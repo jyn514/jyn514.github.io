@@ -2,7 +2,6 @@
 aliases: ['/2023/12/04/How-to-maintain-an-open-source-project.html']
 title:	"How to maintain an Open Source project"
 date:	2023-12-04
-extra: {audience: developers}
 description: How to maintain a project without burning yourself out
 taxonomies:
   tags:

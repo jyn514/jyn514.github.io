@@ -13,12 +13,13 @@ dst=content/$path.md
 
 if ! [ -e "$dst" ]; then
     echo "creating new post at $(realpath "$dst")"
-    echo "---
-title:  $title
-date:   $date
-draft:  true
-#extra: {audience: everyone}
+    echo "+++
+title = \"$title\"
+date = $date
+draft = true
 #description: \"\"
+#taxonomies.tags = []
+#extra.audience = \"everyone\"
 ---
 " > "$dst"
 else
