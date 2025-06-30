@@ -11,11 +11,14 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
    width="16"
    height="16"
    viewBox="0 0 16 16"
    sodipodi:docname="icon-linkedin.svg"
    inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
   <metadata>
     <rdf:RDF>
       <cc:Work
@@ -23,7 +26,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title>LinkedIn logo</dc:title>
         <cc:license
            rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
       </cc:Work>

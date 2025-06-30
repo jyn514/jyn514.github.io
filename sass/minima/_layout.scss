@@ -46,6 +46,10 @@
     }
   }
 
+  label[for="nav-trigger"] {
+      visibility: hidden;
+  }
+
   @include media-query($on-palm) {
     position: absolute;
     top: 9px;
@@ -57,6 +61,7 @@
 
     label[for="nav-trigger"] {
       display: block;
+      visibility: visible;
       float: right;
       width: 36px;
       height: 36px;
