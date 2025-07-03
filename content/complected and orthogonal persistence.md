@@ -78,15 +78,15 @@ these forms of orthogonal persistence work on the whole OS state. you could imag
 but the rest of the OS moves on while the process is suspended: the files it accesses may have changed, the processes it was talking to over a socket may have exited. what we want is to snapshot the process state: whatever files on disk stay on disk, whatever processes it was talking to continue running. this allows you to rewind and replay the process, as if the whole thing were running in a database transaction.
 
 what do we need in order to do that?
-- a filesystem that supports atomic accesses, snapshots, and transaction restarts, such as [ZFS]
-- a runtime that supports detailed tracking and replay of syscalls, such as [rr]
-- a sandbox that prevents talking to processes that weren’t running when the target process was spawned (unless those processes are also in the sandbox and tracked with this mechanism), such as [bubblewrap]
+- a filesystem that supports atomic accesses, snapshots, and transaction restarts, such as [ZFS].
+- a runtime that supports detailed tracking and replay of syscalls, such as [rr]. this works by intercepting syscalls with [ptrace()](https://man7.org/linux/man-pages/man2/ptrace.2.html), among other mechanisms, and does not require any modifications to the program executable or source code.
+- a sandbox that prevents talking to processes that weren’t running when the target process was spawned (unless those processes are also in the sandbox and tracked with this mechanism), such as [bubblewrap].
 
 [ZFS]: https://en.wikipedia.org/wiki/ZFS#Snapshots_and_clones
 [rr]: https://rr-project.org/
 [bubblewrap]: https://github.com/containers/bubblewrap
 
-effectively, we are turning syscalls into [capabilities], where the capabilities we give out are “exactly the capabilities the process had when it spawned”.
+effectively, we are turning syscalls into [capabilities], where the capabilities we give out are “exactly the syscalls the process made last time it spawned”.
 
 [capabilities]: http://habitatchronicles.com/2017/05/what-are-capabilities/
 
