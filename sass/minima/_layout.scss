@@ -177,11 +177,17 @@
 
 .post-list {
   margin-left: 0;
-  list-style: none;
 
   > li {
     margin-bottom: $spacing-unit;
   }
+}
+
+ul.post-list {
+  list-style: none;
+}
+ol.post-list {
+  list-style-position: inside;
 }
 
 .post-meta {

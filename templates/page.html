@@ -16,17 +16,25 @@
         • audience—{{ page.extra.audience }}
       {% endif %}
       {% for term, tags in page.taxonomies %}
+        {% if term != "tags" %}{% continue %}{% endif %}
         {% for tag in tags %}
       • <a href="{{ get_taxonomy_url(kind=term, name=tag) }}">{{ tag }}</a>
         {% endfor %}
       {% endfor %}
     </p>
   </header>
+
   {% if page.draft %}
   <aside class=secret><button class=close aria-label=Close title="Click here to dismiss">
     <strong>This is a draft post.</strong>
   </button></aside>
   {% endif %}
+
+  {% for term, tags in page.taxonomies %}
+    {% if term != "computer-of-the-future" %}{% continue %}{% endif %}
+  <strong>This post is part {{ tags.0 }} of a multi-part series called <a href="/computer-of-the-future">“the computer of the next 200 years”</a>.</strong>
+  <hr>
+  {% endfor %}
 
   <div class="post-content" itemprop="articleBody">
     {{ page.content | safe }}

@@ -1,0 +1,60 @@
+{% extends "default.html" %}
+{% block content %}
+<h1 class="page-heading">The Computer Of The Next 200 Years</h1>
+
+This is a series of posts about what the future of computing could look like.
+This series is as-yet unfinished.
+
+{% set categories = ["ideas", "implementation"] %}
+{% for category in categories %}
+<hr>
+<h2>{{category}}</h2>
+
+{% if category == "ideas" %}
+<ol class="post-list" start=0>
+{% else %}
+<ol class="post-list">
+{% endif %}
+  {# sort numerically, not alphabetically #}
+  {% set_global parsed_terms = [] %}
+  {% for term in terms %}
+    {% set_global parsed_terms = parsed_terms | concat(with=term.name | int) %}
+  {% endfor %}
+  {% for n in parsed_terms | sort %}
+    {% set term = terms | filter(attribute="name", value=n | as_str) | nth(n=0) %}
+    {% if not term %} oops !!! {{name}} {%continue%}{%endif%}
+
+  {% for post in term.pages %} {# always just a single post #}
+    {% set impl_cat = category == "implementation" %}
+    {% set impl_post = post.extra.implementation is defined and post.extra.implementation %}
+    {% if impl_cat != impl_post %}{% continue %}{% endif %}
+    <li>
+    {% if post.extra.stub %}
+    <h2>{{ post.title | safe }}</h2>
+    {% else %}
+    {% set date_format = site.minima.date_format | default(value = "%b %-d, %Y") %}
+    <span class="post-meta">
+      {{ post.date | date(value = date_format) }}
+      • author—jyn
+    </span>
+
+    <h2>
+      <a class="post-link" href="{{ post.path }}">{{ post.title | safe }}</a>
+    </h2>
+    {% endif %}
+    </li>
+  {% endfor %}
+  {% if term.name == "1" and category == "ideas" %}
+  <li>
+      <span class="post-meta">
+      2023-12-11
+      • author—jade
+      </span>
+    <h2><a class="post-link" href="https://jade.fyi/blog/the-postmodern-build-system/">the postmodern build system</a></h2>
+  </li>
+  {% endif %}
+  {% endfor %}
+</ol>
+{% endfor %}
+
+{% endblock content %}

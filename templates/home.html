@@ -6,6 +6,7 @@
 
   <ul class="post-list">
     {% for post in section.pages %}
+      {% if post.extra.unlisted or post.extra.stub %}{% continue %}{% endif %}
       <li>
         {% set date_format = site.minima.date_format | default(value = "%b %-d, %Y") %}
         <span class="post-meta">
@@ -35,6 +36,7 @@
 {% set all_tags = [] %}
 {% for post in section.pages %}
   {% for term, tags in post.taxonomies %}
+      {% if term != "tags" %}{% continue %}{% endif %}
       {% for tag in tags %}
         {% set_global all_tags = all_tags | concat(with=tag) | unique %}
       {% endfor %}

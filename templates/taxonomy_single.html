@@ -1,0 +1,21 @@
+{% extends "default.html" %}
+{% block content %}
+<h1 class="page-heading">{{ term.name }}</h1>
+
+<ul class="post-list">
+  {% for post in term.pages %}
+    <li>
+      {% set date_format = site.minima.date_format | default(value = "%b %-d, %Y") %}
+      <span class="post-meta">
+        {{ post.date | date(value = date_format) }} •
+        {{ post.extra.audience | default(value = "everyone") }}
+      </span>
+
+      <h2>
+        <a class="post-link" href="{{ post.path }}">{{ post.title | safe }}</a>
+      </h2>
+    </li>
+  {% endfor %}
+</ul>
+
+{% endblock content %}

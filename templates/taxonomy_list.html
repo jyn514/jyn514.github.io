@@ -1,0 +1,16 @@
+{% extends "default.html" %}
+{% block content %}
+<h1 class="page-heading">{{ taxonomy.name }}</h1>
+
+<ul class="post-list">
+  {% for term in terms %}
+    <li>
+      <h2>
+        <a class="post-link" href="{{ term.path }}">{{ term.name | safe }}</a>
+      </h2>
+    </li>
+  {% endfor %}
+</ul>
+
+<!-- <p class="rss-subscribe">subscribe <a type="application/atom+xml" href="{{ "/atom.xml" }}">via RSS</a></p> -->
+{% endblock content %}

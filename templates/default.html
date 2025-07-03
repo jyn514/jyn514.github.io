@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-  
+
     <title>{% if page.title %}{{ page.title | striptags }}{% else %}{{ config.title | escape }}{% endif %}</title>
     <meta name="description" content="{{ page.description | default (value = config.description) | truncate (value = 160) }}">
     <meta name="author" content="jyn">
-  
+
     <link rel="alternate" type="application/atom+xml" title="{{ config.title | escape }}" href="/atom.xml">
     <link rel="icon" type="image/x-icon" href="{{ get_url(path='/favicon.jpg') }}">
     <script src="/main.js" defer></script>
@@ -34,7 +34,7 @@
                 </svg>
               </span>
             </label>
-    
+
             <div class="trigger">
               {% for section in root.subsections %}
                 {% set section = get_section(path=section) %}
@@ -42,6 +42,7 @@
                 <a class="page-link" href="{{ section.path }}">{{ section.title | escape }}</a>
                 {% endif %}
               {% endfor %}
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
             </div>
           </nav>
         {% endif %}
