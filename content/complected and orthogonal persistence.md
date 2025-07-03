@@ -71,7 +71,7 @@ orthogonal persistence is more common than you might think. some examples:
 - [hibernation](https://en.wikipedia.org/wiki/Hibernation_(computing)) (suspend to disk). first invented in 1992 for the Compaq [LTE Lite](https://en.wikipedia.org/wiki/Compaq_LTE#LTE_Lite). Windows has this on by default since Windows 8 (2012). MacOS has had it on by default since OS X 10.4 (2005).
 - virtualized hibernation in hypervisors like VirtualBox and VMWare (usually labeled "Save the machine state" or something similar)
 ## how far can we take this?
-these forms of orthogonal persistence work on the whole OS state. you could imagine a version that works on individual processes: swap the process to disk, restore it later. the kernel kinda already does this when it does scheduling.
+these forms of orthogonal persistence work on the whole OS state. you could imagine a version that works on individual processes: swap the process to disk, restore it later. the kernel kinda already does this when it does scheduling. you can replicate it in userspace with [telefork](https://thume.ca/2020/04/18/telefork-forking-a-process-onto-a-different-computer/), which even lets you spawn a process onto another machine.
 
 but the rest of the OS moves on while the process is suspended: the files it accesses may have changed, the processes it was talking to over a socket may have exited. what we want is to snapshot the process state: whatever files on disk stay on disk, whatever processes it was talking to continue running. this allows you to rewind and replay the process, as if the whole thing were running in a database transaction.
 
