@@ -10,18 +10,11 @@ taxonomies:
   tags:
     - ideas
 ---
-<!--
-## let's talk about serialization
-programs spend a lot of time serializing data. [crates.io](https://crates.io/crates/serde) shows half a *billion* downloads for serde. people write [famous posts](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) about how to write deserialization parsers. python has a [standard library module](https://docs.python.org/3/library/pickle.html) dedicated to de/serialization of arbitrary data. there are [whole frameworks][protobuf] for de/serialization that is safe across different versions of your program. i think it is fair to say that serialization is very important.
-
--->
 [protobuf]: https://protobuf.dev/
 ## persistence is hard
 say that you are writing an editor. you don't want to lose people's work so you implement an "autobackup" feature, so that people can restore their unsaved changes if the program or whole computer crashes.
 
 [implementing this is hard](https://danluu.com/file-consistency/)! the way i would do it is to serialize the data structures using something like [bincode](https://docs.rs/bincode/latest/bincode/) and then write them to an SQLite database so that i get crash-consistency. there are other approaches with different tradeoffs.
-
-<!--doing it this way has drawbacks: if two processes are editing at the same time, which version should get saved? what happens if someone else renames the file between the crash and when you try and restore the file?-->
 ## languages with persistence
 
 [PS-algol]: https://archive.cs.st-andrews.ac.uk/papers/download/ABC+83b.pdf
@@ -100,7 +93,7 @@ note how this is possible to do today, with existing technology and kernel APIs!
 tracked record/replay and transactional semantics give you really quite a lot of things. for example, here are some tools that would be easy to build on top:
 - the [“post-modern build system”](https://jade.fyi/blog/the-postmodern-build-system/#limits-of-execve-memoization)
 - [asciinema](https://asciinema.org/), but you actually run the process instead of building your own terminal emulator. this also lets you edit the recording live instead of having to re-record from scratch.
-- collaborative terminals, where you can “split” your terminal and hand a sandboxed environment of *your personal computer* to a colleague so they can help you debug an issue. this is more general than OCI containers because you don't need to spend time creating a dockerfile that reproduces the problem.
+- collaborative terminals, where you can “split” your terminal and hand a sandboxed environment of *your personal computer* to a colleague so they can help you debug an issue. this is more general than OCI containers because you don't need to spend time creating a dockerfile that reproduces the problem. this is more general than [`rr pack`](https://robert.ocallahan.org/2017/09/rr-trace-portability.html) because you can edit the program source to add printfs, or change the input you pass to it at runtime.
 - “save/undo for your terminal”, where you don’t need to add a [`--no-preserve-root`](https://www.gnu.org/software/coreutils/manual/html_node/Treating-_002f-specially.html) flag to `rm`, because the underlying filesystem can just restore a snapshot. this generalizes to any command—for example, you can build an arbitrary `git undo` command that works even if installed after the data is lost, which is [not possible today](https://blog.waleedkhan.name/git-undo/). note that this can undo by-process, not just by point-in-time, so it is strictly more general than FS snapshots.
 - query which files on disk were modified the last time you ran a command. for example you could ask “where did this `curl | sh` command install its files?”. the closest we have to this today is [`dpkg --listfiles`](https://man7.org/linux/man-pages/man1/dpkg.1.html#:~:text=listfiles), which only works for changes done by the package manager.
 
