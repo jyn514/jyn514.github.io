@@ -15,6 +15,7 @@
             • audience—{{ post.extra.audience | default(value = "everyone") }}
           {% endif %}
           {% for term, tags in post.taxonomies %}
+            {% if term != "tags" %}{% continue %}{% endif %}
             {% for tag in tags %}
           • <a href="{{ get_taxonomy_url(kind=term, name=tag) }}">{{ tag }}</a>
             {% endfor %}
