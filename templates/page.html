@@ -33,8 +33,9 @@
   {% for term, tags in page.taxonomies %}
     {% if term != "computer-of-the-future" %}{% continue %}{% endif %}
   <strong>This post is part {{ tags.0 }} of a multi-part series called <a href="/computer-of-the-future">“the computer of the next 200 years”</a>.</strong>
-    {% if not page.extra.stub %}{% continue %}{% endif %}
-  <p>This post is as-yet unfinished.</p>
+    {% if page.extra.stub %}
+    <p>This post is as-yet unfinished.</p>
+    {% endif %}
   <hr>
   {% endfor %}
 
