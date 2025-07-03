@@ -1,7 +1,7 @@
 +++
 title = "decentralized build caching"
 date = 2025-07-02
-draft = true
+#draft = true
 #description: ""
 #taxonomies.tags = []
 taxonomies.computer-of-the-future = ["5"]

@@ -1,7 +1,7 @@
 +++
 title = "capabilities, service management, and generalized erlang"
 date = 2025-07-02
-draft = true
+#draft = true
 #description: ""
 taxonomies.computer-of-the-future = ["3"]
 #taxonomies.tags = []

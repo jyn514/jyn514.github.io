@@ -1,16 +1,14 @@
 ---
 title: complected and orthogonal persistence
 date: 2025-06-30
-draft: true
+#draft: true
 description: how hard is it to save and restore program state?
-slug: complected-and-orthogonal-persistence-079cdbe0947c8ab1dc6e9c6928a1aa4990fee1689bc4ab845e7ff1a337d3247a
+slug: complected-and-orthogonal-persistence
 taxonomies:
   computer-of-the-future:
     - 1
   tags:
     - ideas
-extra:
-  unlisted: true
 ---
 <!--
 ## let's talk about serialization

@@ -1,7 +1,7 @@
 +++
 title = "the terminal of the future"
 date = 2025-07-02
-draft = true
+#draft = true
 #description: ""
 #taxonomies.tags = []
 taxonomies.computer-of-the-future = ["4"]
