@@ -71,7 +71,9 @@ orthogonal persistence is more common than you might think. some examples:
 - [hibernation](https://en.wikipedia.org/wiki/Hibernation_(computing)) (suspend to disk). first invented in 1992 for the Compaq [LTE Lite](https://en.wikipedia.org/wiki/Compaq_LTE#LTE_Lite). Windows has this on by default since Windows 8 (2012). MacOS has had it on by default since OS X 10.4 (2005).
 - virtualized hibernation in hypervisors like VirtualBox and VMWare (usually labeled "Save the machine state" or something similar)
 ## how far can we take this?
-these forms of orthogonal persistence work on the whole OS state. you could imagine a version that works on individual processes: swap the process to disk, restore it later. the kernel kinda already does this when it does scheduling. you can replicate it in userspace with [telefork](https://thume.ca/2020/04/18/telefork-forking-a-process-onto-a-different-computer/), which even lets you spawn a process onto another machine.
+these forms of orthogonal persistence work on the whole OS state. you could imagine a version that works on individual processes: swap the process to disk, restore it later. the kernel kinda already does this when it does scheduling. you can replicate it in userspace with [telefork], which even lets you spawn a process onto another machine.
+
+[telefork]: https://thume.ca/2020/04/18/telefork-forking-a-process-onto-a-different-computer/
 
 but the rest of the OS moves on while the process is suspended: the files it accesses may have changed, the processes it was talking to over a socket may have exited. what we want is to snapshot the process state: whatever files on disk stay on disk, whatever processes it was talking to continue running. this allows you to rewind and replay the process, as if the whole thing were running in a database transaction.
 
@@ -102,10 +104,20 @@ this is not an exhaustive list, just the first things on the top of my head afte
 not inherently. “turning your file system into a database“ is only as slow as submitting the query is[^1]—and that can be quite fast when the database runs locally instead of over the network; see [sled](https://github.com/spacejam/sled?tab=readme-ov-file#performance) for an example of such a DB that has had performance tuning. rr boasts [less than a 20% slowdown](https://rr-project.org/#:~:text=slowdown). bubblewrap uses the kernel’s native namespacing and to my knowledge imposes no overhead.
 
 now, the final system needs to be designed with performance in mind and then carefully optimized but, you know. that's doable.
+## does this work across versions of my program?
+kinda. there are two possible ways to implement intra-process persistence (i.e. "everything other than disk writes").
+1. take a snapshot of the memory, registers, and kernel state (e.g. file descriptors). this is how [telefork] works. this only works with a single version of the executable; any change, even LTO without changing source code, will break it.
+2. replay all syscalls done by the process. this will work across versions, as long as the program makes the same syscalls in the same order.
+
+1 is cheap if you don't have much memory usage compared to CPU time.
+2 is cheap if you don't have much CPU time compared to memory usage.
+only 2 allows you to modify the binary between saving and restoring.
+it's possible to do both for the same process, just expensive.
 ## summary
 - persisting program state is hard and basically requires implementing a database
 - persistence that does not require action from the program is called “orthogonal persistence”
-- it is possible to build orthogonal persistence for individual processes with tools that exist today
+- it is possible to build orthogonal persistence for individual processes with tools that exist today, with only moderate slowdowns depending on how granular you want to be
+- there are multiple possible ways to implement this system, with different perf/generality tradeoffs
 - such a system unlocks many kinds of tools by making them orders of magnitude easier to build
 
 many of the ideas in this post were developed in collaboration with edef. if you want to see them built, consider [sponsoring her](https://github.com/sponsors/edef1c) so she has time to work on them.
