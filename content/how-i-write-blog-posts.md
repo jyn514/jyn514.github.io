@@ -40,7 +40,7 @@ vim.api.nvim_create_user_command('AutoSave', autosave_enable,
 	{desc = "Start saving each second on change"})
 ```
 the Caddyfile is also quite simple:
-```nginx
+```Caddyfile
 subdomain.jyn.dev {
         # start with `zola serve --drafts --base-url /`
         reverse_proxy localhost:1111 {

@@ -20,7 +20,7 @@ small problem: sftp shows you a *lot* of the system state. for one thing, you ha
 so! here is how to set up a read-only sftp server which doesn't allow any other kind of access.
 
 First, add the following to `/etc/ssh/sshd_config`:
-```ssh
+```sshd
 Subsystem       sftp    internal-sftp
 Match User myuser
 	ChrootDirectory %h
