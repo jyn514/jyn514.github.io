@@ -92,13 +92,21 @@ effectively, we are turning syscalls into [capabilities], where the capabilities
 
 note how this is possible to do today, with existing technology and kernel APIs! this doesn’t require building an OS from scratch, nor rewriting all code to be in a language with tracked effects or a capability system. instead, by working at the syscall interface[^6] between the program and the kernel, we can build a highly general system that applies to all the programs you already use.
 ## “but why?”
-tracked record/replay and transactional semantics give you really quite a lot of things. for example, here are some tools that would be easy to build on top:
-- the [“post-modern build system”](https://jade.fyi/blog/the-postmodern-build-system/#limits-of-execve-memoization)
-- [asciinema](https://asciinema.org/), but you actually run the process instead of building your own terminal emulator. this also lets you edit the recording live instead of having to re-record from scratch.
+note that this involves 3 different levels of tracking, which we can think of in terms of progressive enhancement:
+1. features you can get just by recording and replaying the whole process ("tracking between processes")
+2. features you can get by replaying from a specific point in the process ("tracking within a process")
+3. features you can only get with source code changes, by allowing the process to choose where it should be restored to ("tracking that needs source code changes")
+
+the editor example i gave at the beginning refers to 3; but you can get really quite a lot of things just with 1 (tracked record/replay and transactional semantics). for example, here are some tools that would be easy to build on top:
+### needs tracking between processes
 - collaborative terminals, where you can “split” your terminal and hand a sandboxed environment of *your personal computer* to a colleague so they can help you debug an issue. this is more general than OCI containers because you don't need to spend time creating a dockerfile that reproduces the problem. this is more general than [`rr pack`](https://robert.ocallahan.org/2017/09/rr-trace-portability.html) because you can edit the program source to add printfs, or change the input you pass to it at runtime.
 - “save/undo for your terminal”, where you don’t need to add a [`--no-preserve-root`](https://www.gnu.org/software/coreutils/manual/html_node/Treating-_002f-specially.html) flag to `rm`, because the underlying filesystem can just restore a snapshot. this generalizes to any command—for example, you can build an arbitrary `git undo` command that works even if installed after the data is lost, which is [not possible today](https://blog.waleedkhan.name/git-undo/). note that this can undo by-process, not just by point-in-time, so it is strictly more general than FS snapshots.
-- “save/undo for your program”, where editors and games can take advantage of cheap snapshots to use the operating system's restore mechanism instead of building their own.
 - query which files on disk were modified the last time you ran a command. for example you could ask “where did this `curl | sh` command install its files?”. the closest we have to this today is [`dpkg --listfiles`](https://man7.org/linux/man-pages/man1/dpkg.1.html#:~:text=listfiles), which only works for changes done by the package manager.
+### needs tracking within a process
+- [asciinema](https://asciinema.org/), but you actually run the process instead of building your own terminal emulator. this also lets you edit the recording live instead of having to re-record from scratch.
+- the [“post-modern build system”](https://jade.fyi/blog/the-postmodern-build-system/#limits-of-execve-memoization) (also needs a [salsa](https://salsa-rs.netlify.app/)-like [red-green system](https://rustc-dev-guide.rust-lang.org/queries/incremental-compilation-in-detail.html#improving-accuracy-the-red-green-algorithm))
+### needs source code changes
+- “save/undo for your program”, where editors and games can take advantage of cheap snapshots to use the operating system's restore mechanism instead of building their own.
 
 this is not an exhaustive list, just the first things on the top of my head after a couple days of thinking about it. what makes this orthogonal persistence system so useful is that all these tools are near-trivial to build on top: most of them could be done in shell scripts or a short python script, instead of needing a team of developers and a year.
 ## isn’t this horribly slow?
