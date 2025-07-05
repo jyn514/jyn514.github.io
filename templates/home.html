@@ -1,6 +1,6 @@
 {% extends "default.html" %}
 {% block content %}
-<div class="home">
+<nav class="home">
 
   <h1 class="page-heading">{{ section.title }}</h1>
 
@@ -44,11 +44,11 @@
   {% endfor %}
 {% endfor %}
 
-<div class=all-tags>all tags:<ul>
+<nav class=all-tags>all tags:<ul>
 {% for tag in all_tags | sort %}
 <li><a href="{{ get_taxonomy_url(kind="tags", name=tag) }}">{{ tag }}</a></li>
 {% endfor %}
 </ul></div>
 
-</div>
+</nav>
 {% endblock content %}
