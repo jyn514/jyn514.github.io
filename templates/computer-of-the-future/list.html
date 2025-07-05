@@ -5,16 +5,12 @@
 This is a series of posts about what the future of computing could look like.
 This series is as-yet unfinished.
 
-{% set categories = ["ideas", "implementation"] %}
+{% set categories = ["principles", "tools", "implementation"] %}
 {% for category in categories %}
 <hr>
 <h2>{{category}}</h2>
 
-{% if category == "ideas" %}
-<ol class="post-list" start=0>
-{% else %}
 <ol class="post-list">
-{% endif %}
   {# sort numerically, not alphabetically #}
   {% set_global parsed_terms = [] %}
   {% for term in terms %}
@@ -25,9 +21,8 @@ This series is as-yet unfinished.
     {% if not term %} oops !!! {{name}} {%continue%}{%endif%}
 
   {% for post in term.pages %} {# always just a single post #}
-    {% set impl_cat = category == "implementation" %}
-    {% set impl_post = post.extra.implementation is defined and post.extra.implementation %}
-    {% if impl_cat != impl_post %}{% continue %}{% endif %}
+  {% if not post.extra.category %}oops!! {{post.title}} doesn't have a category{% continue %}{% endif %}
+  {% if post.extra.category != category %}{% continue %}{% endif %}
     <li>
     {% if post.extra.stub %}
     <h2>{{ post.title | safe }}</h2>
@@ -44,7 +39,7 @@ This series is as-yet unfinished.
     {% endif %}
     </li>
   {% endfor %}
-  {% if term.name == "1" and category == "ideas" %}
+  {% if term.name == "1" and category == "tools" %}
   <li>
       <span class="post-meta">
       2023-12-11

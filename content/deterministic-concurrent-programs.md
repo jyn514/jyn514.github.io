@@ -8,6 +8,6 @@ taxonomies.computer-of-the-future = ["1"]
 #extra.audience = "everyone"
 #extra.unlisted = true
 extra.stub = true
-extra.implementation = true
+extra.category = "implementation"
 +++
 

@@ -9,6 +9,8 @@ taxonomies:
     - 1
   tags:
     - ideas
+extra:
+    category: tools
 ---
 [protobuf]: https://protobuf.dev/
 ## persistence is hard
