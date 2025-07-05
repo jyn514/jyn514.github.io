@@ -21,7 +21,8 @@ draft: true
 #taxonomies:
 #  tags: []
 #  computer-of-the-future: [\"0\"]
-#extra:
+extra:
+  draft: true
 #  audience: \"everyone\"
 #  unlisted: true
 #  stub: true

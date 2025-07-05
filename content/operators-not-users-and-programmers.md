@@ -5,6 +5,8 @@ date = 2025-07-02
 #description: ""
 #taxonomies.tags = []
 taxonomies.computer-of-the-future = ["0"]
+extra.category = "principles"
+extra.draft = true
 #extra.audience = "everyone"
 #extra.unlisted = true
 extra.stub = true

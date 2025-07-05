@@ -5,21 +5,31 @@
 This is a series of posts about what the future of computing could look like.
 This series is as-yet unfinished.
 
+{# sort numerically, not alphabetically #}
+{% set_global parsed_terms = [] %}
+{% for term in terms %}
+  {% set_global parsed_terms = parsed_terms | concat(with=term.name | int) %}
+{% endfor %}
+{% set parsed_terms = parsed_terms | sort %}
+
 {% set categories = ["principles", "tools", "implementation"] %}
 {% for category in categories %}
 <hr>
 <h2>{{category}}</h2>
 
-<ol class="post-list">
-  {# sort numerically, not alphabetically #}
-  {% set_global parsed_terms = [] %}
-  {% for term in terms %}
-    {% set_global parsed_terms = parsed_terms | concat(with=term.name | int) %}
-  {% endfor %}
-  {% for n in parsed_terms | sort %}
+{% for n in parsed_terms %}
+{# {% set term = terms | filter(attribute="terms[0].category", value=category | as_str) | nth(n=0) %} #}
     {% set term = terms | filter(attribute="name", value=n | as_str) | nth(n=0) %}
-    {% if not term %} oops !!! {{name}} {%continue%}{%endif%}
+    {% if term.pages[0].extra.category == category %}{% set_global first_post = n %}{% break %}{% endif %}
+{% endfor %}
 
+{# {% set posts_in_cat = terms | filter(attribute="pages[0].category", value=category) %} #}
+{# {% set first_post = terms | filter(attribute="name", value=n | as_str) | nth(n=0) %} #}
+
+<ol class="post-list" start="{{first_post}}">
+  {% for n in parsed_terms %}
+    {% set term = terms | filter(attribute="name", value=n | as_str) | nth(n=0) %}
+  {% if not term %} oops !!! {{name}} {%continue%}{%endif%}
   {% for post in term.pages %} {# always just a single post #}
   {% if not post.extra.category %}oops!! {{post.title}} doesn't have a category{% continue %}{% endif %}
   {% if post.extra.category != category %}{% continue %}{% endif %}
@@ -39,7 +49,7 @@ This series is as-yet unfinished.
     {% endif %}
     </li>
   {% endfor %}
-  {% if term.name == "1" and category == "tools" %}
+  {% if term.name == "3" and category == "tools" %}
   <li>
       <span class="post-meta">
       2023-12-11
