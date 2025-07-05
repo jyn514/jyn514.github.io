@@ -337,7 +337,8 @@ a.zola-anchor {
 div.all-tags > ul {
   margin-left: inherit;
   display: inline;
-  li { display: inline }
+  li { display: inline list-item }
+  li:first-child { display: inline }
 }
 span.post-meta > a {
   color: $grey-color;
