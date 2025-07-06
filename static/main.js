@@ -3,7 +3,6 @@ function run() {
   addTimestamps();
   closeDraftPopup();
   expandDetails();
-  fixHeaderLink();
 }
 
 function addFootnoteLine() {
@@ -56,12 +55,6 @@ function expandDetails() {
     }
   }
   button.click();
-}
-
-function fixHeaderLink() {
-  for (const elem of document.querySelectorAll("a.zola-anchor")) {
-    elem.innerText = "¶";
-  }
 }
 
 // The DOMContentLoaded event fires when the initial HTML

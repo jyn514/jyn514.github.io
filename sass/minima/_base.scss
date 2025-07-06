@@ -112,6 +112,8 @@ a {
     }
   }
 }
+a.zola-anchor { visibility: hidden; }
+a.zola-anchor::before { content: "¶"; visibility: visible; };
 
 
 /**
