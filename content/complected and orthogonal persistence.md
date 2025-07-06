@@ -133,6 +133,47 @@ it's possible to do both for the same process, just expensive.
 
 many of the ideas in this post were developed in collaboration with edef. if you want to see them built, consider [sponsoring her](https://github.com/sponsors/edef1c) so she has time to work on them.
 
+---
+## bibliography
+
+- [Dan Luu, "Files are hard"](https://danluu.com/file-consistency/)
+- [Ty Overby, Zoey Riordan, Victor Koenders, *bincode*](https://docs.rs/bincode/latest/bincode/)
+- [Atkinson, M.P., Bailey, P.J., Chisholm, K.J., Cockshott, W.P. & Morrison, R. “PS-algol: A
+Language for Persistent Programming”. In Proc. 10th Australian National Computer
+Conference, Melbourne, Australia (1983) pp 70-79.](https://archive.cs.st-andrews.ac.uk/papers/download/ABC+83b.pdf)
+- [Cal Paterson, "An oral history of Bank Python"](https://calpaterson.com/bank-python.html)
+- [Hugo Landau, "IBM i: An Unofficial Introduction"](https://www.devever.net/~hl/f/as400guide.pdf)
+- [Google LLC, "Protocol Buffers"](https://protobuf.dev/)
+- [Google LLC, "FlatBuffers Docs"](https://flatbuffers.dev/)
+- [Rich Hickey, "Simple Made Easy"](https://www.infoq.com/presentations/Simple-Made-Easy/)
+- [Tristan Hume, "Teleforking a process onto a different computer!"](https://thume.ca/2020/04/18/telefork-forking-a-process-onto-a-different-computer/)
+- [Robert O’Callahan et al., "RR"](https://rr-project.org/)
+- [Simon McVittie et al., "bubblewrap"](https://github.com/containers/bubblewrap)
+- [Chip Morningstar and F. Randall Farmer, "What Are Capabilities?"](http://habitatchronicles.com/2017/05/what-are-capabilities/)
+- [Robert O'Callahan, "rr Trace Portability"](https://robert.ocallahan.org/2017/09/rr-trace-portability.html)
+- [Free Software Foundation, Inc., "GNU Coreutils"](https://www.gnu.org/software/coreutils/manual/html_node/Treating-_002f-specially.html)
+- [Waleed Khan, "git undo: We can do better"](https://blog.waleedkhan.name/git-undo/)
+- [Marcin Kulik, "Record and share your terminal sessions, the simple way."](https://asciinema.org/)
+- [Jade Lovelace, "The postmodern build system"](https://jade.fyi/blog/the-postmodern-build-system/#limits-of-execve-memoization)
+- [Salsa developrs, "About salsa"](https://salsa-rs.netlify.app/)
+- [The Rust Project contributors, "Incremental compilation in detail"](https://rustc-dev-guide.rust-lang.org/queries/incremental-compilation-in-detail.html#improving-accuracy-the-red-green-algorithm)
+- [Tyler Neely, "sled - it's all downhill from here!!!"](https://github.com/spacejam/sled?tab=readme-ov-file#performance)
+- [edef](https://github.com/sponsors/edef1c)
+- [The PostgreSQL Global Development Group, "Reliability and the Write-Ahead Log: Write-Ahead Logging (WAL)"](https://www.postgresql.org/docs/current/wal-intro.html#WAL-INTRO)
+- [Yvan Scher, "7 cobol examples with explanations."](https://medium.com/@yvanscher/7-cobol-examples-with-explanations-ae1784b4d576)
+- [Robert N. M. Watson et al., "CTSRD – Rethinking the hardware-software interface for security"](https://www.cl.cam.ac.uk/research/security/ctsrd/)
+- [WebAssembly Working Group, "WebAssembly"](https://webassembly.org/)
+- [Rob Pike, "Systems Software Research is Irrelevant"](https://doc.cat-v.org/bell_labs/utah2000/utah2000.html)
+- [System Calls Manual, "ptrace(2)"](https://man7.org/linux/man-pages/man2/ptrace.2.html)
+- [dpkg suite, "dpkg(1)"](https://man7.org/linux/man-pages/man1/dpkg.1.html#:~:text=listfiles)
+- [Wikipedia, "MUMPS"](https://en.wikipedia.org/wiki/MUMPS)
+- [Wikipedia, "orthogonal persistence"](https://en.wikipedia.org/wiki/Persistence_(computer_science)#Orthogonal_or_transparent_persistence)
+- [Wikipedia, "IBM i"](https://en.wikipedia.org/wiki/IBM_i#Technology_Independent_Machine_Interface_(TIMI))
+- [Wikipedia, "ZFS"](https://en.wikipedia.org/wiki/ZFS#Snapshots_and_clones)
+- [Wikipedia, "Orthogonality"](https://en.wikipedia.org/wiki/Orthogonality#Computer_science)
+- [Wikipedia, "Hibernation (computing)"](https://en.wikipedia.org/wiki/Hibernation_(computing))
+- [Wikipedia, "Compaq LTE Lite"](https://en.wikipedia.org/wiki/Compaq_LTE#LTE_Lite)
+
 [^1]: one might think that you have to flush each write to disk before returning from write() in order to preserve ACID semantics. not so; this is exactly the problem that a [write-ahead-log](https://www.postgresql.org/docs/current/wal-intro.html#WAL-INTRO) fixes.
 
 [^3]: credit [@yvanscher](https://medium.com/@yvanscher/7-cobol-examples-with-explanations-ae1784b4d576)

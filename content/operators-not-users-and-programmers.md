@@ -76,6 +76,21 @@ so, we want the following from a malleable system:
 - and of course, performance.
 
 this is a tall order! the rest of this series is dedicated to ideas about how to make this possible.
+
+---
+## bibliography
+
+- [Felienne Hermans, "Proposition #1"](https://www.felienne.com/archives/2453)
+- [Rik de Kort, "Vine-like Systems and Malleability"](https://nothingisnttrivial.com/vines.html)
+- [Rik de Kort, "Technical and functional risk"](https://nothingisnttrivial.com/technical-functional.html)
+- [Stanislav Datskovskiy, "Seven Laws of Sane Personal Computing"](http://www.loper-os.org/?p=284)
+- [Brian M. Kelly, *The AS/400 and IBM i RPG Programming Guide*](https://www.barnesandnoble.com/w/the-as-400-ibm-i-rpg-rpgiv-programming-guide-brian-w-kelly/1124946681)
+- [Clay Shirky, "Situated Software"](https://gwern.net/doc/technology/2004-03-30-shirky-situatedsoftware.html)
+- [Cal Peterson, "An oral history of Bank Python"](https://calpaterson.com/bank-python.html)
+- [Hillel Wayne, "What engineering can teach (and learn from) us"](https://www.hillelwayne.com/post/what-we-can-learn/#version-control)
+- [Sonic Pi](https://sonic-pi.net/)
+- ["Jujutsu—a version control system"](https://jj-vcs.github.io/jj/latest/working-copy/)
+---
 ## P.S: what will people build with this power?
 i consulted a local friend of mine, a polisci major, and asked him what he would build if he were able to program. he said a penguin that walks across the screen, followed by a puffin friend for him. so, here's to penguins 🐧
 ![penguin](/900.jpg)
