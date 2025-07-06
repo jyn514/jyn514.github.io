@@ -1,17 +1,12 @@
 ---
 title: "sorry for the rss screwup"
 date: 2025-07-06
-draft: true
 #description: ""
 #taxonomies:
 #  tags: []
 #  computer-of-the-future: ["0"]
 extra:
-  draft: true
   rss_only: true
-#  audience: "everyone"
-#  unlisted: true
-#  stub: true
 ---
 a couple days ago i pushed about 10 empty posts at once to everyone subscribed to my RSS feed. oops. sorry about that.
 
