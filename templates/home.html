@@ -28,9 +28,6 @@
         </h2>
       </li>
     {% endfor %}
-    {% for page in section.assets %}
-    <li>{{page}}</li>
-    {% endfor %}
   </ul>
 
   <p class="rss-subscribe">subscribe <a type="application/atom+xml" href="{{ "/atom.xml" }}">via RSS</a></p>
@@ -45,6 +42,7 @@
   {% endfor %}
 {% endfor %}
 
+{% if all_tags %}
 <nav class=all-tags>all tags:<ul>
 {% for tag in all_tags | sort %}
 <li><a href="{{ get_taxonomy_url(kind="tags", name=tag) }}">{{ tag }}</a></li>
@@ -52,4 +50,5 @@
 </ul></div>
 
 </nav>
+{%endif%}
 {% endblock content %}

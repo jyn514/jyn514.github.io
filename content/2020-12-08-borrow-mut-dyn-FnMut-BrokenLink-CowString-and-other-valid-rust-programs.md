@@ -1,6 +1,6 @@
 ---
 aliases: ['/2020/12/08/borrow-mut-dyn-FnMut-BrokenLink-CowString-and-other-valid-rust-programs.html']
-title:	"<pre><code>&'borrow mut dyn FnMut(BrokenLink<'input>) -> CowStr<'input></code></pre> and other valid rust programs"
+title:	"<pre><code>&amp;'borrow mut dyn FnMut(BrokenLink&lt;'input&gt;) -> CowStr&lt;'input&gt;</code></pre> and other valid rust programs"
 date:	2020-12-08
 description: Why HRTB are my least-favorite part of Rust
 taxonomies:
