@@ -7,6 +7,7 @@
   <ul class="post-list">
     {% for post in section.pages %}
       {% if post.extra.unlisted or post.extra.stub %}{% continue %}{% endif %}
+      {% if post.extra.rss_only %}{% continue %}{% endif %}
       <li>
         {% set date_format = site.minima.date_format | default(value = "%b %-d, %Y") %}
         <span class="post-meta">
