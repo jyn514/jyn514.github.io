@@ -7,14 +7,6 @@
     <div class="footer-col-wrapper">
       <div class="footer-col footer-col-1">
         <ul class="contact-list">
-          <!--
-          <li>
-            {% if config.author %}
-              {{ config.author | escape }}
-            {% else %}
-              {{ config.title | escape }}
-            {% endif %}
-            </li>-->
             {% if config.extra.email %}
             <li><a href="mailto:{{ config.extra.email }}">{{ config.extra.email }}</a></li>
             {% endif %}
