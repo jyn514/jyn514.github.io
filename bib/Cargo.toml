@@ -1,0 +1,12 @@
+[package]
+name = "bib"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "bib"
+path = "main.rs"
+
+[dependencies]
+anyhow = { version = "1.0.98", features = ["backtrace"] }
+pulldown-cmark = "0.13.0"
