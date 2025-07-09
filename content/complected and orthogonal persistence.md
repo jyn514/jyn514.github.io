@@ -13,6 +13,7 @@ extra:
     category: tools
 ---
 [protobuf]: https://protobuf.dev/
+> _**Everything Not Saved Will Be Lost**_—Ancient Nintendo Proverb
 ## persistence is hard
 say that you are writing an editor. you don't want to lose people's work so you implement an "autobackup" feature, so that people can restore their unsaved changes if the program or whole computer crashes.
 
