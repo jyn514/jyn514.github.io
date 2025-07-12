@@ -1,6 +1,6 @@
 ---
 title: “high level” languages are easier to optimize
-date: 2025-07-11
+date: 2025-07-12
 description: exposing raw pointers make the optimizer’s job horribly hard. high level languages can constrain your program, making more optimizations sound.
 taxonomies:
   tags:
