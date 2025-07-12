@@ -36,7 +36,7 @@ next time you hit a missed optimization, ask yourself: why was this hard for the
 
 [^1]: also, they require doing PGO ahead of time instead of collecting info dynamically at runtime. but i haven’t found any benchmarks showing Java/luaJIT programs that are faster than equivalent C, so i won’t claim that JIT is inherently faster.
 
-[^2]: this is true for all of C, C++, and Rust (and to some extent Fortran, but Fortran [does not require alias analysis](https://beza1e1.tuxen.de/articles/faster_than_C.html)).
+[^2]: this is true for all of C, C++, and unsafe Rust (and to some extent Fortran, but Fortran [does not require alias analysis](https://beza1e1.tuxen.de/articles/faster_than_C.html)).
 
 [^3]: in fact such a meta-language already exists, it’s called XML. XML is not a good language for programming in though.
 
