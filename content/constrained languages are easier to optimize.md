@@ -1,5 +1,5 @@
 ---
-title: “high level” languages are easier to optimize
+title: constrained languages are easier to optimize
 date: 2025-07-12
 description: exposing raw pointers make the optimizer’s job horribly hard. high level languages can constrain your program, making more optimizations sound.
 taxonomies:
@@ -25,7 +25,7 @@ there are various kinds of memory optimizations that are only possible if you ha
 ## what does a faster general purpose language look like
 well, Rust is a good step in the right direction: raw pointers are opt-in with `unsafe`; Iterators support functional paradigms that allow removing bounds checks and [fusing stream-like operations](https://ntietz.com/blog/rusts-iterators-optimize-footgun/); and libraries like [rayon](https://docs.rs/rayon/latest/rayon/) make it much easier to do multi-threaded compilation.
 
-but i think this is in some sense the wrong question. we should not be asking “what language can i use everywhere for every purpose”; we should build meta-languages that allow you to easily use the right tool for the job. <!-- TODO: link to systems thinking post -->  <!-- TODO: link to composable compilers -->
+but i think this is in some sense the wrong question. we should not be asking “what language can i use everywhere for every purpose”; we should build meta-languages that allow you to easily use the right tool for the job. this is already true for regular expressions and query languages; let’s go further. i want inline futhark; inline CSS selectors; inline datalog; ffi between python and C that’s trivially easy. the easier we make it to interop, the easier it becomes to pick the right tool for the job. <!-- TODO: link to systems thinking post -->  <!-- TODO: link to composable compilers -->
 
 next time you hit a missed optimization, ask yourself: why was this hard for the compiler? can i imagine a language where optimizing this is easier?
 
