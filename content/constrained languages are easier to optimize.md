@@ -8,7 +8,6 @@ taxonomies:
     - compilers
 ---
 ## jyn, what the fuck are you talking about
-
 a recurring problem in modern “low-level” languages[^2] is that they are hard to optimize. they [do not reflect the hardware](https://queue.acm.org/detail.cfm?id=3212479), they require doing [complex alias analysis](https://www.ralfj.de/blog/2018/07/24/pointers-and-bytes.html), and they [constantly allocate and deallocate memory](https://medium.com/@jbyj/my-javascript-is-faster-than-your-rust-5f98fe5db1bf). [^1] they looked at [the structure/expressiveness tradeoff](https://buttondown.com/hillelwayne/archive/the-capability-tractability-tradeoff/) and consistently chose expressiveness.
 ## what does a faster language look like
 consider this paper on [stream fusion in Haskell](https://www.cs.tufts.edu/~nr/cs257/archive/duncan-coutts/stream-fusion.pdf). this takes a series of nested loops, each of which logically allocate an array equal in size to the input, and optimizes them down to constant space using unboxed integers. doing the same with C is inherently less general because the optimizing compiler must first prove that none of the pointers involved alias each other. in fact, optimizations are so much easier to get right in Haskell that [GHC exposes a mechanism for users to define them](https://wiki.haskell.org/GHC/Using_rules)! these optimizations are possible because of [referential transparency]—the compiler statically knows whether an expression can have a side effect.
@@ -42,4 +41,4 @@ next time you hit a missed optimization, ask yourself: why was this hard for the
 
 [^3]: in fact such a meta-language already exists, it’s called XML. XML is not a good language for programming in though.
 
-[^4]: true in the general case, but not always in practice. In Go and Java, the compiler needs to do escape analysis to know whether a variable can be unboxed, but GHC has referential transparency and lazy evaluation, which makes it easier to avoid boxed representations.
+[^4]: true in the general case, but not always in practice. in Go and Java, the compiler needs to do escape analysis to know whether a variable can be unboxed. in Haskell, the situation is more complicated because of lazy evaluation; see [Alexis King on the GHC strictness analyzer](https://youtu.be/XiTO1EGKrhE?si=z1IqPD4KdEkqcYd9) for more info.
