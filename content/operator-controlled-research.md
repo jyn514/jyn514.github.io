@@ -1,7 +1,6 @@
 ---
 title: "operator controlled research"
 date: 2025-07-05
-draft: true
 #description: ""
 taxonomies:
 #  tags: []

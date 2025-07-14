@@ -1,7 +1,6 @@
 ---
 title: "composable compilers"
 date: 2025-07-13
-draft: true
 #description: ""
 taxonomies:
 #  tags: []
