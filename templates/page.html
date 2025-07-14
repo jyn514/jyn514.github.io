@@ -1,10 +1,11 @@
+{% import "macros.html" as macros %}
 {% extends "default.html" %}
 
 {% block content %}
 <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title" itemprop="name headline">{{ page.title | safe }}</h1>
+		<h1 {%if page.description%}title="{{page.description}}"{%endif%} class="post-title" itemprop="name headline">{{ page.title | safe }}</h1>
     <p class="post-meta">
       <time datetime="{{ page.date }}" itemprop="datePublished">
         {{ page.date }}

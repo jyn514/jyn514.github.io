@@ -24,7 +24,7 @@
         </span>
 
         <h2>
-          <a class="post-link" href="{{ post.path }}">{{ post.title | safe }}</a>
+          <a {%if post.description%}title="{{post.description}}"{%endif%} class="post-link" href="{{ post.path }}">{{ post.title | safe }}</a>
         </h2>
       </li>
     {% endfor %}
