@@ -1,0 +1,25 @@
+{%- macro toc(toc, depth=2, start=true) %}
+{% if start %}
+<div class=toc-container><div class="toc-content">
+	<details><summary>Table of contents</summary>
+	{% endif %}
+<ol class=toc>
+{%- for heading in toc %}
+	<li>
+		<a href="{{ heading.permalink | safe }}">{{ heading.title }}</a>
+		{% if heading.children and depth > 1 -%}
+			{{ self::toc(toc=heading.children, depth=depth - 1, start=false) }}
+		{%- endif %}
+	</li>
+{%- endfor %}
+		</ol>{% if start %}</details></div></div>{%endif%}
+{%- endmacro %}
+
+{#
+{%- macro format_content(resource) %}
+	{%- set content = resource.content %}
+	{%- if content is containing("<!-- toc -->") %}
+		{%- set content = content | replace(from="<!-- toc -->", to=self::toc(toc=resource.toc, depth=resource.extra.toc_depth | default(value=2))) %}
+	{%- endif -%}
+{%- endmacro %}
+#}
