@@ -1,7 +1,6 @@
 ---
 title: "generality through systems thinking"
 date: 2025-07-04
-draft: true
 description: "our programs have been stuck in a box for a long time. we can escape it."
 taxonomies:
  tags: ["ideas"]
