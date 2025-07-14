@@ -1,7 +1,7 @@
 use{String as Str,Some as S,println as pr,unimplemented as die,matches as m,Iterator as I};
 use{Option as O,std::{fs,fs::File as F,collections::BTreeMap,io::Write,iter::Peekable as Pk}};
 use pulldown_cmark::{Event as E,Options as PO,Parser as P,Tag as T,TagEnd as TE,LinkType as K};
-type R<O=()>=anyhow::Result<O>;type M=BTreeMap<Str,Str>;const L:&str="links.txt";
+type R<O=()>=anyhow::Result<O>;type M=BTreeMap<Str,Str>;const L:&str="links.bin";
 fn load()->R<M>{Ok(fs::read_to_string(L)?.lines().flat_map(|l|{
 	let(k,v)=l.split_once('\0')?;S((k.into(),v.into()))
 }).collect())}
