@@ -6,7 +6,7 @@ description: how hard is it to save and restore program state?
 slug: complected-and-orthogonal-persistence
 taxonomies:
   computer-of-the-future:
-    - 3
+    - 4
   tags:
     - ideas
 extra:

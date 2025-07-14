@@ -1,15 +1,13 @@
 ---
 title: "you are in a box"
 date: 2025-07-13
-draft: true
 description: "your data is trapped inside the box that is your program. you can only see what the program author exposes."
 taxonomies:
  tags: ["ideas"]
  computer-of-the-future: ["1"]
 extra:
-  draft: true
   category: "principles"
-  toc: true
+  toc: 3
 #  audience: "everyone"
 #  unlisted: true
 #  stub: true
@@ -49,6 +47,7 @@ the last "internal" way to talk to languages is through a "foreign function inte
 i won't talk too much more about this—the work i'm aware of in this area is mostly around [WASM](https://webassembly.org/) and [WASM Components](https://component-model.bytecodealliance.org/), and there are also some efforts to [raise the baseline for ABI](https://github.com/rust-lang/rfcs/pull/3470) above the C level.
 <!--for instance, take the Go language. Go has many strengths—a performant green threads runtime, excellent devtools, static binaries. in exchange, you are locked into the Go ecosystem. unlike other languages (Python, Rust, JS), calls between Go and other languages are [hard](https://pkg.go.dev/cmd/cgo#hdr-Passing_pointers) and have a [high performance overhead](), which means that most libraries you might want to use have to be rewritten into Go. Compare this to, for example, Lua, which is intentionally designed to be easy to embed into larger applications due to its small language size and minimal runtime requirements.-->
 ### IPC
+#### Unix shells
 another approach is to compose tools. the traditional way to do this is to have a shell that allows you to freely compose programs with IPC. this does unlock a lot of freedom! IPC allows programs to communicate across different languages, different ABIs, and different user-facing APIs. it also unlocks 'ad-hoc' programs, which can be thought of as [situated software](https://gwern.net/doc/technology/2004-03-30-shirky-situatedsoftware.html) for developers themselves. consider for example the following shell pipeline:
 ```bash
 git verify-pack -v \
@@ -65,8 +64,9 @@ this [shows the 10 largest files in the git history for the current repository](
 
 the equivalent in a programming language without spawning a subprocess would be very verbose; not only that, it would require a library for the git operations in each language, bringing back the FFI issues from before (not to mention the hard work designing "cut points" for the API interface[^1]). this shell program can be written, concisely, using only tools that already exist.
 
+note though that the data flow here is a DAG: pipes are one-way, and the CLI arguments are evaluated before the new program is ever spawned. as a result, it’s not possible to do any kind of content negotiation (other than the programmer hard-coding it with with CLI args; for example tools commonly have `--format=json`).
+
 the downside of this approach is that the interface is completely unstructured; programs work on raw bytes, and there is no common interface. it also doesn't work if the program is interactive, unless the program deliberately exposes a way to query a running server (e.g. `tmux list-panes` or `nvim --remote`). let's talk about both of those.
-<!--attempts to do this rely on IPC or RPC, but these are limited because they still require “cut points” to be determined by the program itself, which is a very hard problem and requires taste[^1] that many people don’t have.-->
 #### structured IPC
 [powershell](https://learn.microsoft.com/en-us/powershell/scripting/lang-spec/chapter-04?view=powershell-7.5), and more recently, [nushell](https://www.nushell.sh/book/types_of_data.html), extend traditional unix pipelines with structured data and a typesystem. they have mechanisms for parsing arbitrary text into native types, and helper functions for common data formats.
 
@@ -74,8 +74,9 @@ this is really good! i think it is the first major innovation we have seen in th
 - there is no interop between powershell and nushell.
 - there is no protocol for programs to self-describe their output in a schema, so each program's output has to be special-cased by each shell.
 	- powershell side-steps this by [building on the .NET runtime](https://learn.microsoft.com/en-us/powershell/scripting/overview?view=powershell-7.5#scripting-language), and having native support for programs which emit .NET objects in their [output stream](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_output_streams?view=powershell-7.5). but this doesn't generalize to programs that don't run on the [CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr).
+- there is no stability guarantee between versions of a program. even tools with semi-structured JSON output are free to change the structure of the JSON, breaking whatever code parses it.
 
-and it is very hard to fix these limitations because there is no "out-of-band" communication channel that programs could use to emit a schema; the closest you could get is a "standardized file descriptor number", but that will lock out any program that happens to already be using that FD.
+and it is very hard to fix these limitations because there is no "out-of-band" communication channel that programs could use to emit a schema; the closest you could get is a "standardized file descriptor number", but that will lock out any program that happens to already be using that FD. we have limited kinds of reflection in the form of shell completion scripts, but they're not standardized: there's not a standard for the shell to query the program, and there's not a standard for the format the program returns. the CLI framework inside the program often *does* have a schema and reflection capabilities, but they're discarded the second you go over an IPC boundary.
 #### RPC
 how do you get a schema? well, you establish in-band communication. RPC is theoretically about "remote" procedure calls, but it's just as often used for local calls. the thing that really distinguishes it is that it's in-band: you have a defined interface that emits structured information.
 
@@ -83,7 +84,7 @@ RPC works really quite well! there are frameworks for [forwards- and backwards-c
 
 the main downside is that it is a lot of work to add to your program. you have to extensively modify your code to fit it into the shape the framework expects, and to keep it performant you sometimes even have to modify the in-memory representation of your data structures so they can live in a contiguous buffer. you can avoid these problems, but only by giving up performance when deserializing (e.g. by parsing JSON at runtime).
 ## you are trapped in a box
-all these [limitations](/operators-not-users-and-programmers#the-user-programmer-distinction) are because [programs are a prison](https://web.archive.org/web/20210121181531/https://djrobstep.com/posts/programs-are-a-prison). your data is trapped inside the box that is your program. the commonality between all these limitations is that they require work from the program developer, and without that work you're stuck.
+all these [limitations](/operators-not-users-and-programmers#the-user-programmer-distinction) are because [programs are a prison](https://web.archive.org/web/20210121181531/https://djrobstep.com/posts/programs-are-a-prison). your data is trapped inside the box that is your program. the commonality between all these limitations is that they require work from the program developer, and without that work you're stuck. even the data that leaves the program has to go through the narrow entrances and exits of the box, and [anything that doesn't fit is discarded](https://siderea.dreamwidth.org/1540620.html).
 
 some languages try to make the box bigger—interop between Java, Kotlin, and Clojure is comparatively quite easy because they all run on the JVM. but at the end of the day the JVM is another box; getting a non-JVM language to talk to it is hard.
 
@@ -91,32 +92,35 @@ some languages try to make the box extensible—LISPs, and especially Racket, tr
 
 some tools try to give you individual features—smalltalk gets you orthogonal persistence; pluto.jl gets you a “terminal of the future”; rustc gets you sub-process incremental builds. but all those features are inside a box.
 
+often, tools don’t even try. vendor lock in, subtle or otherwise, is everywhere around us. tools with this strategy tend to be the largest, since they have both the biggest budget and the greatest incentive to prevent you from switching tools.
+
+and always, always, always, you are at the mercy of the program author.
+
 in my next post, i will discuss how we can escape this box.
 
 ---
 ## bibliography
 
-- [D. R. MacIver, "This is important"](https://drmaciver.substack.com/i/145700143/you-are-in-a-box)
-- [Wikipedia, "Zawinski’s Law of Software Envelopment"](https://en.wikipedia.org/wiki/Jamie_Zawinski)
-- [Graydon Hoare, "Rust 2019 and beyond: limits to (some) growth."](https://graydon2.dreamwidth.org/263429.html)
-- [Rich Hickey, "Simple Made Easy"](https://youtu.be/SxdOUGdseq4?si=X9OZ975hwwzZOxpo&t=346)
-- [Vivek Panyam, "Parsing an undocumented file format"](https://blog.vivekpanyam.com/parsing-an-undocumented-file-format)
-- [The Khronos® Group Inc, "Vulcan Documentation: What is SPIR-V"](https://docs.vulkan.org/guide/latest/what_is_spirv.html)
-- [Aria Desires, "C Isn't A Language Anymore"](https://faultlore.com/blah/c-isnt-a-language/)
-- [Google LLC, "Standard library: cmd.cgo"](https://pkg.go.dev/cmd/cgo)
-- [Filippo Valsorda, "rustgo: calling Rust from Go with near-zero overhead"](https://words.filippo.io/rustgo/)
+- [D. R. MacIver, “This is important”](https://drmaciver.substack.com/i/145700143/you-are-in-a-box)
+- [Wikipedia, “Zawinski’s Law of Software Envelopment”](https://en.wikipedia.org/wiki/Jamie_Zawinski)
+- [Graydon Hoare, “Rust 2019 and beyond: limits to (some) growth.”](https://graydon2.dreamwidth.org/263429.html)
+- [Rich Hickey, “Simple Made Easy”](https://youtu.be/SxdOUGdseq4?si=X9OZ975hwwzZOxpo&t=346)
+- [Vivek Panyam, “Parsing an undocumented file format”](https://blog.vivekpanyam.com/parsing-an-undocumented-file-format)
+- [The Khronos® Group Inc, “Vulcan Documentation: What is SPIR-V”](https://docs.vulkan.org/guide/latest/what_is_spirv.html)
+- [Aria Desires, “C Isn’t A Language Anymore”](https://faultlore.com/blah/c-isnt-a-language/)
+- [Google LLC, “Standard library: cmd.cgo”](https://pkg.go.dev/cmd/cgo)
+- [Filippo Valsorda, “rustgo: calling Rust from Go with near-zero overhead”](https://words.filippo.io/rustgo/)
 - [WebAssembly Working Group, “WebAssembly”](https://webassembly.org/)
-- [The Bytecode Alliance, "The WebAssembly Component Model"](https://component-model.bytecodealliance.org/)
-- [Josh Triplett, "crABI v1"](https://github.com/rust-lang/rfcs/pull/3470)
+- [The Bytecode Alliance, “The WebAssembly Component Model”](https://component-model.bytecodealliance.org/)
+- [Josh Triplett, “crABI v1”](https://github.com/rust-lang/rfcs/pull/3470)
+- [Clay Shirky, "Situated Software"](https://gwern.net/doc/technology/2004-03-30-shirky-situatedsoftware.html)
+- [Microsoft, "PowerShell 7.5: 4. Types"](https://learn.microsoft.com/en-us/powershell/scripting/lang-spec/chapter-04?view=powershell-7.5)
+- [Microsoft, "PowerShell 7.5: What is PowerShell?"](https://learn.microsoft.com/en-us/powershell/scripting/overview?view=powershell-7.5)
+- [Microsoft, "PowerShell 7.5: about_Output_Streams"](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_output_streams?view=powershell-7.5)
+- [Microsoft, ".NET Execution model: Common Language Runtime (CLR) overview"](https://learn.microsoft.com/en-us/dotnet/standard/clr)
+- [Nushell Project, "Nu Fundamentals: Types of Data"](https://www.nushell.sh/book/types_of_data.html)
+- [Google LLC, “Protocol Buffers”](https://protobuf.dev/)
 - [Robert Lechte, “Programs are a prison: Rethinking the fundamental building blocks of computing interfaces”](https://web.archive.org/web/20210121181531/https://djrobstep.com/posts/programs-are-a-prison)
-- [Wikipedia, “Executable and Linkable Format”](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format?wprov=sfti1)
-- [DWARF Debugging Information Format Committee, “DWARF Debugging Standard”](https://dwarfstd.org)
-- [Robert O’Callahan et al., “RR”](https://rr-project.org/)
-- [“ldd(1)”](https://man7.org/linux/man-pages/man1/ldd.1.html)
-- [The strace developers, “strace: linux syscall tracer](https://strace.io)
-- [Python Software Foundation, “`pdb` — The Python Debugger“](https://docs.python.org/3/library/pdb.html)
-- [Derek Parker, “Delve”](https://github.com/go-delve/delve)
-- [Susanna Clark, *Jonathan Strange & Mr Norrell*](https://www.goodreads.com/book/show/14201.Jonathan_Strange_Mr_Norrell)
+- [Siderea, "Procrustean Epistemologies"](https://siderea.dreamwidth.org/1540620.html)
 
 [^1]: blog post forthcoming
-[^2]: ELF is the default executable format on nearly every modern OS besides MacOS and Windows.

@@ -32,7 +32,7 @@
   {% endif %}
 
 	{% if page.extra.toc %}
-{{ macros::toc(toc=page.toc) }}
+{{ macros::toc(toc=page.toc, depth=page.extra.toc) }}
 	{% endif %}
 
   {% for term, tags in page.taxonomies %}

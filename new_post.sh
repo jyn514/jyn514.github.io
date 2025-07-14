@@ -23,7 +23,9 @@ draft: true
 #  computer-of-the-future: [\"0\"]
 extra:
   draft: true
+#  category: \"tools\"
 #  audience: \"everyone\"
+#  toc: true
 #  unlisted: true
 #  stub: true
 ---
