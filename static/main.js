@@ -9,7 +9,10 @@ function run() {
   if (host === "news.ycombinator.com" || host === "lobste.rs") {
     let style = document.createElement('style');
     // let transform = host === "lobste.rs" ? 
-    style.textContent = 'body { text-transform: uppercase; }';
+    style.textContent = `
+      body { text-transform: uppercase; }
+      pre, code { text-transform: none; }
+    `;
     document.head.appendChild(style);
     console.log("HN readers clearly can't handle the typing habits of the average trans girl.");
     return;
