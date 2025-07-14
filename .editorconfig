@@ -2,5 +2,5 @@
 indent_style = tab
 indent_size = 2
 
-[*.{js,scss}]
+[*.{js,scss,html}]
 indent_style = space
