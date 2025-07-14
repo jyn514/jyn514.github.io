@@ -3,6 +3,21 @@ function run() {
   addTimestamps();
   closeDraftPopup();
   expandDetails();
+
+  let host;
+  if (document.referrer) { host = (new URL(document.referrer)).host; }
+  if (host === "news.ycombinator.com" || host === "lobste.rs") {
+    let style = document.createElement('style');
+    // let transform = host === "lobste.rs" ? 
+    style.textContent = 'body { text-transform: uppercase; }';
+    document.head.appendChild(style);
+    console.log("HN readers clearly can't handle the typing habits of the average trans girl.");
+    return;
+  }
+  console.info("hi there! thanks for visiting.");
+  console.info("have a snake.");
+  console.info("%c\n                 _           \n                | |          \n  ___ _ __   ___| | __       \n / __| '_ \\ / _ \\ |/ /       \n \\__ \\ | | |  __/   <        \n |___/_| |_|\\___|_|\\_\\       \n                             \n Web Development is no joke\u2122 \n                             ", 'background:#000;color:#0f0');
+  console.info("(stolen with love from https://snek.dev/)");
 }
 
 function addFootnoteLine() {
