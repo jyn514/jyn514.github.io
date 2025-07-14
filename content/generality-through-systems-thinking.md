@@ -1,14 +1,16 @@
 ---
 title: "generality through systems thinking"
 date: 2025-07-04
+draft: true
 description: "our programs have been stuck in a box for a long time. we can escape it."
 taxonomies:
  tags: ["ideas"]
- computer-of-the-future: ["1"]
+ computer-of-the-future: ["2"]
 extra:
   category: principles
-  #stub: true
+  stub: true
   draft: true
+  toc: true
 
 #  audience: "everyone"
 #  unlisted: true
@@ -43,11 +45,35 @@ tools can also collaborate on standards that make it easier to interoperate. thi
 
 this has limitations, however, because the tool itself has to want (or be forced) to interoperate. for example, the binary format for CUDA (a framework for compiling programs to the GPU) is undocumented, so you're stuck with [reverse engineering](https://blog.vivekpanyam.com/parsing-an-undocumented-file-format) or [re-implementing](https://docs.vulkan.org/guide/latest/what_is_spirv.html) the toolchain if you want to modify it.
 ### FFI
-the last "internal" way to talk to languages is through a "foreign function interface", where functions in the same process can call each other cheaply. this is hard because each language has to go [all the way down to the C ABI](https://faultlore.com/blah/c-isnt-a-language/) before there's something remotely resembling a standard, and because two languages may have incompatible runtime properties that make FFI [hard](https://pkg.go.dev/cmd/cgo#hdr-Passing_pointers) or [slow](https://words.filippo.io/rustgo/#why-not-cgo). i won't talk too much about this—the work i'm aware of in this area is mostly around [WASM](https://webassembly.org/) and [WASM Components](https://component-model.bytecodealliance.org/), and there are also some efforts to [raise the baseline for ABI](https://github.com/rust-lang/rfcs/pull/3470) above the C level.
+the last "internal" way to talk to languages is through a "foreign function interface", where functions in the same process can call each other cheaply. this is hard because each language has to go [all the way down to the C ABI](https://faultlore.com/blah/c-isnt-a-language/) before there's something remotely resembling a standard, and because two languages may have incompatible runtime properties that make FFI [hard](https://pkg.go.dev/cmd/cgo#hdr-Passing_pointers) or [slow](https://words.filippo.io/rustgo/#why-not-cgo). languages that do encourage FFI often require you to write separate bindings for each program: for example, Rust requires you to write `extern "C"` blocks for each declaration, and python requires you to do that and also write wrappers that translate C types into python objects.
+
+i won't talk too much more about this—the work i'm aware of in this area is mostly around [WASM](https://webassembly.org/) and [WASM Components](https://component-model.bytecodealliance.org/), and there are also some efforts to [raise the baseline for ABI](https://github.com/rust-lang/rfcs/pull/3470) above the C level.
 <!-- IPC/RPC -->
 <!--for instance, take the Go language. Go has many strengths—a performant green threads runtime, excellent devtools, static binaries. in exchange, you are locked into the Go ecosystem. unlike other languages (Python, Rust, JS), calls between Go and other languages are [hard](https://pkg.go.dev/cmd/cgo#hdr-Passing_pointers) and have a [high performance overhead](), which means that most libraries you might want to use have to be rewritten into Go. Compare this to, for example, Lua, which is intentionally designed to be easy to embed into larger applications due to its small language size and minimal runtime requirements.-->
-### IPC and RPC
-another approach is to allow composing tools by making it easier to communicate with other tools. traditional attempts to do this rely on IPC or RPC, but these are limited because they still require “cut points” to be determined by the program itself, which is a very hard problem and requires taste[^1] that many people don’t have.
+### IPC
+another approach is to compose tools. the traditional way to do this is to have a shell that allows you to freely compose programs with IPC. this does unlock a lot of freedom! IPC allows programs to communicate across different languages, different ABIs, and different user-facing APIs. it also unlocks 'ad-hoc' programs, which can be thought of as [situated software](https://gwern.net/doc/technology/2004-03-30-shirky-situatedsoftware.html) for developers themselves. consider for example the following shell pipeline:
+```bash
+git verify-pack -v $(git rev-parse --git-common-dir)/objects/pack/pack-*.idx | sort -k3 -n | cut -f1 -d' ' | while read i; do git ls-tree -r HEAD  | grep "$i"; done | tail
+```
+this [shows the 10 largest files in the git history for the current repository](https://askubuntu.com/questions/1259129/). let's set aside the readability issues for now. there are a lot of good ideas here! note that programs are interacting freely in many ways:
+- the output of `git rev-parse` is passed as a CLI argument to `git verify-pack`
+- the output of `git verify-pack` is passed as stdin to `sort`
+- the output of `cut` is interpreted as a list and programmatically manipulated by `while read`. this kind of meta-programming is common in shell and has concise (i won't go as far as "simple") syntax.
+- the output from the meta-programming loop is itself passed as stdin to the `tail` command
+
+the equivalent in a programming language without spawning a subprocess would be very verbose; not only that, it would require a library for the git operations in each language, bringing back the FFI issues from before (not to mention the hard work designing "cut points" for the API interface[^1]). this shell program can be written, concisely, using only tools that already exist.
+
+the downside of this approach is that the interface is completely unstructured; programs work on raw bytes, and there is no common interface. it also doesn't work if the program is interactive, unless the program deliberately exposes a way to query a running server (e.g. `tmux list-panes` or `nvim --remote`). let's talk about both of those.
+<!--attempts to do this rely on IPC or RPC, but these are limited because they still require “cut points” to be determined by the program itself, which is a very hard problem and requires taste[^1] that many people don’t have.-->
+#### structured IPC
+[powershell](https://learn.microsoft.com/en-us/powershell/scripting/lang-spec/chapter-04?view=powershell-7.5), and more recently, [nushell](https://www.nushell.sh/book/types_of_data.html), extend traditional unix pipelines with structured data and a typesystem. they have mechanisms for parsing arbitrary text into native types, and helper functions for common data formats.
+
+this is really good! i think it is the first major innovation we have seen in the shell language in many decades, and i'm glad it exists. but it does have some limitations:
+- there is no interop between powershell and nushell.
+- there is no protocol for programs to self-describe their output in a schema, so each program's output has to be special-cased by each shell.
+	- powershell side-steps this by [building on the .NET runtime](https://learn.microsoft.com/en-us/powershell/scripting/overview?view=powershell-7.5#scripting-language), and having native support for programs which emit .NET objects in their [output stream](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_output_streams?view=powershell-7.5). but this doesn't generalize to programs that don't run on the [CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr).
+and it is very hard to fix these limitations because there is no "out-of-band" communication channel that programs could use to emit a schema; the closest you could get is a "standardized file descriptor number", but that will lock out any program that happens to already be using that FD.
+### RPC
 ## you are trapped in a box
 all these [limitations](/operators-not-users-and-programmers#the-user-programmer-distinction) are because [programs are a prison](https://web.archive.org/web/20210121181531/https://djrobstep.com/posts/programs-are-a-prison). your data is trapped inside the box that is your program.
 
@@ -57,9 +83,9 @@ some programs try to make the box extensible—LISPs, and especially Racket, try
 
 some programs try to give you individual features—smalltalk gets you orthogonal persistence; pluto.jl gets you a “terminal of the future”; rustc gets you sub-process incremental builds. but all those features are inside a box.
 ### escaping the box
-the approach i take in this series is to instead use runtime tracking at the lowest interfaces between the program and the outside world: syscalls, cpu instructions, and [ELF files][] [^2]; interactions that cannot possibly be faked and are required for all programs that run anywhere on the system. this loses portability between OS’s and static analysis. but in turn it gains **generality**: we do not need to establish a coordination mechanism between any two processes, and our system does not need to special-case any program, because we use the same approach for all of them.
+the approach i take in this series is to instead use runtime tracking at the lowest interfaces between the program and the outside world: syscalls, cpu instructions, and [ELF files][] [^2]; interactions that cannot possibly be faked and are required for all programs that run anywhere on the system. this loses portability between OS’s and static analysis. but in turn it gains **generality**: we do not need to establish a new coordination mechanism between any two processes, and our system does not need to special-case any program, because we use the same approach for all of them.
 
-by doing so, we “escape the box”. by moving features outside the process, switching costs are greatly reduced: if we build things at the OS level, we don't have to rewrite them for each program, so the interface boundary is smaller. our systems work even for languages that have not yet been invented! in some sense, this series is an exploration of just how good we can make our tooling without first establishing a coordination mechanism.
+by doing so, we “escape the box”. by moving features outside the process, switching costs are greatly reduced: if we build things at the OS level, we don't have to rewrite them for each program, so the interface boundary is smaller. our systems work even for languages that have not yet been invented! in some sense, this series is an exploration of just how good we can make our tooling without first establishing a new coordination mechanism.
 
 note that this isn’t “just another tool” because programs running in this system can interact freely with programs outside it. there is no kind of vendor lock in. i call this [**systems thinking**](https://en.m.wikipedia.org/wiki/Systems_thinking#Characteristics) because it works at the boundaries of the systems that already exist, in full detail, rather than at the level of the abstractions that are normally built on top. systems thinking is not limited to Unix processes; you can apply it to (e.g.) distributed systems, performance tracking, and debugging.
 ### does this actually work?
