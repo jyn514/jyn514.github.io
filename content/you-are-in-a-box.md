@@ -64,7 +64,7 @@ this [shows the 10 largest files in the git history for the current repository](
 
 the equivalent in a programming language without spawning a subprocess would be very verbose; not only that, it would require a library for the git operations in each language, bringing back the FFI issues from before (not to mention the hard work designing "cut points" for the API interface[^1]). this shell program can be written, concisely, using only tools that already exist.
 
-note though that the data flow here is a DAG: pipes are one-way, and the CLI arguments are evaluated before the new program is ever spawned. as a result, it’s not possible to do any kind of content negotiation (other than the programmer hard-coding it with with CLI args; for example tools commonly have `--format=json`).
+note though that the data flow here is a DAG: pipes are one-way, and the CLI arguments are evaluated before the new program is ever spawned. as a result, it’s not possible to do any kind of content negotiation (other than the programmer hard-coding it with CLI args; for example tools commonly have `--format=json`).
 
 the downside of this approach is that the interface is completely unstructured; programs work on raw bytes, and there is no common interface. it also doesn't work if the program is interactive, unless the program deliberately exposes a way to query a running server (e.g. `tmux list-panes` or `nvim --remote`). let's talk about both of those.
 #### structured IPC

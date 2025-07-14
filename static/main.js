@@ -6,7 +6,8 @@ function run() {
 
   let host;
   if (document.referrer) { host = (new URL(document.referrer)).host; }
-  if (host === "news.ycombinator.com" || host === "lobste.rs") {
+  // if (host === "news.ycombinator.com" || host === "lobste.rs") {
+  if (false) {
     let style = document.createElement('style');
     // let transform = host === "lobste.rs" ? 
     style.textContent = `
