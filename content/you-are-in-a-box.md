@@ -1,6 +1,6 @@
 ---
 title: "you are in a box"
-date: 2025-07-13
+date: 2025-07-14
 description: "your data is trapped inside the box that is your program. you can only see what the program author exposes."
 taxonomies:
  tags: ["ideas"]
