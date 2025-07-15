@@ -37,10 +37,10 @@ and I don't feel like going through a file system every time I update passwords
 
 - Why not use \<some other service> that (supports WebDAV or syncs automatically on phones) and has a Linux client? I haven't heard of \<some other service>.
 
-[password manager]: {{ site.baseurl }}{% post_url 2018-02-24-Password-Safety %}
+[password manager]: /2018-02-24-Password-Safety.html
 [gdrive-ocaml]: https://github.com/astrada/google-drive-ocamlfuse
 [install]: https://github.com/astrada/google-drive-ocamlfuse/wiki/Installation
 [usage]: https://github.com/astrada/google-drive-ocamlfuse#usage
 [fuse]: https://github.com/libfuse/libfuse
 [automount]: https://github.com/astrada/google-drive-ocamlfuse/wiki/Automounting
-[requirements]: https://www.dropbox.com/help/desktop-web/system-requirements#desktop)
+[requirements]: https://www.dropbox.com/help/desktop-web/system-requirements#desktop
