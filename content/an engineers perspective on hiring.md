@@ -41,7 +41,7 @@ there is also a 6th criteria that's more controversial. let's call it "taste". a
 
 let's look at some common interviews and how they fare.
 ### live coding, often called "leetcode interviews"
-fails on 1, 2, 5, 6. gives very little signal about 3. live coding [cannot distinguish a senior programmer from a marketer using chatGPT][LLM applicants], and most interview questions have very little to do with day-to-day responsibilities—for instance they tell you nothing about how the applicant approaches architecture design, PR review, documentation, on and on and on. all good software engineers are generalist and live coding does not select for generalists.
+fails on 1, 2, 5, 6. gives very little signal about 3. live coding [cannot distinguish a senior programmer from a marketer using chatGPT][LLM applicants], and most interview questions have very little to do with day-to-day responsibilities. all good software engineers are generalist and live coding does not select for generalists.
 
 you can augment live coding with multiple rounds of interviews, each of which tests one of the above responsibilities. but now you lose 4; everything takes lots of engineer time. doing this despite the expense is a show of wealth, and now you are no longer playing moneyball.
 
