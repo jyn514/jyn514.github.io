@@ -1,7 +1,6 @@
 ---
 title: an engineer's perspective on hiring
 date: 2025-08-08
-draft: true
 description: "hiring in tech is broken and everyone knows it. what can we do better?"
 taxonomies:
   tags: [ideas]
