@@ -83,4 +83,4 @@ thank you for reading! i hope this inspires you to change your own hiring proces
 
 [^1]: update from after publishing: a friend said they’ve seen people successfully use chatgpt to game design interviews. oof.
 
-[^2]: this post was updated the day after publishing in response to feedback from senior engineers and hiring managers.
+[^2]: this section was added the day after publishing in response to feedback from senior engineers and hiring managers.
