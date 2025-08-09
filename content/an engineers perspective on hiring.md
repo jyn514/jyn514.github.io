@@ -52,10 +52,10 @@ something not often thought about is that this also loses you 6. the code that s
 ### take-home interviews
 fails on 1 and 5, and partially on 2. take home interviews are very easy for chatGPT to game and have all the other problems of live interviews, except that they remove the "interview poorly under stress" component. but they trade off a fundamental time asymmetry with the applicant, which again drives away the best people.
 ### architecture design
-this does a lot better. you can't use chatGPT to fake an architecture interview. it fails at 2 (you don't ever see the applicant's code). at first glance it appears to give you some insight into 6, but often it is measuring "how well does the applicant know the problem domain" instead of "how does the applicant think about design problems", so you have to be careful about over-indexing on it.
+this does a lot better. you can't use chatGPT to fake an architecture interview[^1] it fails at 2 (you don't ever see the applicant's code). at first glance it appears to give you some insight into 6, but often it is measuring "how well does the applicant know the problem domain" instead of "how does the applicant think about design problems", so you have to be careful about over-indexing on it.
 ### "meet the team"
 i haven't seen this one a lot for external interviews, but i see it very commonly for internal transfers within a company. it has much of the same tradeoffs as architecture design interviews, except it usually isn't trying to judge skills at all, mostly personality and "fit" (i.e. it fails on 1 and partially on 2). i think it makes sense in environments where the candidate has a very strong recommendation and there's little competition for the position; or if you have some other reason to highly value their skills without a formal assessment.
-### extended essays
+### extended essays and work samples
 this is an interesting one. i've only ever seen it from [Oxide Computer Company](https://rfd.shared.oxide.computer/rfd/0003#_mechanics_of_evaluation). i like it really quite a lot. the process looks like this:
 1. the applicant submits samples of their existing work (or writes new documents specially for the interview)
 2. the applicant writes detailed responses to 8 questions about their values, work, career, and goals.
@@ -64,13 +64,23 @@ this is an interesting one. i've only ever seen it from [Oxide Computer Company]
 this does really really well on nearly every criteria (including 5—note that the time spent here is symmetric, it takes a *long* time for Oxide's engineers to read that much written material).
 
 it fails on 4, "spend as little time as possible". i have not gone through this process, but based on the questions and my knowledge of who gets hired at oxide, i would expect *just* the written work to take at around 5-15 hours of time for a single application. given oxide and their goals, and the sheer number of people who apply there, i suspect they are ok with that tradeoff (and indeed probably value that it drives away people who aren't committed to the application). but most companies are not oxide and cannot afford this amount of time on both sides.
+
+if i were to take ideas from the oxide process without sacrificing too much time, i’d keep "you write the code ahead of time and discuss it in the interview". this keeps the advantage of take-home interviews—no time pressure, less stressful environment—while adding a symmetric time component that makes talented engineers less likely to dismiss the job posting out of hand, without an enormous up-front expenditure of time. and discussing the code live filters out people who just vibecoded the whole thing (they won't be able to explain what it does!) while giving everyone else a chance to explain their thinking, helping with goals 2 and 6.
+
+this still has some time asymmetry (5) if the applicant doesn’t have existing open source work they want to show to an interviewer, but it’s a lot less than 5-15 hours, and the company is forced to dedicate some of their own engineer time, so they have motivation not to “throw work over the wall”, showing respect for the applicant.
+### code review [^2]
+this one i’ve also only ever seen once. the format is that the interviewer writes some mediocre code ahead of time and asks the applicant how they would improve it. i did very well on this format so i'm biased, but i like it a lot. it aces all our criteria:
+- it reverses the time asymmetry (4, 5). the interviewer makes one up front time commitment, the applicant makes no up front commitment, and they spend the same amount of time per interview.
+- measures the things you actually want to measure (2): you see how the applicant gives interpersonal feedback; discussions about the code naturally lead into discussions about design; and you get information about their sense of taste (6).
 ## imagining a better interview process
-let's see what parts of the oxide process we can keep without sacrificing too much time.
+if i were a hiring manager, i would use a combo of a code review interview and a work sample discussed live, giving precedence to the code review and telling the applicant ahead of time that the work sample doesn’t have to be perfect.
 
-first, let's keep "you write the code ahead of time and discuss it in the interview". this keeps the advantage of take-home interviews—no time pressure, less stressful environment—while adding a symmetric time component that makes talented engineers less likely to dismiss the job posting out of hand. and discussing the code live filters out people who just vibecoded the whole thing (they won't be able to explain what it does!) while giving everyone else a chance to explain their thinking, helping with goals 2 and 6.
-
-after that, it's a question of how much time you want to spend on interviews. by doing panel interviews or combining many different interviews into a shorter time frame, you can get a lot more signal a lot more quickly, without needing 9 rounds.
+programming is fundamentally a collaborative process. having the applicant collaborate on both sides (reviewing and authoring) shows you a lot about how they work, and signals to them that you care about more than the equivalent of their SAT score.
 
 i also suggest there always be at least one interview between the applicant and their future manager (this seems to already be common practice—yay!). "people don't quit jobs, they quit bosses": letting them meet ahead of time saves everyone pain down the road.
 
 thank you for reading! i hope this inspires you to change your own hiring processes, or at least to write a comment telling me why i'm wrong ^^. you can reach me by [email] if you want to comment privately.
+
+[^1]: update from after publishing: a friend said they’ve seen people successfully use chatgpt to game design interviews. oof.
+
+[^2]: this post was updated the day after publishing in response to feedback from senior engineers and hiring managers.
