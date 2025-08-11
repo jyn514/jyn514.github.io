@@ -30,11 +30,11 @@ Be a good conversational partner. Ask directed probing questions: they show you 
 ## consider implications
 Consider the implications of how you communicate. When you say things, you are not just communicating the words you speak, you are also affecting the person you're talking to.
 ### not everyone wants to hear an infodump
-If the person you're infodumping to isn't interested in the topic. infodumping anyway puts them in an awkward situation where they either have to ask you to stop or sit through a long conversation they didn't want to be in.
+If the person you're infodumping to isn't interested in the topic, infodumping anyway puts them in an awkward situation where they either have to ask you to stop or sit through a long conversation they didn't want to be in.
 
 Another tricky scenario is when the other person is interested, but an infodump is not the right level of detail for them right now. Perhaps they are new to the topic, or perhaps they asked a direct question. If they're still trying to get the "big picture", zooming in to fine-grained details will often just confuse them further.
 ### apologies are not the time to infodump
- Info-dumping during an apology—even if it’s related to the thing you apologizing for!—buries the apology. More than that, it implies that you expect *mitigated judgement*. If there is a power dynamic between you (say a wealth gap, or you are a manager and they are an employee), that expectation of mitigated judgment implies you *expect to be forgiven*, and [an apology given in expectation of forgiveness is really just a request for absolution](https://bsky.app/profile/did:plc:h2okxbr76w5522tailkxmidq/post/3lvrxmdvb3s2r).
+ Info-dumping during an apology—even if it’s related to the thing you're apologizing for!—buries the apology. More than that, it implies that you expect *mitigated judgement*. If there is a power dynamic between you (say a wealth gap, or you are a manager and they are an employee), that expectation of mitigated judgment implies you *expect to be forgiven*, and [an apology given in expectation of forgiveness is really just a request for absolution](https://bsky.app/profile/did:plc:h2okxbr76w5522tailkxmidq/post/3lvrxmdvb3s2r).
 
 Instead, apologize directly. If you were in an altered mental state (angry, sleep-deprived, experiencing a trauma trigger), you can add at most 1-2 sentences of context asking the other person to mitigate judgement. Not all apologies need context; often "i was wrong, i'm sorry" is enough.
 ### infodumps will not prevent all miscommunication
