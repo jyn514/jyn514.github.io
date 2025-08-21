@@ -1,9 +1,11 @@
 ---
 title: the core of rust
 date: 2025-08-21
-draft: true
 extra:
   audience: PL enthusiasts
+taxonomies:
+  tags:
+    - rust
 description: "within Rust is a smaller language struggling to get out"
 ---
 
