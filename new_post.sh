@@ -7,8 +7,8 @@ fi
 realpath() { readlink -f "$@"; }
 
 date=$(date -I)
-title=$(echo "$@" | tr - ' ')
-path=$(echo "$@" | tr '\t \r' '---' | tr -d '\n!,?:')
+title=$(echo "$@" | tr - ' ' | sed 's/"/\\"/g')
+path=$(echo "$@" | tr '\t \r' '---' | tr -d '\n!,?:"')
 dst=content/$path.md
 
 if ! [ -e "$dst" ]; then
@@ -25,7 +25,7 @@ extra:
   draft: true
 #  category: \"tools\"
 #  audience: \"everyone\"
-#  toc: true
+#  toc: 2
 #  unlisted: true
 #  stub: true
 ---
