@@ -72,31 +72,36 @@ Already, this program has many interleaving concepts. I'll ignore the module sys
 - Errors are handled using something called `Result`, not with exceptions or error codes. I happened to use `fn main() -> Result` and `?`, but you would still need to understand Result even without that, because Rust does not let you access the value inside unless you check for an error condition first.
 - Result takes a generic error; in our case, `notify::Error`.
 - Result is an data-holding enum that can be either Ok or Err, and you can check which variant it is using pattern matching.
-- Iterators can be traversed either with a `for` loop or with `into_iter()`. [^2]
+- Iterators can be traversed either with a `for` loop or with `into_iter()`. [^2] `for` is eager and `into_iter` is lazy. `iter` has different ownership semantics than `into_iter.
 
 If you want to modify this program, you need to know some additional things:
 - `println` can only print things that implement the traits `Display` or `Debug`. As a result, `Path`s cannot be printed directly.
 - `path.display()` returns a struct that borrows from the path. Sending it to another thread (e.g. through a channel) won't work, because `event.paths` goes out of scope when the closure passed to `recommended_watcher` finishes running. You need to convert it to an owned value or pass `event.paths` as a whole.
 	- As an aside, this kind of thing encourages people to break work into "large" chunks instead of "small" chunks, which I think is often good for performance in CPU-bound programs, although as always it depends.
 - `recommended_watcher` only accepts functions that are `Send + 'static`. Small changes to this program, such as passing the current path into the closure, will give a compile error related to ownership. Fixing it requires learning the `move` keyword, knowing that closures borrow their arguments by default, and the meaning of `'static`.
-	- If you are using `Rc<RefCell<String>>`, which is often recommended for beginners[^3], your program will need to be rewritten from scratch (either to use Arc/Mutex or to use exterior mutability).
+	- If you are using `Rc<RefCell<String>>`, which is often recommended for beginners[^3], your program will need to be rewritten from scratch (either to use Arc/Mutex or to use exterior mutability). For example, if you wanted to print changes from the main thread instead of worker threads to avoid interleaving output, you couldn't simply push to the end of an `all_changes` collection, you would have to use `Arc<Mutex<Vec<Path>>>` in order to communicate between threads.
 
 This is a *lot* of concepts for a 20 line program. For comparison, here is an equivalent javascript program:
 ```javascript
 const fs = require('fs');
 const paths = ['pages', 'templates', 'static'];
-for path in paths {
+for (let path of paths) {
   fs.watch(path, (eventType, filename) => {
-    console.log(`${kind} ${filename}`)
-  }
+    if (filename !== null) {
+      console.log(`${kind} ${filename}`)
+    }
+  });
 }
 await (new Promise(() => {})); // sleep forever
 ```
 For this JS program, you need to understand:
 - first class functions
+- nullability
 - yeah that's kinda it.
 
 I'm cheating a little here because `notify` returns a list of paths and `node:fs/watch` doesn't. But only a little.
+
+My point is not that JS is a simpler language; that's debatable. My point is that you can do things in JS without understanding the whole language. It's very hard to do non-trivial things in Rust without understanding the whole core.
 ## Rust's core is interwoven on purpose
 The previous section makes it out to seem like I'm saying all these concepts are bad. I'm not. Rather the opposite, actually. Because these language features were designed in tandem, they interplay very nicely:
 - Enums without pattern matching [are very painful to work with](https://en.cppreference.com/w/cpp/utility/variant.html) and pattern matching without enums [has very odd semantics](https://www.hillelwayne.com/post/python-abc/)
