@@ -111,7 +111,7 @@ Rust has other excellent language features—for example the [inline assembly sy
 ## A smaller Rust
 without.boats wrote a post in 2019 titled ["Notes on a smaller Rust"](https://without.boats/blog/notes-on-a-smaller-rust/) (and a follow-up [revisiting](https://without.boats/blog/revisiting-a-smaller-rust/) it). In a manner of speaking, that smaller Rust *is* the language I fell in love with when I first learned it in 2018. Rust is a lot bigger today, in many ways, and the smaller Rust is just a nostalgic rose-tinted memory. But I think it's worth studying as an example of how well [orthogonal](https://en.wikipedia.org/wiki/Orthogonality#Computer_science) features can compose when they're designed as one cohesive whole.
 
-If you liked this post, consider reading [Two Beautiful Rust Programs](https://matklad.github.io/2020/07/15/two-beautiful-programs.html) by matklad.j
+If you liked this post, consider reading [Two Beautiful Rust Programs](https://matklad.github.io/2020/07/15/two-beautiful-programs.html) by matklad.
 
 <!-- UnsafeCell -->
 <!--I see two main periods at which people have trouble. The second is when they try and do type shenanigans. There’s a lot to say here but I don’t -->
