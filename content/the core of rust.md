@@ -72,7 +72,7 @@ Already, this program has many interleaving concepts. I'll ignore the module sys
 - Errors are handled using something called `Result`, not with exceptions or error codes. I happened to use `fn main() -> Result` and `?`, but you would still need to understand Result even without that, because Rust does not let you access the value inside unless you check for an error condition first.
 - Result takes a generic error; in our case, `notify::Error`.
 - Result is an data-holding enum that can be either Ok or Err, and you can check which variant it is using pattern matching.
-- Iterators can be traversed either with a `for` loop or with `into_iter()`. [^2] `for` is eager and `into_iter` is lazy. `iter` has different ownership semantics than `into_iter.
+- Iterators can be traversed either with a `for` loop or with `into_iter()`. [^2] `for` is eager and `into_iter` is lazy. `iter` has different ownership semantics than `into_iter`.
 
 If you want to modify this program, you need to know some additional things:
 - `println` can only print things that implement the traits `Display` or `Debug`. As a result, `Path`s cannot be printed directly.
@@ -117,9 +117,6 @@ Rust has other excellent language features—for example the [inline assembly sy
 without.boats wrote a post in 2019 titled ["Notes on a smaller Rust"](https://without.boats/blog/notes-on-a-smaller-rust/) (and a follow-up [revisiting](https://without.boats/blog/revisiting-a-smaller-rust/) it). In a manner of speaking, that smaller Rust *is* the language I fell in love with when I first learned it in 2018. Rust is a lot bigger today, in many ways, and the smaller Rust is just a nostalgic rose-tinted memory. But I think it's worth studying as an example of how well [orthogonal](https://en.wikipedia.org/wiki/Orthogonality#Computer_science) features can compose when they're designed as one cohesive whole.
 
 If you liked this post, consider reading [Two Beautiful Rust Programs](https://matklad.github.io/2020/07/15/two-beautiful-programs.html) by matklad.
-
-<!-- UnsafeCell -->
-<!--I see two main periods at which people have trouble. The second is when they try and do type shenanigans. There’s a lot to say here but I don’t -->
 
 [^1]: This program intentionally uses a file watcher because file IO is not possible to implement efficiently with async on Linux (and also because I wrote a file watcher recently for [flower](https://github.com/jyn514/flower/), so it's fresh in my mind). Tokio itself just uses a threadpool, alongside channels for notifying the future. I don’t want to get into async here; this just demonstrates Send/Sync bounds and callbacks.
 
