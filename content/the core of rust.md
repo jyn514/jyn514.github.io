@@ -88,7 +88,7 @@ const paths = ['pages', 'templates', 'static'];
 for (let path of paths) {
   fs.watch(path, (eventType, filename) => {
     if (filename !== null) {
-      console.log(`${kind} ${filename}`)
+      console.log(`${eventType} ${filename}`)
     }
   });
 }
