@@ -33,6 +33,7 @@ function addFootnoteLine() {
 }
 
 function addFootnoteTooltips() {
+  if (window.innerWidth < 800) return;
   for (const elem of document.querySelectorAll("sup.footnote-reference > a")) {
     const anchor = elem.getAttribute('href').substring(1);
     const note = document.getElementById(anchor).innerHTML;
