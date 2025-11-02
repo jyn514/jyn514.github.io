@@ -1,5 +1,6 @@
 function run() {
   addFootnoteLine();
+  addFootnoteTooltips();
   addTimestamps();
   closeDraftPopup();
   expandDetails();
@@ -29,6 +30,28 @@ function addFootnoteLine() {
   if (footer === null) return;
   let hr = document.createElement('hr');
   footer.before(hr);
+}
+
+function addFootnoteTooltips() {
+  for (const elem of document.querySelectorAll("sup.footnote-reference > a")) {
+    const anchor = elem.getAttribute('href').substring(1);
+    const note = document.getElementById(anchor).innerHTML;
+    const popup = document.createElement('div');
+    popup.setAttribute('role', 'tooltip');
+    popup.className = 'note-container';
+
+    const p = document.createElement('p');
+    p.innerHTML = note;
+    p.className = 'note-content';
+
+    // Remove '↩'
+    const inner = p.lastElementChild;
+    inner.removeChild(inner.lastElementChild);
+
+    popup.appendChild(p);
+
+    elem.parentElement.appendChild(popup);
+  }
 }
 
 function addTimestamps() {
