@@ -31,7 +31,7 @@ We'll come back to this program several times in this post. For now, notice that
 ### correct dependency tracking
 I actually forgot this one in the first draft because Cargo solves this so well in the common case [^14]. In many hand-written builds (*cough* `make` *cough*), specifying dependencies by hand is very broken, `-j` for parallelism simply doesn't work, and running `make clean` on errors is common. Needless to say, this is a bad experience.
 ### cross-compiling
-The next step in complexity up is to cross-compile code. At this point, we already start to get some idea of how involved things get:
+The next step up in complexity is to cross-compile code. At this point, we already start to get some idea of how involved things get:
 ```
 $ cargo test --target aarch64-unknown-linux-gnu
    Compiling my-program v0.1.0 (/home/jyn/src/build-system-overview)
