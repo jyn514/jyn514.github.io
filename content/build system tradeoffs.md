@@ -16,12 +16,13 @@ The first semi-complicated thing people usually want to do in their build is wri
 // tests/integration.rs
 use std::process::Command;
 fn assert_success(cmd: Command) {
-	assert!(cmd.status().unwrap().success());
+    assert!(cmd.status().unwrap().success());
 }
 #[test]
 fn test_my_program() {
-	assert_success(Command::new("cargo").arg("build"));
-	assert_success(Command::new("target/debug/my-program").arg("assets/test-input.txt"));
+    assert_success(Command::new("cargo").arg("build"));
+    assert_success(Command::new("target/debug/my-program")
+      .arg("assets/test-input.txt"));
 }
 ```
 This instructs [cargo](https://doc.rust-lang.org/cargo/) to, when you run `cargo test`, compile `tests/integration.rs` as a standalone program and run it, with `test_my_program` as the entrypoint.
