@@ -18,13 +18,9 @@ This series is as-yet unfinished.
 <h2>{{category}}</h2>
 
 {% for n in parsed_terms %}
-{# {% set term = terms | filter(attribute="terms[0].category", value=category | as_str) | nth(n=0) %} #}
     {% set term = terms | filter(attribute="name", value=n | as_str) | nth(n=0) %}
     {% if term.pages[0].extra.category == category %}{% set_global first_post = n %}{% break %}{% endif %}
 {% endfor %}
-
-{# {% set posts_in_cat = terms | filter(attribute="pages[0].category", value=category) %} #}
-{# {% set first_post = terms | filter(attribute="name", value=n | as_str) | nth(n=0) %} #}
 
 <ol class="post-list" start="{{first_post}}">
   {% for n in parsed_terms %}
