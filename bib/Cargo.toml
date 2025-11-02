@@ -10,3 +10,5 @@ path = "main.rs"
 [dependencies]
 anyhow = { version = "1.0.98", features = ["backtrace"] }
 pulldown-cmark = "0.13.0"
+scraper = "0.24.0"
+ureq = "3.1.2"
