@@ -33,7 +33,10 @@ function addFootnoteLine() {
 }
 
 function addFootnoteTooltips() {
-  if (window.innerWidth < 800) return;
+  if (window.innerWidth < 400 || !window.matchMedia("(hover: hover)").matches) {
+    return;
+  }
+  const vWidth = document.documentElement.clientWidth;
   for (const elem of document.querySelectorAll("sup.footnote-reference > a")) {
     const anchor = elem.getAttribute('href').substring(1);
     const note = document.getElementById(anchor).innerHTML;
@@ -52,6 +55,21 @@ function addFootnoteTooltips() {
     popup.appendChild(p);
 
     elem.parentElement.appendChild(popup);
+
+    // Make sure the tooltip doesn't go off the screen.
+    const { left, right } = popup.getBoundingClientRect();
+    if (right > vWidth) {
+      popup.style.transform = 'unset';
+      popup.style.left = 'unset';
+      popup.style.top = 'unset';
+      popup.style.right = '5px';
+      elem.parentElement.style.position = 'unset';
+    } else if (left < 0) {
+      popup.style.transform = 'unset';
+      popup.style.top = 'unset';
+      popup.style.left = '5px';
+      elem.parentElement.style.position = 'unset';
+    }
   }
 }
 
