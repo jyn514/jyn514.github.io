@@ -45,11 +45,10 @@
         {% endfor %}
         <link rel="alternate" type="text/html" href="{{ page.permalink | safe }}"/>
         <id>{{ page.permalink | safe }}</id>
-        {% if page.summary %}
-        <summary type="html">{{ page.summary }}</summary>
-        {% else %}
-        <content type="html" xml:base="{{ page.permalink | escape_xml | safe }}">{{ page.content }}</content>
+        {% if page.description %}
+        <summary type="html">{{ page.description }}</summary>
         {% endif %}
+        <content type="html" xml:base="{{ page.permalink | escape_xml | safe }}">{{ page.content }}</content>
     </entry>
     {%- endfor %}
 </feed>
