@@ -3,6 +3,9 @@ title: build system tradeoffs
 date: 2025-11-02
 extra:
   toc: 4
+taxonomies:
+  tags:
+    - build-systems
 description: an overview of what builds for complicated projects have to think about
 ---
 I am currently employed to work on [the build system for the Rust compiler](https://rustc-dev-guide.rust-lang.org/building/bootstrapping/intro.html) (often called `x.py` or `bootstrap`). As a result, I think about a lot of build system weirdness that most people don't have to. This post aims to give an overview of what builds for complicated projects have to think about, as well as vaguely gesture in the direction of build system ideas that I like.

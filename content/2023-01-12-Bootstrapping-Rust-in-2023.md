@@ -7,6 +7,7 @@ taxonomies:
   tags:
     - ideas
     - rust
+    - build-systems
 ---
 
 *This post will assume you have watched <https://www.youtube.com/watch?v=oUIjG-y4zaA>.
