@@ -2,10 +2,10 @@
 
   <div class="wrapper">
 
-    <h2 class="footer-heading"><a href="{{get_url(path="/")}}">{{ config.title | escape }}</a></h2>
-
     <div class="footer-col-wrapper">
       <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="{{get_url(path="/")}}">{{ config.title | escape }}</a></h2>
+
         <ul class="contact-list">
             {% if config.extra.email %}
             <li><a href="mailto:{{ config.extra.email }}">{{ config.extra.email }}</a></li>
@@ -20,6 +20,8 @@
       </div>
 
       <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
         <ul class="social-media-list">
           {% if config.extra.github_username %}
           <li>

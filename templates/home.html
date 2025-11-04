@@ -30,8 +30,6 @@
     {% endfor %}
   </ul>
 
-  <p class="rss-subscribe">subscribe <a type="application/atom+xml" href="{{ "/atom.xml" }}">via RSS</a></p>
-
 {% set all_tags = [] %}
 {% for post in section.pages %}
   {% for term, tags in post.taxonomies %}
