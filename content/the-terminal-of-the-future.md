@@ -7,64 +7,6 @@ taxonomies.computer-of-the-future = ["6"]
 extra.toc = 3
 extra.category = "tools"
 +++
-<!--
-- https://jyn.dev/complected-and-orthogonal-persistence/#needs-tracking-between-processes
-- https://jyn.dev/how-i-use-my-terminal/
-- https://matklad.github.io/2019/11/16/a-better-shell.html
-- https://www.gnu.org/software/emacs/manual/html_mono/eshell.html
-- https://destroyallsoftware.com/talks/a-whole-new-world
-- https://github.com/withoutboats/notty
-- [https://www.warp.dev](https://www.warp.dev/)
-- https://hackmd.io/81VIekrORoayzq6iQ1UrKQ?view
-- iterm as alternate tmux renderer
-- https://jvns.ca/blog/2022/07/20/pseudoterminals/
-- https://wizardzines.com/comics/meet-the-terminal-emulator/
-- https://jvns.ca/blog/2025/06/24/new-zine--the-secret-rules-of-the-terminal/
-- https://jvns.ca/blog/2025/02/05/some-terminal-frustrations/
-## primitives
-- record / replay
-	- pluto.jl
-	- process trees for the OS
-	- block devices / files isomorphic
-- powershell / nushell have the correct model
-	- you get really nice things as long as you're on the CLR
-- jupyter notebook
-	- render ANSI as HTML
-	- import into a real jupyter notebook or atuin desktop
-- multiplexing
-	- want to decouple the tty backend from the tty renderer
-	- need persistence
-		- resumable TCP
-		- replay scrollback
-	- need boundaries between prompt/i/o
-- move line editing into the terminal
-	- integration with the shell, like Warp
-	- RPC?
-
-## post structure
-start with jupyter
-- state is all fucked
-	- wavefront
-	- pluto.jl
-- no shell integration
-	- already fixed by Warp terminal
-- long-lived processes
-	- resumeable TCP
-	- persistence in a custom server
-- multiplexing
-	- iterm already does this
-
-1. propose the idea at all
-2. show that it's possible without rewriting the world
-3. show that it's not a leaky abstraction
-
-> no one really replaces the low-level infrastructure
-> why would we do a full redesign of low-level things that have existed for 40 years?
-> Rich didn't just pile some crap on top of lisp, he took the whole design and moved it all at once.
-> I wrote an editor. I wrote an terminal. I also told you an lies.
-
--->
-
 > Terminal internals are a mess. A lot of it is just the way it is because someone made a decision in the 80s and now it’s impossible to change.
 > —[Julia Evans](https://jvns.ca/blog/2025/06/24/new-zine--the-secret-rules-of-the-terminal/)
 
@@ -158,20 +100,6 @@ Note that this updates cells live in response to previous cells that they depend
 You may say this is hard to generalize. The trick here is [orthogonal persistence](https://jyn.dev/complected-and-orthogonal-persistence/#how-far-can-we-take-this). If you sandbox the processes, track all IO, and prevent things that are "too weird" unless they're talking to other processes in the sandbox (e.g. unix sockets and POST requests), you have really quite a lot of control over the process! This lets you treat it as a pure function of its inputs, where its inputs are "the whole file system, all environment variables, and all process attributes".
 ### derived features
 Once you have these primitives—Jupyter notebook frontends, undo/redo, automatic rerun, persistence, and shell integration—you can build really quite a lot on top. And you can build it incrementally, piece-by-piece:
-<!--
-## derived features
-- save/undo
-- branching process trees
-- images, colors, styling, implemented with HTML / CSS
-- "asciinema but you control the pacing"
-- terminal collaboration
-- prod debugging
-- atuin but search by command output
-- timestamps
-- line-editing is always local, even across SSH
-	- debouncing
-	- intellisuggest
--->
 #### needs a Jupyter notebook frontend
 - [Runbooks][atuin desktop] (actually, you can build these just with Jupyter and a PTY primitive).
 - Terminal customization that uses normal CSS, no weird custom languages or ANSI color codes.
@@ -194,12 +122,6 @@ jyn, you may say, [you can't build vertical integration in open source](https://
 All these things are true. To talk about how this is possible, we have to talk about incremental adoption.
 
 if I were building this, I would do it in stages, such that at each stage the thing is an improvement over its alternatives. This is how `jj` works and it works extremely well: it doesn't require everyone on a team to switch at once because individual people can use `jj`, even for single commands, without a large impact on everyone else.
-<!--
-1. transactional semantics + wavefront
-2. eternal TCP, persistence, infinite scrollback
-3. structured RPC gets you timestamps, search, etc. like atuin + tmux on steroids. still not replacing the emulator.
-4. jupyter-like emulator. kill line editing using shell integration. all the fancy features.
--->
 ### stage 1: transactional semantics
 When people think of redesigning the terminal, they always think of redesigning the terminal *emulator*. This is exactly the wrong place to start. People are attached to their emulators. They configure them, they make them look nice, they use their keybindings. There is a high switching cost to switching emulators because [everything affects everything else](https://jvns.ca/blog/2025/01/11/getting-a-modern-terminal-setup/#everything-affects-everything-else). It's not *so* terribly high, because it's still individual and not shared across a team, but still high.
 
