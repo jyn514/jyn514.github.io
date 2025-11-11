@@ -1,5 +1,5 @@
 +++
-title = "strangler-patterning google"
+title = "strangler-patterning google3"
 date = 2025-07-02
 #draft = true
 #description: ""
