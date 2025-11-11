@@ -5,6 +5,7 @@ description: "i have gone a little above and beyond trying to get all the featur
 taxonomies:
   tags:
     - workflows
+    - terminal
 ---
 
 this is a whole blog post because it is "outside the overton window"; it usually takes at least a video before people even understand the thing i am trying to describe. so, here's the video:

@@ -1,13 +1,9 @@
 +++
 title = "the terminal of the future"
-date = 2025-07-02
-draft = true
+date = 2025-11-11
 description = "To redesign infrastructure, you have to allow incremental adoption, while simultaneously moving the whole design space at once."
-#taxonomies.tags = []
+taxonomies.tags = ["ideas", "terminal"]
 taxonomies.computer-of-the-future = ["6"]
-#extra.audience = "everyone"
-#extra.unlisted = true
-#extra.stub = true
 extra.toc = 3
 extra.category = "tools"
 +++
