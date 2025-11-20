@@ -8,9 +8,12 @@ extra:
 > One of the many basic tenets of internal control is that a banking organization ensure that employees in sensitive positions be absent from their duties for a minimum of two consecutive weeks. Such a requirement enhances the viability of a sound internal control environment because most frauds or embezzlements require the continual presence of the wrongdoer.
 > —[Federal Reserve Bank of New York](https://www.newyorkfed.org/banking/circulars/10923.html)
 
+> Failure free operations require experience with failure.
+> —[How Complex Systems Fail](https://how.complexsystems.fail/#18)
+
 ## uptime
 
-Yesterday, [Cloudflare](https://blog.cloudflare.com/18-november-2025-outage/)’s global edge network was down across the world. This post is not about why that happened or how to prevent it. It’s about the fact that this was inevitable. Infinite uptime does not exist. If your business relies on it, sooner or later, you will get burned.
+Yesterday, [Cloudflare](https://blog.cloudflare.com/18-november-2025-outage/)’s global edge network was down across the world. This post is not about why that happened or how to prevent it. It’s about the fact that this was inevitable. Infinite uptime [does not exist](https://how.complexsystems.fail/). If your business relies on it, sooner or later, you will get burned.
 
 Cloudflare’s [last global edge outage](https://blog.cloudflare.com/details-of-the-cloudflare-outage-on-july-2-2019/) was on July 2, 2019. They were down yesterday for about 3 hours (with a long tail extending about another 2 and a half hours). That’s an uptime of 99.99995% over the last 6 years.
 
