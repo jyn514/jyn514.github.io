@@ -32,7 +32,7 @@ Backup plans don’t have to be complicated. A hospital ER could have a backup p
 The important thing here is to have *a* backup plan, to not just blithely assume that “the internet” is a magic and reliable thing.
 ## testing your backups
 
-One way to avoid uptime reliance is brownouts, where services are down or only partially available for a predetermined amount of time. Google internally brownouts their internal infrastructure so that nothing relies on another service being up 100% at the time[^1]. This forces errors to be constantly tested, and exposes dependency cycles.
+One way to avoid uptime reliance is brownouts, where services are down or only partially available for a predetermined amount of time. Google brownouts their internal infrastructure so that nothing relies on another service being up 100% at the time[^1]. This forces errors to be constantly tested, and exposes dependency cycles.
 
 Another way is Chaos Monkey, pioneered at Netflix, where random things just break and you don’t know which ahead of time. This requires a lot of confidence in your infrastructure, but reveals kinds of failures you didn’t even think were possible.
 
