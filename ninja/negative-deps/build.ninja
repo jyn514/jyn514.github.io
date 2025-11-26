@@ -1,0 +1,4 @@
+rule cc
+  command = cc -I dependency/include -I src $in -o $out
+
+build src/main: cc src/main.c | dependency/include/interface.h

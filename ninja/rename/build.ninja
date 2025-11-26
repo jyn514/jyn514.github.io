@@ -1,0 +1,6 @@
+rule python
+  command = python $in > $out
+build build.ninja: python build.py | src
+rule cc
+  command = cc $in -o $out
+build src/project: cc src/project.c

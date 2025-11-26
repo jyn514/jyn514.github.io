@@ -1,0 +1,5 @@
+rule cc
+  command = cc -MD -MF $depfile $in -o $out
+
+build main: cc main.c
+  depfile = main.d
