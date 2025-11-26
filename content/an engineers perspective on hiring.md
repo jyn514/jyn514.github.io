@@ -3,7 +3,7 @@ title: an engineer's perspective on hiring
 date: 2025-08-08
 description: "hiring in tech is broken and everyone knows it. what can we do better?"
 taxonomies:
-  tags: [ideas]
+  tags: [ideas, hiring]
 extra:
   audience: engineering managers and tech companies
 ---
@@ -80,6 +80,17 @@ programming is fundamentally a collaborative process. having the applicant colla
 i also suggest there always be at least one interview between the applicant and their future manager (this seems to already be common practice—yay!). "people don't quit jobs, they quit bosses": letting them meet ahead of time saves everyone pain down the road.
 
 thank you for reading! i hope this inspires you to change your own hiring processes, or at least to write a comment telling me why i'm wrong ^^. you can reach me by [email] if you want to comment privately.
+
+----
+## P.S. other interview processes
+### pairing
+a friend worked at a Pivotal Labs where the primary job responsibility was to pair with client developers. the interview process was for a candidate to pair with an existing employee for a whole day and "shadow" them. he points to [Nat Bennett's notes on the interview process](https://www.simplermachines.com/notes-on-the-pivotal-interview-process/) as a more detailed writeup.
+## P.P.S. measuring interview effectiveness
+the most interesting comment i got in response to this post was about "red-teaming" the interview to see how effective it is. for example:
+- taking existing employees and putting them through the interview process and seeing whether it suggests hiring them again. if it doesn't, it's either horribly noisy or filtering out good candidates or both.
+- "regret analysis": following the careers of rejected candidates to see who went on to do interesting things. if so, find out which part of the interview process failed and change it.
+
+the friend who suggested this said both ideas were categorically rejected by management and they continued to send him mediocre resumes for people he didn't want to hire.
 
 [^1]: update from after publishing: a friend said they’ve seen people successfully use chatgpt to game design interviews. oof.
 

@@ -15,6 +15,15 @@ extra:
 #  unlisted: true
 ---
 > And always, he fought the temptation to choose a clear, safe course, warning 'That path leads ever down into stagnation—Frank Herbert
+
+in the previous post, I talked about how data is trapped inside the box that is our programs. In this post, I want to explore what we can do about it.
+## creating coordination mechanisms
+to introduce structure to system. The first is to build coordination mechanism to establish standards so that programs can inter operate along the API boundary this works, and it works quite long! But it requires changes from every program that improves the standard. Usually, standards like this only say gradual adoption over a period of many years, and once it’s widely adopted, the protocol is very resistant to see this for example in XMPP and email, both of which are effectively frozen in the early 90s.
+## reusing coordination mechanisms
+The second is to work with the boundaries that already exist. for example, you can track and interpose behavior along system calls, function calls, network calls, and disk IO; using ptrace, LD_PRELOAD, network proxies, and FUSE respectively. what do these have in common? they have an existing defined interface boundary, where programs 
+expect only a *behavior*, not an *implementation*.
+
+here are some example tools which work in this way:
 ## escaping the box
 the approach i take in this series is to instead use runtime tracking at the lowest interfaces between the program and the outside world: syscalls, cpu instructions, and [ELF files][] [^2]; interactions that cannot possibly be faked and are required for all programs that run anywhere on the system. this loses portability between OS’s and static analysis. but in turn it gains **generality**: we do not need to establish a new coordination mechanism between any two processes, and our system does not need to special-case any program, because we use the same approach for all of them.
 

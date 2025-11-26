@@ -276,6 +276,30 @@ button#expandAll {
   padding-inline: .6em;
 }
 
+/* columns */
+/* table, tbody, tr, td { */
+/*   display: block; */
+/* } */
+
+.column-container{
+  display: flex;
+}
+/* @media screen and (max-width: $device) { */
+@include media-query(1600px) {
+  .column-container{
+    flex-direction: column;
+  }
+}
+hr.vr {
+  margin: inherit;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.column {
+  flex-grow: 1;
+  overflow-x: auto;
+}
+
 /* fix zola line numbers getting copied */
 tbody > tr > td:first-child {
   user-select: none;
@@ -368,6 +392,11 @@ nav.all-tags > ul {
 span.post-meta > a {
   color: $grey-color;
 }
+
+/* footnotes */
+/* footer.footnotes { */
+/* 	border-top-style: */
+/* } */
 
 /* tooltips */
 div[role="tooltip"] {

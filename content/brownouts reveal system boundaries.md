@@ -32,13 +32,13 @@ Backup plans don’t have to be complicated. A hospital ER could have a backup p
 The important thing here is to have *a* backup plan, to not just blithely assume that “the internet” is a magic and reliable thing.
 ## testing your backups
 
-One way to avoid uptime reliance is brownouts, where services are down or only partially available for a predetermined amount of time. Google brownouts their internal infrastructure so that nothing relies on another service being up 100% at the time[^1]. This forces errors to be constantly tested, and exposes dependency cycles.
+One way to avoid uptime reliance is brownouts, where services are down or only partially available for a predetermined amount of time. Google intentionally brownouts their internal infrastructure so that nothing relies on another service being up 100% at the time[^1]. This forces errors to be constantly tested, and exposes dependency cycles.
 
 Another way is Chaos Monkey, pioneered at Netflix, where random things just break and you don’t know which ahead of time. This requires a lot of confidence in your infrastructure, but reveals kinds of failures you didn’t even think were possible.
 
 I would like to see a model like this for the Internet, where all service providers are required to have at least 24 hours of outages in a year. This is a bit less than 3 nines of uptime (about 5 minutes a day): enough that the service is usually up, but not so much that you can depend on it to always be up.
 ## it could happen here
-In my experience, both people and organizations tend to chronically underestimate tail risks. Maybe you’re just a personal site and you don’t need 100% reliability. That’s ok. But if other people depend on you, and others depend on them, and again, eventually we end up with hospitals and fire stations and water treatment plants depending on the internet. The only way I see to prevent this is to make the internet *unreliable* enough that they need a backup plan.
+In my experience, and [according to studies about failure reporting](https://ferd.ca/notes/paper-the-failure-gap.html), both people and organizations tend to chronically underestimate tail risks. Maybe you’re just a personal site and you don’t need 100% reliability. That’s ok. But if other people depend on you, and others depend on them, and again, eventually we end up with hospitals and fire stations and water treatment plants depending on the internet. The only way I see to prevent this is to make the internet *unreliable* enough that they need a backup plan.
 
 People fail. Organizations fail. You can’t control them. What you can control is whether you make them a single point of failure.
 
