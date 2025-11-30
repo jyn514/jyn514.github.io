@@ -10,7 +10,7 @@ taxonomies:
 extra:
   toc: 2
 ---
-> As someone who ends up getting the ping on "my build is weird" _after_ it has gone through a round of "poke it with a stick", I would really appreciate the _mechanisms_ for it rolling out sooner rather than later.
+> As someone who ends up getting the ping on "my build is weird" _after_ it has gone through a round of "poke it with a stick", I would really appreciate the _mechanisms_ for \[correct dependency edges\] rolling out sooner rather than later.
 > —[mathstuf](https://lobste.rs/s/uwyfpy/build_system_tradeoffs#c_ymm0ad)
 
 > If I am even TEMPTED to use `sed`, in my goddamn build system, you have lost.
@@ -19,9 +19,14 @@ extra:
 In [a previous post](https://jyn.dev/build-system-tradeoffs/), I talked about various approaches in the design space of build systems. In this post, I want to zero in on one particular area: action graphs.
 
 First, let me define "action graph". If you've ever used CMake, you may know that there are two steps involved: A "configure" step (`cmake -B build-dir`) and a build step (`make` or `cmake --build`). What I am interested here is what `cmake -B` *generates*, the Makefiles it has created. As [the creator of ninja writes](https://neugierig.org/software/blog/2020/05/ninja.html#:~:text=Related%20work), this is a *serialization* of all build steps at a given moment in time, with the ability to regenerate the graph by rerunning the configure step.
-### who uses an action graph?
 
-Not all build systems serialize their action graph. `bazel` and `buck2` store it in memory and allow querying it, but never serialize it to disk. For large graphs, this requires a lot of memory; blaze is actually investigating [serializing parts of its graph to reduce memory usage and startup time](https://youtu.be/1A8LMZ21t6Y?si=FiQ6LGdBQ7Y-aQLY).
+This post explores that design space, with the goal of sketching a tool that improves on the current state while also enabling incremental adoption. When I say "design space", I mean a tool that:
+- Is [non-hermetic](https://jyn.dev/build-system-tradeoffs/#hermetic-builds) (hermeticity is hard to adopt incrementally)
+- Ingests machine-generated files, not hand-written files
+- Has no persistent server
+- Prioritizes performance
+### who uses an action graph?
+Not all build systems serialize their action graph. `bazel` and `buck2` run persistent servers that store it in memory and allow querying it, but never serialize it to disk. For large graphs, this requires a lot of memory; `blaze` has actually started [serializing parts of its graph to reduce memory usage and startup time](https://youtu.be/1A8LMZ21t6Y?si=FiQ6LGdBQ7Y-aQLY).
 
 The nix evaluator doesn’t allow querying its graph at all; nix has a very strange model where it never rebuilds because each change to your source files is a new “[input-addressed derivation](https://nix.dev/manual/nix/2.32/store/derivation/index.html)” and therefore requires a reconfigure. This is the main reason it’s only used to package software, not as an “inner” build system, because that reconfigure can be very slow.
 
@@ -30,6 +35,8 @@ The nix evaluator doesn’t allow querying its graph at all; nix has a very stra
 I’ve talked to a couple Nix maintainers and they’ve considered caching parts of the *configure* step, without caching its outputs (because there are no outputs, other than derivation files!) in order to speed this up. This is much trickier because it requires serializing parts of the evaluator state.
 
 {% end %}
+
+Tools that *do* serialize their graph include CMake, Meson, and the Chrome build system ([GN](https://gn.googlesource.com/gn/)).
 
 Generally, serializing the graph comes in handy when:
 - You don’t have a persistent server to store it in memory. When you don’t have a server, serializing makes your startup times much faster, because you don’t have to rerun the configure step each time. [^9]
@@ -64,17 +71,18 @@ mysql/sql/main.cc
 src/a.c
 zlib/deflate.c
 ```
-Even this is massively understating the difference: ninja will show *all* dependencies of the src/ directory, without filtering them to `zlib`; won't show the path from src/ to zlib; and has no concept of packages, so it will show all source files instead of package names.
+Even this is massively understating the difference: ninja will show *all* dependencies of the `src/` directory, without filtering them to `zlib/`; won't show the path from `src/` to `zlib/`; and has no concept of packages, so it will show all source files instead of package names.
 ## existing serializations
 The first one we'll look at, because it's the default for CMake, is `make`. Make is truly in the Unix spirit: simple to implement[^2], very complicated to use correctly.  Make does not have any of 2-4 and also fares pretty poorly on speed. It does do pretty well on minimizing reconfigurations, since it's quite flexible.
 
 Ninja is the other generator supported by CMake. Ninja is explicitly intended to work on a serialized action graph; it's the only tool I'm aware of that is. It [solves a lot of the problems of Make](https://ninja-build.org/manual.html#_comparison_to_make): it's faster, it has reflection, and you can build file watching on top of the reflection.
 
-Unfortunately, Ninja still has some limitations. It depends on [mtimes, which have many issues](https://apenwarr.ca/log/20181113), and has no support for checksums nor for file attributes other than mtime. It's possible to work around the checksum issue by using [`restat = true`](https://ninja-build.org/manual.html#:~:text=re-stat%20the%20command) and having a tool that doesn't overwrite files unless they've changed, but that's a lot of extra work and is annoying to make portable between operating systems.
+Unfortunately, Ninja still has some limitations. It depends on [mtimes, which have many issues](https://apenwarr.ca/log/20181113), and has no support for checksums nor for file attributes other than mtime. It's possible to work around the checksum issue by using [`restat = true`](https://ninja-build.org/manual.html#:~:text=re-stat%20the%20command) and having a wrapper script that doesn't overwrite files unless they've changed, but that's a lot of extra work and is annoying to make portable between operating systems.
 
 Ninja also has trouble expressing correct dependency edges. Let's look at a few examples, one by one. In each of these cases, we either have to reconfigure more often than we wish, or we have no way at all of expressing the dependency edge.
 ## dependency edge issues with ninja
 ### negative dependencies
+See [my previous post](/negative-build-dependencies/) about negative dependencies.
 Say you have a C project with two different include paths: `dependency/include` and `src`:
 ```
 .
@@ -138,7 +146,13 @@ ninja: build stopped: subcommand failed.
 ```
 We switched out what `interface.h` resolved to, but ninja didn't know about the changed dependency.
 
-To my knowledge, ninja has no way of expressing this kind of negative dependency edge. The best you can do is to depend on the whole directory, and that rebuilds far too often.
+What we want is a way to tell it to rebuild if the file `src/interface.h` is created. To my knowledge, ninja has no way of expressing this kind of negative dependency edge. The best you can do is to depend on the whole directory, and that rebuilds far too often.
+
+{% note() %}
+
+One way to avoid needing negative dependencies is to simply have a hermetic build, so that our `cc src/main.rs | dependency/interface.h` rule never even makes the `src/interface.h` file available to the command. That works, but hurts incremental adoption, because most existing build files don't actually specify all their dependencies.
+
+{% end %}
 
 Thanks to David Chisnall and Ben Boeckel (**@mathstuf**) for making me aware of this issue.
 ### renamed files
@@ -229,15 +243,29 @@ In my previous post, I talked about two main uses for a tracing build system: fi
 For prior art, see the [Shake build system](https://shakebuild.com/). Shake is higher-level than ninja and doesn't work on an action graph, but it has [built-in support for file tracing](https://neilmitchell.blogspot.com/2020/05/file-tracing.html) in all three of these modes: warning about incorrect edges; adding new edges to the graph when they're detected at runtime; and finally, [fully inferring all edges from the nodes alone](https://blogs.ncl.ac.uk/andreymokhov/stroll/).
 
 I would want my serialization to only support linting and hard errors for missing edges. Inferring a full action graph is scary and IMO belongs in a higher-level tool, and adding dependency edges automatically can be done by a tool that wraps ninja and parses the lints.
+
+What's really cool about this linting system is that it allows you to gradually transition to a hermetic build over time, without frontloading all the work to when you switch to the tool.
+
+{% note() %}
+
+The main downside of tracing is that it's highly non-portable, and in particular is very limited on macOS.
+
+One possible alternative I've thought of is to do a buck2-style unsandboxed hermetic builds, where you copy exactly the specified inputs into a tempdir and run the build from the tempdir. If that fails, rerun the build from the main source directory. This can't tell *which* dependency edges are missing, but it can tell you *a* dependency is missing without fully failing the build.
+
+The downside to *that* is it assumes command spawning is a pure function, which of course it's not; anything that talks to a socket is trouble because it might be stateful.
+
+{% end %}
 ## designing a new action graph
+<!-- mention incremental switch, possible to mechanically translate ninja, not meant to be hand-edited -->
+
 At this point, we have a list of constraints for our tool:
 1. Reflection on the action graph
 2. Negative dependencies
 3. File rename dependencies
 4. Optional file dependencies
-5. Tracing (in both linting and hard error mode)
+5. Tracing (in both linting and hard error mode) to allow gradually transitioning to a hermetic build
 6. Extended rebuild detection (file attributes other than `mtime` to reduce false negatives, optional checksums to reduce false positives)
-7. "all the features of ninja" (depfiles, [monadic builds](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems-final.pdf) through `dyndeps`, a `generator` statement, order-only dependencies)
+7. "all the features of ninja" (depfiles, [monadic builds](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems-final.pdf) through `dyndeps`, a `generator` statement, order-only dependencies, no persistent server)
 8. "as fast as possible given all the above constraints"
 
 I am not aware of any existing tool that meets these constraints. I'm considering building one on top of Shake. If anyone knows of prior art in this area, please [let me know](mailto:blog@jyn.dev) :)
@@ -299,9 +327,9 @@ Note some things about this language:
 - Our `watch` edge provides the file event type, but not the file contents. This allows ronin to automatically map `true` results to one of the three edge kinds: `ifwritten`, `ifcreated`, `ifdeleted`. `always` and `ifchanged` are not available through this API.
 - Our `group` cannot actually be used in a `:inputs` parameter because it doesn’t specify the kind of edge (created/modified/deleted). Our mini-clojure provides other abstractions, like variables; arrays; and `map`, that render this unnecessary.
 ### interface
-Like [Ekam](https://github.com/capnproto/ekam/), Ronin would have a `--watch` continuous rebuild mode. Like [Starlark](https://starlark-lang.org/), the language would be constrained so that action graphs can never touch the filesystem other than through the build/rule/watch/dyndeps built-ins. It would have runtime tracing, with all of `--tracing=never|warn|error` options. And it would have bazel-like querying, both through CLI arguments and through a programmatic API. 
+Like [Ekam](https://github.com/capnproto/ekam/), Ronin would have a `--watch` continuous rebuild mode. Like [Starlark](https://starlark-lang.org/), the language would be constrained so that action graphs can never touch the filesystem other than through the build/rule/watch/dyndeps built-ins. It would have runtime tracing, with all of `--tracing=never|warn|error` options. And it would have bazel-like querying, both through CLI arguments and through a programmatic API.
 
-Finally, it would have pluggable backends for file watching, stat-ing, and checksums, so that it can take advantage of filesystems that have more features while still being reasonably fast on filesystems that don’t. For example, on Windows stats are slow, so it would cache stat info; but on Linux stats are fast so it would just directly make a syscall.
+Finally, it would have pluggable backends for file watching, tracing, stat-ing, and checksums, so that it can take advantage of filesystems that have more features while still being reasonably fast on filesystems that don’t. For example, on Windows stats are slow, so it would cache stat info; but on Linux stats are fast so it would just directly make a syscall.
 ### architecture
 Like ninja, ronin would keep a command log with a history of past versions of the action graph. It would reuse the “bipartite graph” structure, with one half being files and the other being commands. It would parse depfiles and dyndeps files just after they’re built, while the cache is still hot.
 
@@ -311,9 +339,9 @@ Like Shake, the tracing would be built on top of [FSATrace](https://neilmitchell
 
 Unlike other build systems I know, state (such as manifest hashes, content hashes, and removed outputs) would be stored in an SQLite database, not in flat files.
 ### "did you just reinvent [starlark](https://starlark-lang.org/)?"
-Kinda. The language itself has a lot in common with starlark: it's deterministic, hermetic, immutable, and can be evaluated in parallel. But the APIs are very different, because Ronin files are a build *target*, not a build *input*. In particular they only describe dependencies between files and process executions; they cannot be used as libraries and do not have support for overriding configuration with late binding. Basically I'm saying that it has no equivalent of a [bazel `ctx`](https://bazel.build/rules/lib/builtins/ctx).
+Kinda. The language itself has a lot in common with starlark: it's deterministic, hermetic, immutable, and can be evaluated in parallel. But the APIs are very different, because Ronin files are a build *target*, not a build *input*. In particular they only describe dependencies between files and process executions; they cannot be used as libraries and do not have support for selecting between multiple configurations.
 
-I could probably be convinced the serialization language should just literally be starlark with different APIs, though. In a sense it kinda doesn't matter, I think I could construct a 1-1 mapping between the two languages.
+The main difference between the languages themselves is that clojure has `:keywords` (equivalent to sympy symbolic variables) and starlark doesn't. They could be rewritten to `var.keyword`, but I'm not sure how much benefit there is to literally using Starlark when these files are being generated by a configure step in any case.
 ## next steps
 In this post, we have learned some downsides of Make and Ninja, sketched out how they could possibly be fixed, and designed a language that has those characteristics.
 
