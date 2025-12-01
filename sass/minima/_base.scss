@@ -23,6 +23,7 @@ body {
        -o-font-feature-settings: "kern" 1;
           font-feature-settings: "kern" 1;
   font-kerning: normal;
+  overflow-wrap: break-word;
 }
 
 
@@ -132,7 +133,10 @@ blockquote {
   }
 }
 
-
+/* Details formatting */
+details + p {
+  margin-top: 1em;
+}
 
 /**
  * Code formatting
@@ -141,11 +145,11 @@ pre,
 code {
   @include relative-font-size(0.9375);
   background-color: black;
-  white-space: pre;
 }
 
 code {
   padding: 1px 5px;
+  white-space: pre-wrap;
 }
 
 pre {
@@ -153,6 +157,7 @@ pre {
   overflow-x: auto;
 
   > code {
+    white-space: pre;
     border: 0;
     padding-right: 0;
     padding-left: 0;
