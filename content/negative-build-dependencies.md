@@ -14,6 +14,12 @@ extra:
 #  unlisted: true
 #  stub: true
 ---
+This post is part 2/4 of a series about build systems.
+The first post is [build system tradeoffs](/build-system-tradeoffs/).
+The next post is [I want a better action graph serialization](/i-want-a-better-action-graph-serialization/).
+
+---
+
 This post is about a limitation of the dependencies you can express in a build file.
 It uses Ninja just because it's simple and I'm very familiar with it, but the problem exists in most build systems.
 

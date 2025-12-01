@@ -8,6 +8,13 @@ taxonomies:
     - build-systems
 description: an overview of what builds for complicated projects have to think about
 ---
+This post is part 1/4 of a series about build systems.
+The next post is [negative build dependencies](/negative-build-dependencies/).
+
+---
+> If I am even TEMPTED to use `sed`, in my goddamn build system, you have lost.
+> —[Qyriad](https://chaos.social/@Qyriad/111349762684384063)
+
 I am currently employed to work on [the build system for the Rust compiler](https://rustc-dev-guide.rust-lang.org/building/bootstrapping/intro.html) (often called `x.py` or `bootstrap`). As a result, I think about a lot of build system weirdness that most people don't have to. This post aims to give an overview of what builds for complicated projects have to think about, as well as vaguely gesture in the direction of build system ideas that I like.
 
 This post is generally designed to be accessible to the working programmer, but I have a lot of expert blindness in this area, and sometimes assume that ["of *course* people know what a feldspar is!"](https://xkcd.com/2501/). Apologies in advance if it's hard to follow.
@@ -84,7 +91,7 @@ At the very highest end, people want to conduct builds across multiple machines,
 At this point, we have enough information to start talking about the space of tradeoffs for a build system.
 ### configuration language
 > Putting your config in a YAML file does not make it declarative! Limiting yourself to a Turing-incomplete language does not automatically make your code easier to read!
-— [jyn](https://tech.lgbt/@jyn/112617315565817787)
+—[jyn](https://tech.lgbt/@jyn/112617315565817787)
 
 The most common unforced error I see build systems making is forcing the build configuration to be written in a custom language[^6]. There are basically two reasons they do this:
 - Programmers aren't used to treating build system code as code. This is a culture issue that's hard to change, but it's worthwhile to try anyway.
