@@ -90,6 +90,4 @@ One way to avoid needing negative dependencies is to simply have a [hermetic bui
 
 Thanks to David Chisnall and Ben Boeckel (**@mathstuf**) for making me aware of this issue.
 
----
-
 [^3]: People familiar with ninja might say this looks odd and it should use a `depfile` with `cc -M` so dependencies are tracked automatically. That makes your files shorter and means you need to run the configure step less often, but it doesn't actually solve the problem of negative dependencies. Ninja still doesn't know when it needs to regenerate the depfile.

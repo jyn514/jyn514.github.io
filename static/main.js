@@ -26,7 +26,7 @@ function run() {
 }
 
 function addFootnoteLine() {
-  let footer = document.querySelector('footer.footnotes');
+  let footer = document.querySelector('section.footnotes');
   if (footer === null) return;
   let hr = document.createElement('hr');
   footer.before(hr);

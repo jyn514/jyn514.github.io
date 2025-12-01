@@ -199,7 +199,6 @@ You can help me by spreading the word :) Perhaps this post will inspire someone 
 - [Jason Gauci, “How Eternal Terminal Works”](https://eternalterminal.dev/howitworks/)
 - [Marcin Kulik, “Record and share your terminal sessions, the simple way - asciinema.org”](https://asciinema.org/)
 - [“Alternate Screen | Ratatui”](https://ratatui.rs/concepts/backends/alternate-screen/)
----
 
 <!--To talk about interacting with a process, we have to talk about [PTTYs](https://jvns.ca/blog/2022/07/20/pseudoterminals/).-->
 <!--

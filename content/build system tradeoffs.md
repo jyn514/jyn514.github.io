@@ -279,7 +279,6 @@ There's more to talk about here—how build systems affect the dynamics between 
 - [Wikipedia, “Name binding”](https://en.wikipedia.org/wiki/Name_binding)
 - [william woodruff, “Weird architectures weren’t supported to begin with”](https://blog.yossarian.net/2021/02/28/Weird-architectures-werent-supported-to-begin-with)
 - [Zig contributors, “Zig Build System“](https://ziglang.org/learn/build-system/)
----
 
 [^1]: see [this stackexchange post](https://langdev.stackexchange.com/questions/153/what-are-the-advantages-of-requiring-forward-declaration-of-methods-fields-like/) for more discussion about the tradeoffs between forward declarations and requiring full access to the source.
 

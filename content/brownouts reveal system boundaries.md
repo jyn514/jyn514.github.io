@@ -44,6 +44,4 @@ People fail. Organizations fail. You can’t control them. What you can control 
 
 You have backups for your critical data. Do you have backups for your critical infrastructure?
 
----
-
 [^1]: Of course, they don't brown-out their external-facing infra. That would lose them customers.
