@@ -6,6 +6,7 @@ taxonomies:
   tags: [ideas, hiring]
 extra:
   audience: engineering managers and tech companies
+  fedi: https://tech.lgbt/@jyn/114995167878689748
 ---
 **note for my friends: this post is targeted at companies and engineering managers. i know you know that hiring sucks and companies waste your time. this is a business case for why they shouldn't do that.**
 ## hiring sucks

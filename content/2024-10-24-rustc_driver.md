@@ -2,6 +2,7 @@
 title: building your own <code>rustc_driver</code>
 date: 2024-10-24
 extra:
+  fedi: https://tech.lgbt/@jyn/113364625339818650
 description: what happens when you run <code>cargo clippy</code>?
 taxonomies:
   tags:

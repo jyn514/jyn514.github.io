@@ -48,4 +48,33 @@
     {{ page.content | safe }}
   </div>
 </article>
+<hr>
+  {# every goddamn time i use tera i regret it #}
+  {# lobste.rs doesn't allow searching by url >:( #}
+  {# also it removes joining words even if they're in quotes?? actually what the fuck #}
+  {% set links = [
+    load_data(format="json", literal='{"name":"Hacker News",
+      "url": "https://hn.algolia.com/?query=jyn.dev' ~ page.path ~ '&type=story"}'),
+    load_data(format="json", literal='{"name":"Lobste.rs",
+      "url": "https://lobste.rs/search?q=domain%3Ajyn.dev+' ~ page.title ~ '&what=stories&order=relevance"}'),
+  ] %}
+  {% if page.extra.fedi %}
+    {% set fedi = load_data(format="json", literal='{"name": "Mastodon",
+      "url": "' ~ page.extra.fedi ~ '"}') %}
+    {% set links = links | concat(with=fedi) %}
+  {% endif %}
+  {% if page.extra.bsky %}
+    {% set bsky = load_data(format="json", literal='{"name": "Bluesky",
+      "url": "' ~ page.extra.bsky ~ '"}') %}
+    {% set links = links | concat(with=bsky) %}
+  {% endif %}
+<small>Discuss on
+  {%- for link in links -%}
+    {%- if loop.last and loop.index > 2-%}, or
+    {%- elif loop.last %} or
+    {%- elif not loop.first -%},
+    {% endif %}
+    <a href="{{link.url}}">{{link.name}}</a>
+  {%- endfor -%}
+</small>
 {% endblock content %}

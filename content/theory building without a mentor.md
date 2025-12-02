@@ -6,6 +6,9 @@ taxonomies:
   tags:
     - ideas
     - walkthroughs
+extra:
+  fedi: https://tech.lgbt/@jyn/114562643662798658
+  bsky: https://bsky.app/profile/jyn.dev/post/3lpw3jssir22t
 ---
 **NOTE: if you are just here for the how-to guide, [click here](#recreating-a-theory) to skip the philosophizing.**
 ## theory building

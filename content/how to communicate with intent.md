@@ -3,6 +3,8 @@ title: how to communicate with intent
 date: 2025-08-11
 extra:
   toc: 2
+  fedi: https://tech.lgbt/@jyn/115012590221251738
+  bsky: https://bsky.app/profile/jyn.dev/post/3lw5vbzisxk2y
 description: say what you mean to say, not just the first thing on your mind
 ---
 As you can see from this blog, I like to talk (my friends will be the first to confirm this). Just as important as knowing how to talk, though, is knowing what to say and when to listen.

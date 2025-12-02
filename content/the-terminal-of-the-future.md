@@ -6,6 +6,8 @@ taxonomies.tags = ["ideas", "terminal"]
 taxonomies.computer-of-the-future = ["6"]
 extra.toc = 3
 extra.category = "tools"
+extra.fedi = "https://social.jvns.ca/@b0rk/115534063787288626"
+extra.bsky = "https://bsky.app/profile/jyn.dev/post/3m5ewy5lq3k2h"
 +++
 > Terminal internals are a mess. A lot of it is just the way it is because someone made a decision in the 80s and now it’s impossible to change.
 > —[Julia Evans](https://jvns.ca/blog/2025/06/24/new-zine--the-secret-rules-of-the-terminal/)

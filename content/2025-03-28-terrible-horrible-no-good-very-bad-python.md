@@ -2,6 +2,8 @@
 title:  Terrible Horrible No Good Very Bad Python
 date:   2025-03-28
 description: new and exciting ways to write buggy code
+extra:
+  fedi: https://tech.lgbt/@jyn/114241926722657759
 taxonomies:
   tags:
     - python

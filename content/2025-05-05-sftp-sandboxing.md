@@ -5,6 +5,8 @@ description: unix sure is a system
 taxonomies:
   tags:
     - walkthroughs
+extra:
+  fedi: https://tech.lgbt/@jyn/114458896908957320
 ---
 consider the following problem:
 - you want to share a 300 MB directory

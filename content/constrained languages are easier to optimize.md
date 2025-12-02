@@ -6,6 +6,9 @@ description: exposing raw pointers make the optimizer’s job horribly hard. hig
 taxonomies:
   tags:
     - compilers
+extra:
+  fedi: https://tech.lgbt/@jyn/114841091700161946
+  bsky: https://bsky.app/profile/jyn.dev/post/3ltrs3sya6s2o
 ---
 ## jyn, what the fuck are you talking about
 a recurring problem in modern “low-level” languages[^2] is that they are hard to optimize. they [do not reflect the hardware](https://queue.acm.org/detail.cfm?id=3212479), they require doing [complex alias analysis](https://www.ralfj.de/blog/2018/07/24/pointers-and-bytes.html), and they [constantly allocate and deallocate memory](https://medium.com/@jbyj/my-javascript-is-faster-than-your-rust-5f98fe5db1bf). [^1] they looked at [the structure/expressiveness tradeoff](https://buttondown.com/hillelwayne/archive/the-capability-tractability-tradeoff/) and consistently chose expressiveness.

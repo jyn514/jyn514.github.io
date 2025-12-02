@@ -3,6 +3,9 @@ aliases: ['/2023/12/04/How-to-maintain-an-open-source-project.html']
 title:	"How to maintain an Open Source project"
 date:	2023-12-04
 description: How to maintain a project without burning yourself out
+extra:
+  fedi: https://tech.lgbt/@jyn/111529383945540933
+  bsky: https://bsky.app/profile/jyn.dev/post/3kfszvdhc6325
 taxonomies:
   tags:
     - ideas

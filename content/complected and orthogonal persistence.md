@@ -11,6 +11,7 @@ taxonomies:
     - ideas
 extra:
     category: tools
+    fedi: https://tech.lgbt/@jyn/114791295627692027
 ---
 [protobuf]: https://protobuf.dev/
 > _**Everything Not Saved Will Be Lost**_—Ancient Nintendo Proverb

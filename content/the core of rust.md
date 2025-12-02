@@ -3,6 +3,8 @@ title: the core of rust
 date: 2025-08-21
 extra:
   audience: PL enthusiasts
+  fedi: https://tech.lgbt/@jyn/115067076325097105
+  bsky: https://bsky.app/profile/jyn.dev/post/3lww3l55bu22q
 taxonomies:
   tags:
     - rust

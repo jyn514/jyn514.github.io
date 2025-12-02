@@ -1,6 +1,8 @@
 ---
 title: Scheduling Do-Not-Disturb in GNOME
 date: 2025-02-22
+extra:
+  fedi: https://tech.lgbt/@jyn/114050592085483555
 taxonomies:
   tags:
     - walkthroughs

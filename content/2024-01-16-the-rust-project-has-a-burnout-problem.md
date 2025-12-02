@@ -2,7 +2,10 @@
 aliases: ['/2024/01/16/the-rust-project-has-a-burnout-problem.html']
 title:	"the rust project has a burnout problem"
 date:	2024-01-16
-extra: {audience: the rust community}
+extra:
+  audience: the rust community
+  fedi: https://tech.lgbt/@jyn/111768397510082535
+  bsky: https://bsky.app/profile/jyn.dev/post/3kj57bpky5l2m
 description:
 preview_image: /assets/burned%20out%20rust%20club.png
 taxonomies:

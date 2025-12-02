@@ -5,6 +5,8 @@ description = "writing programs should be no harder than writing a resume"
 taxonomies.tags = ["ideas"]
 taxonomies.computer-of-the-future = ["0"]
 extra.category = "principles"
+extra.fedi = "https://tech.lgbt/@jyn/114802397785662813"
+extra.bsky = "https://bsky.app/profile/jyn.dev/post/3ltuddsunqc2s"
 +++
 **the modern distinction between “programmers” and “users” is evil and destroys agency.**
 ## consider how the spreadsheets grow

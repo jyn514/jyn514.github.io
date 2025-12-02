@@ -3,6 +3,8 @@ title: build system tradeoffs
 date: 2025-11-02
 extra:
   toc: 4
+  fedi: https://tech.lgbt/@jyn/115480639582540712
+  bsky: https://bsky.app/profile/jyn.dev/post/3m4nqq5nrf22k
 taxonomies:
   tags:
     - build-systems

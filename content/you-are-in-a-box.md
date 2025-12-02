@@ -8,6 +8,8 @@ taxonomies:
 extra:
   category: "principles"
   toc: 3
+  fedi: https://tech.lgbt/@jyn/114852148044469741
+  bsky: https://bsky.app/profile/jyn.dev/post/3ltwna5ph5k22
 #  audience: "everyone"
 #  unlisted: true
 #  stub: true
