@@ -51,7 +51,11 @@
 <hr>
   {# every goddamn time i use tera i regret it #}
   {# lobste.rs doesn't allow searching by url >:( #}
-  {# also it removes joining words even if they're in quotes?? actually what the fuck #}
+  {# we can't even search by title because that messes up punctuation (e.g. "why so hard to use?") >:(
+     do a full text search instead. #}
+  {# duckduckgo doesn't seem to index /s very quickly so we can't use I'm Feeling Lucky :( #}
+  {% set title = page.title | urlencode %}
+  {# "url": "https://duckduckgo.com/?q=!ducky+site%3Ahttps%3A%2F%2Flobste.rs%2Fs+\"jyn.dev\"+\"' ~ title ~ '\""}'), #}
   {% set links = [
     load_data(format="json", literal='{"name":"Hacker News",
       "url": "https://hn.algolia.com/?query=jyn.dev' ~ page.path ~ '&type=story"}'),
