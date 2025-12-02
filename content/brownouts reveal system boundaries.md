@@ -5,7 +5,7 @@ description: You have backups for your critical data. Do you have backups for yo
 extra:
   toc: 1
   fedi: https://tech.lgbt/@jyn/115579050310890481
-  bsky: https://jyn.dev/brownouts-reveal-system-boundaries/
+  bsky: https://bsky.app/profile/jyn.dev/post/3m5zh7vwcl22k
 ---
 > One of the many basic tenets of internal control is that a banking organization ensure that employees in sensitive positions be absent from their duties for a minimum of two consecutive weeks. Such a requirement enhances the viability of a sound internal control environment because most frauds or embezzlements require the continual presence of the wrongdoer.
 > —[Federal Reserve Bank of New York](https://www.newyorkfed.org/banking/circulars/10923.html)
