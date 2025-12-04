@@ -17,6 +17,7 @@ generate_feeds = true
 taxonomies = [
     { name = "tags" },
     { name = "computer-of-the-future" },
+    { name = "four-posts-about-build-systems" },
 ]
 
 [markdown]

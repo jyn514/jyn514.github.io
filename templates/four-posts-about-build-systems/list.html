@@ -1,0 +1,43 @@
+{% extends "default.html" %}
+{% block description %}
+  <meta name="description" content="I want a better build system without having to rewrite my code into Buck2.">
+{% endblock %}
+{% block content %}
+<h1 class="page-heading">Four posts about build systems</h1>
+
+<blockquote><p>
+  i think it's a major triumph of cargo that it's so successful at its goals that people are now comparing it to hermetic build systems!
+  —<a href="https://tech.lgbt/@jyn/112441307922849867">jyn</a>
+  </p>
+</blockquote>
+
+This is a group of posts about how build systems work today, and how they could be improved without having to radically change their design.
+
+{# sort numerically, not alphabetically #}
+{% set_global parsed_terms = [] %}
+{% for term in terms %}
+  {% set_global parsed_terms = parsed_terms | concat(with=term.name | int) %}
+{% endfor %}
+{% set parsed_terms = parsed_terms | sort %}
+
+<ol class="post-list">
+  {% for n in parsed_terms %}
+    {% set term = terms | filter(attribute="name", value=n | as_str) | nth(n=0) %}
+    {% if not term %} oops !!! {{name}} {%continue%}{%endif%}
+    {% for post in term.pages %} {# always just a single post #}
+    <li>
+    {% set date_format = site.minima.date_format | default(value = "%b %-d, %Y") %}
+    <span class="post-meta">
+      {{ post.date | date(value = date_format) }}
+      • author—jyn
+    </span>
+
+    <h2>
+      <a class="post-link" href="{{ post.path }}">{{ post.title | safe }}</a>
+    </h2>
+    </li>
+    {% endfor %}
+  {% endfor %}
+</ol>
+
+{% endblock content %}

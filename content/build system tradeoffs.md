@@ -8,9 +8,11 @@ extra:
 taxonomies:
   tags:
     - build-systems
+  four-posts-about-build-systems: ["1"]
 description: an overview of what builds for complicated projects have to think about
 ---
-This post is part 1/4 of a series about build systems.
+
+This post is part 1/4 of [a series about build systems](/four-posts-about-build-systems/).
 The next post is [negative build dependencies](/negative-build-dependencies/).
 
 ---

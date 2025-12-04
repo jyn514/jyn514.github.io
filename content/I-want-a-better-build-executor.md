@@ -1,18 +1,19 @@
 ---
 title: I want a better build executor
-date: 2025-11-30
+date: 2025-12-01
 draft: true
 taxonomies:
   tags:
     - build-systems
     - ideas
+  four-posts-about-build-systems:
+    - "4"
 extra:
   draft: true
   toc: 2
+description: I want a way to gradually transition existing builds to be hermetic.
 ---
-This post is part 4/4 of a series about build systems.
-The first post is [build system tradeoffs](/build-system-tradeoffs/).
-The previous post is [I want a better action graph serialization](/i-want-a-better-action-graph-serialization/).
+This post is part 4/4 of [a series about build systems](/four-posts-about-build-systems/).
 
 ---
 <!-- no persistent server
@@ -27,7 +28,7 @@ Generally, there are three stages to a build:
 
 There are a lot more things an executor can do than just spawning processes and showing a progress report!
 This post explores what those are and sketches a design for a tool that could improve on current executors. 
-## rebuild detection
+## change detection
  Ninja depends on [mtimes, which have many issues](https://apenwarr.ca/log/20181113). Ideally, it would take notes from [`redo`](https://apenwarr.ca/log/20181113#:~:text=redo:%20mtime%20dependencies) and look at file attributes, not just the mtime, which eliminates many more false positives.
 ## querying
 I wrote earlier about [querying the build graph](/build-system-tradeoffs/#reflection).
@@ -126,6 +127,20 @@ One possible alternative I've thought of is to do a buck2-style unsandboxed herm
 The downside to *that* is it assumes command spawning is a pure function, which of course it's not; anything that talks to a socket is trouble because it might be stateful.
 
 {% end %}
+### environment variables
+Tracing environment variable access is … hard. Traditionally access goes through the libc `getenv` function, but it’s also possible to take an `envp` in a main function, in which case accesses are just memory reads. That means we need to trace memory reads somehow.
+
+On x86 machines, there’s something called [PIN](https://stackoverflow.com/a/77056006) that can do this directly in the CPU without needing compile time instrumentation. On ARM there’s [SPE](https://developer.arm.com/community/arm-community-blogs/b/architectures-and-processors-blog/posts/statistical-profile-extension), which is how [`perf mem`](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/monitoring_and_managing_system_status_and_performance/profiling-memory-accesses-with-perf-mem_monitoring-and-managing-system-status-and-performance) works, but I’m not sure whether it can be configured to track 100% of memory accesses. I need to do more research here.
+
+On Linux, this is all abstracted by [`perf_event_open`](https://man7.org/linux/man-pages/man2/perf_event_open.2.html). I’m not sure if there’s equivalent wrappers on Windows and macOS.
+
+{% note() %}
+
+There’s also [DynamicRIO](https://dynamorio.org/#autotoc_md180), which supports a bunch of platforms, but I believe it works in a similar way to QEMU, by interposing itself between the program and the CPU, which comes with a bunch of overhead. That could work as an opt-in.
+
+{% end %}
+
+One last way to do this is with a [SIGSEGV signal handler](https://unix.stackexchange.com/a/532395), but that requires that environment variables are in their own page of memory and therefore a linker script, which means we’re now modifying the binaries being run and might cause unexpected build or runtime failures. I’m also not sure if this works for environment variables specifically, because they aren’t linker symbols in the normal sense, they get injected by the C runtime.
 ## `ronin`: a ninja successor
 Here I describe more concretely the tool I want to build, which I’ve named `ronin`. It would read the [constrained clojure action graph serialization format](/i-want-a-better-action-graph-serialization/#a-first-try) (Magma) that I describe in the previous post; perhaps with a way to automatically convert Ninja files to Magma.
 ### interface
@@ -144,13 +159,20 @@ Like Shake, the tracing would be built on top of [FSATrace](https://neilmitchell
 -->
 
 Unlike other build systems I know, state (such as manifest hashes, content hashes, and removed outputs) would be stored in an SQLite database, not in flat files.
-## summary
-In this post I describe what a build executor does, some features I would like to see from ann executor (with a special focus on tracing) and a design for a new executor called `ronin`.
 
-I don’t know yet if I will actually build this tool, that seems like a lot of work 😄 but it’s something I would like to exist in the world.
+## did you just reinvent buck2?
+Kinda. Ronin takes a lot of ideas from buck2. It differs in two major ways:
+- It does not expect to be a top-level build system. It is perfectly happy to read (and encourages) generated files from a higher level configure tool. This allows systems like CMake and Meson to mechanically translate Ninja files into this new format, so builds for existing projects can get nice things.
+- It allows you to gradually transition from non-hermetic to hermetic builds, without forcing you to fix all your rules at once, and with tracing to help you find where you need to make your fixes. Buck2 only supports non-hermetic builds for [system toolchains](https://buck2.build/docs/concepts/toolchains), not anything else, and doesn’t support tracing at all.
+## summary
+In this post I describe what a build executor does, some features I would like to see from an executor (with a special focus on tracing) and a design for a new executor called `ronin`.
+
+I don’t know yet if I will actually build this tool, that seems like a lot of work [^4] 😄 but it’s something I would like to exist in the world.
 
 [^1]: In many ways Conan [profiles](https://docs.conan.io/2/tutorial/consuming_packages/build_simple_cmake_project.html) are analogous to ninja files: profiles are the interface between Conan and CMake in the same way that ninja files are the interface between CMake and Ninja. Conan is the only tool I'm aware of where the split between the package manager and the configure step is explicit.
 
 [^2]: macOS does not have native support for FUSE. [MacFuse](https://macfuse.github.io/) exists but does not [support getting the PID](https://github.com/macfuse/macfuse/wiki/FUSE-Backends#limitations) of the calling process. A possible workaround would be to start a new FUSE server for each spawned process group. FUSE on Windows is possible through [winfsp](https://github.com/billziss-gh/winfsp).
 
 [^3]: This is not an apple to apples comparison; ideally we would name the target by the output file, not by its alias. Unfortunately output names are unpredictable and quite long in Bazel.
+
+[^4]: what if i simply took buck2 and hacked it to bits,,,

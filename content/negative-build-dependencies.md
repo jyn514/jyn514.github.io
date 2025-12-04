@@ -1,21 +1,17 @@
 ---
-title: "negative build dependencies"
-date: 2025-11-29
+title: negative build dependencies
+date: 2025-11-30
 draft: true
-description: "A build system needs to know not just which files exist, but which shouldn't exist"
+description: A build system needs to know not just which files exist, but which shouldn't exist.
 taxonomies:
-  tags: [build-systems]
-#  computer-of-the-future: ["0"]
+  tags:
+    - build-systems
+  four-posts-about-build-systems:
+    - "2"
 extra:
   draft: true
-#  category: "tools"
-#  audience: "everyone"
-#  toc: 2
-#  unlisted: true
-#  stub: true
 ---
-This post is part 2/4 of a series about build systems.
-The first post is [build system tradeoffs](/build-system-tradeoffs/).
+This post is part 2/4 of [a series about build systems](/four-posts-about-build-systems/).
 The next post is [I want a better action graph serialization](/i-want-a-better-action-graph-serialization/).
 
 ---
@@ -86,7 +82,17 @@ ninja: build stopped: subcommand failed.
 ```
 We switched out what `interface.h` resolved to, but ninja didn't know about the changed dependency.
 
-What we want is a way to tell it to rebuild if the file `src/interface.h` is created. To my knowledge, ninja has no way of expressing this kind of negative dependency edge. The best you can do is to depend on the whole directory, and that rebuilds far too often.
+What we want is a way to tell it to rebuild if the file `src/interface.h` is created. To my knowledge, ninja has no way of expressing this kind of negative dependency edge.
+
+{% note() %}
+
+One possibility is to depend on the *whole directory* of `src`. The semantics of this are that `src` gets marked dirty whenever a file is added, moved, or deleted. This has two problems:
+- It rebuilds too often. We only want to rerun when `src/interface.h` is added, not for any other file creation.
+- We don’t actually have a consistent way to find all directories that need to be marked in this way. Here we just hardcoded src, but in larger builds [we would use depfiles](xxx), and depfiles do not contain any information about negative dependencies. This matters a lot when there are a dozen+ directories in the search path!
+
+{% end %}
+
+x
 
 {% note() %}
 
