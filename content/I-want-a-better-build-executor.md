@@ -14,9 +14,12 @@ description: I want a way to gradually transition existing builds to be hermetic
 This post is part 4/4 of [a series about build systems](/four-posts-about-build-systems/).
 
 ---
-<!-- no persistent server
-Is [non-hermetic](https://jyn.dev/build-system-tradeoffs/#hermetic-builds) (hermeticity is hard to adopt incrementally)
-Has enough static information to allow querying dependencies between parts of the build graph [^11] -->
+> The market fit is interesting. Git has clearly won, it has all of the mindshare, but since you can use jj to work on Git repositories, it can be adopted incrementally. This is, in my opinion, the only viable way to introduce a new VCS: it has to be able to be partially adopted.
+> —[Steve Klabnik](https://steveklabnik.com/writing/i-see-a-future-in-jj/)
+
+> If you've worked with other determinism-based systems, one thing they have in common is they feel really fragile, and you have to be careful that you don't do something that breaks the determinism. But in our case, since we've created every level of the stack to support this, we can offload the determinism to the development environment and you can basically write whatever code you want without having to worry about whether it's going to break something.
+> —[Allan Blomquist](https://www.youtube.com/watch?v=72y2EC5fkcE)
+
 In my last post, I describe an improved build graph serialization. In this post, I describe the build executor that reads those files.
 ## what is a build executor?
 Generally, there are three stages to a build:
@@ -140,7 +143,7 @@ There’s also [DynamicRIO](https://dynamorio.org/#autotoc_md180), which support
 
 One last way to do this is with a [SIGSEGV signal handler](https://unix.stackexchange.com/a/532395), but that requires that environment variables are in their own page of memory and therefore a linker script, which means we’re now modifying the binaries being run and might cause unexpected build or runtime failures. I’m also not sure if this works for environment variables specifically, because they aren’t linker symbols in the normal sense, they get injected by the C runtime.
 ## `ronin`: a ninja successor
-Here I describe more concretely the tool I want to build, which I’ve named `ronin`. It would read the [constrained clojure action graph serialization format](/i-want-a-better-action-graph-serialization/#a-first-try) (Magma) that I describe in the previous post; perhaps with a way to automatically convert Ninja files to Magma.
+Here I describe more concretely the tool I want to build, which I’ve named `ronin`. It would read the [constrained clojure action graph serialization format](/i-want-a-better-action-graph-serialization/#designing-a-new-action-graph) (Magma) that I describe in the previous post; perhaps with a way to automatically convert Ninja files to Magma.
 ### interface
 Like [Ekam](https://github.com/capnproto/ekam/), Ronin would have a `--watch` continuous rebuild mode (but unlike Bazel and Buck2, no background server). Like Shake, It would have runtime tracing, with all of `--tracing=never|warn|error` options, to allow gradually transitioning to a hermetic build. And it would have bazel-like querying for the action graph, both through CLI arguments with an jq syntax and through a programmatic API.
 

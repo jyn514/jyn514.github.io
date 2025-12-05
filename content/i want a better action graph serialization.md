@@ -214,7 +214,7 @@ Here's a sample action graph in Magma:
 (action :name "docker-image"
   :outputs []
   ; Rules don't have to be defined separately from actions.
-  :rule (fn [] {:command ["docker" "build" "."]})
+  :rule (fn [_vars] {:command ["docker" "build" "."]})
   ; We choose to trust docker's own caching here.
   ; We could instead use `:implicit {:ifwritten [...]}`, but we don't.
   :implicit :always)
