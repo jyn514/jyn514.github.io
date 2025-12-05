@@ -31,7 +31,7 @@ If you've worked with other determinism-based systems, one thing they have in co
 In [my last post](/i-want-a-better-action-graph-serialization/), I describe an improved build graph serialization. In this post, I describe the build executor that reads those files.
 ## what is a build executor?
 Generally, there are three stages to a build:
-1. Resolving and downloading dependencies. The tool that does this is called a **package manager**. Common examples are `npm`, `pip`, [Conan](https://docs.conan.io/2/index.html)[^1], and the [`cargo` resolver](https://doc.rust-lang.org/cargo/reference/resolver.html).
+1. Resolving and downloading dependencies. The tool that does this is called a [**package manager**](https://nesbitt.io/2025/12/02/what-is-a-package-manager.html). Common examples are `npm`, `pip`, [Conan](https://docs.conan.io/2/index.html)[^1], and the [`cargo` resolver](https://doc.rust-lang.org/cargo/reference/resolver.html).
 2. Configuring the build based on the host environment and build targets. I am not aware of any common name for this, other than maybe **configure script** (but there exist many tools for this that are not just shell scripts). Common examples are CMake, Meson, autotools, and the Cargo CLI interface (e.g. `--feature` and `--target`).
 3. Executing a bunch of processes and reporting on their progress. The tool that does this is called a **build executor**. Common examples are `make`, `ninja`,  `docker build`, and the `Compiling` phase of `cargo build`.
 
