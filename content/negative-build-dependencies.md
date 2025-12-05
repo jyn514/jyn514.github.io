@@ -1,6 +1,6 @@
 ---
 title: negative build dependencies
-date: 2025-12-04
+date: 2025-12-03
 description: A build system needs to know not just which files exist, but which shouldn't exist.
 taxonomies:
   tags:
