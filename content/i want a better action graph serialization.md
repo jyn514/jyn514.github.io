@@ -39,7 +39,7 @@ I’ve talked to a couple Nix maintainers and they’ve considered caching parts
 Tools that *do* serialize their graph include CMake, Meson, and the Chrome build system ([GN](https://gn.googlesource.com/gn/)).
 
 Generally, serializing the graph comes in handy when:
-- You don’t have a persistent server to store it in memory. When you don’t have a server, serializing makes your startup times much faster, because you don’t have to rerun the configure step each time. [^9]
+- You don’t have a persistent server to store it in memory. When you don’t have a server, serializing makes your startup times much faster, because you don’t have to rerun the configure step each time.
 - You don’t have a remote build cache. When you have a remote cache, the rules for *loading* that cache can be rather complicated because they involve network queries [^10]. When you have a local cache, loading it doesn’t require special support because it’s just opening a file.
 - You want to support querying, process spawning, and progress updates without rewriting the logic yourself for every OS (i.e. you don't want to write your own build executor).
 ### design goals
@@ -159,14 +159,14 @@ At this point, we have a list of constraints for our file format:
 <!-- 4. Tracing (in both linting and hard error mode) to allow gradually transitioning to a hermetic build -->
 4. Optional checksums to reduce false positives
 5. Environment variable dependencies
-6. "all the features of ninja" (depfiles, [monadic builds](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems-final.pdf) through `dyndeps`, a `generator` statement, order-only dependencies)
+6. "all the features of ninja" (depfiles, [monadic builds](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems-final.pdf) through `dyndeps`[^14], a `generator` statement, order-only dependencies)
 <!--
 I am not aware of any existing tool that meets these constraints. I'm considering building one on top of Shake. If anyone knows of prior art in this area, please [let me know](mailto:blog@jyn.dev) :)
 -->
 Ideally, it would even be possible to mechanically translate existing .ninja files to this new format.
 ### a first try
 This sketches out a new format that could improve over Ninja files. It could look something like this:
-- A very very small clojure subset (just `def`, `let`, [EDN](https://github.com/edn-format/edn), and function calls) for the text itself, no need to make parsing the graph harder than necessary [^6]. If people really want an equivalent of `include` or `subninja` I suppose this could learn support for `ns` and `require`, but it would have much simpler rules than Clojure's classpath. It would not have support for looping constructs, nor most of clojure's standard library.
+- A very very small clojure subset (just `def`, `let`, [EDN](https://github.com/edn-format/edn), and function calls) for the text itself, no need to make loading the graph harder than necessary [^6]. If people really want an equivalent of `include` or `subninja` I suppose this could learn support for `ns` and `require`, but it would have much simpler rules than Clojure's classpath. It would not have support for looping constructs, nor most of clojure's standard library.
 - `redo`-inspired dependency edges: `ifwritten` (for changes in file attributes), `ifchanged` (for changes in the checksum), `ifcreate` (for optional dependencies), `always`; plus our new `ifdeleted` edge.
 <!-- - Get rid of Ninja's `rule` statement; it can be replaced with normal functions. -->
 - A `dyndeps` input function that can be used anywhere a file path can (e.g. in calls to `ifwritten`) so that the kind of edge does not depend on whether the path is known in advance or not.
@@ -177,60 +177,117 @@ I’d call this language Magma, since it’s the simplest kind of set with closu
 
 Here's a sample action graph in Magma:
 ```clojure
-(rule cc
-  :command ["cc" :in "-MD" "-MF" :depfile "-o" :out])
-(build "main"
+; In Magma, rules are simple functions.
+; For each `action` that uses a rule, the function will be called with a list
+; of attributes for that action.
+; It returns a description of how to execute the build.
+; Supported descriptions are:
+; - `:command` (process spawning)
+; - `:write` (writes data directly from memory to disk), and
+; - `:read` (reads data directly from disk to memory), and
+; - `:transform` (runs a clojure function on data in memory).
+(defn cc [vars]
+  {:command ["cc" (:inputs vars)
+             "-MD" "-MF" (:depfile vars)
+             "-o" (:out vars)]})
+
+; `action`s define a build target (here, the file `main`).
+; They must have a `:rule` that states how to execute the build,
+; a set  of `:inputs` that must be built before this action is run,
+; and a list of `:outputs` that will be created by the `:rule`.
+; They may declare a dependency on `:env`ironment variables.
+; Like in ninja, a `:depfile` may integrate with the compiler to lazily register
+; a dependency on header files.
+(action :outputs ["main"]
   :rule cc
-  :inputs [(ifwritten "main.c")]
+  ; Unlike in ninja, all inputs must state under which conditions the input causes a rerun.
+  ; `:ifwritten` means whenever the file metadata changes.
+  :inputs {:ifwritten ["main.c", "helper.c"]}
+  ; Like in ninja, `:implicit` is exactly the same as `:inputs`,
+  ; but allows the `:rule` to distinguish which files should be passed to the command.
+  :implicit {:ifwritten ["helper.h"]}
   :env ["LIBRARY_PATH", "C_INCLUDE_PATH"]
   :depfile "main.c.d")
 
-(def tarfile (ifwritten "example.tar"))
+; Actions that don't create a file on disk are allowed.
+; This is similar to a "Phony" target in Make, except that you can choose to not always rerun it.
+; Since there's no output, we manually specify the name of the action so other actions can depend on it.
+(action :name "docker-image"
+  :outputs []
+  ; Rules don't have to be defined separately from actions.
+  :rule (fn [] {:command ["docker" "build" "."]})
+  ; We choose to trust docker's own caching here.
+  ; We could instead use `:implicit {:ifwritten [...]}`, but we don't.
+  :implicit :always)
 
-(rule list-tar
-  :command ["tar" "-tf" (first :in)]
-  :stdout :out)
-(build "example.tar.dd"
-  :inputs [tarfile]
-  :rule list-tar)
+; A function that filters out paths ending with a trailing slash.
+(defn files [paths]
+  (filter #(not (str/ends-with? % "/")) paths))
 
-(def tar-outputs (dyndeps (ifchanged "example.tar.dd"))
+; Just a normal clojure variable. We'll use this as an input later.
+(def tarfile {:ifwritten ["example.tar"]})
 
-(rule extract-tar
-  :command ["tar" "-xf" (first :in)])
-(build tar-outputs)
-  :inputs [tarfile]
-  :rule extract-tar)
+; This rule lists all files (excluding directories) inside of a tarfile.
+(defn list-tar-files [vars]
+  ; `:rule` can be a list to run multiple rules in a row within the same action.
+  [{:command ["tar" "-tf" (:inputs vars)]
+    ; This is like a shell redirect, but saves the output to a string in memory instead of to a file.
+    ; The string will be passed to the next rule in the list.
+    :stdout :string}
+   ; This filters for files, then passes the string to the next rule.
+   {:transformer (fn [paths] (str/join "\n" (files (str/split #"\n" paths))))}
+   ; Finally, write the transformed data out to disk.
+   {:write (:outputs vars)}])
 
-(def all-targets (concat ["main"] tar-outputs))
+; Generate a list of all files that will be created by extracting the tarfile.
+(action :outputs ["example.tar.dd"]
+  :rule list-tar-files
+  :inputs tarfile)
 
-(build finish-build
-  :inputs all-targets
-  :command ["echo", "Build completed"])
+; `dynout` returns a future which `action` will resolve.
+(def tar-outputs
+  (dynout
+    ; Recalculate the dependencies whenever our .dd file changes.
+    ; Note that unlike `ifwritten`, `ifchanged` calculates a checksum, it doesn't use file metadata.
+    :inputs {:ifchanged ["example.tar.dd"]}
+    :rule (fn [vars] [{:read (:inputs vars)}
+                      ; Our future resolves to a list of file paths.
+                      {:transformer #(str/split % #"\n")}])))
 
-(group all [finish-build])
+; Dynamically add the outputs from the tarfile to the action graph.
+; This schedules the action to run only after the `dynout` future is resolved.
+(action :outputs tar-outputs
+  :inputs tarfile
+  :rule (fn [vars] {:command ["tar" "-xf" (:inputs vars)]}))
 
+; Group together many different actions.
+; This can be called from the command line as if it were its own action.
+(group "all" (concat ["main" docker-image] tar-outputs))
+
+; Specify that the configure script shold rerun whenever a `.c` file is created or deleted.
 (defn should-rerun [event]
   (and (ends-with? (:path event) ".c")
-       (not= :modified (:kind event)))
-(rule configure
-  :command ["python" "configure.py"])
-(build "build.magma"
-  :rule configure
+       (not= :modified (:kind event))))
+
+(action :outputs ["build.magma"]
+  :rule {:command ["python" "configure.py"]}
+  ; Indicate that these outputs shouldn't be deleted by `clean` rules.
   :generator true
   :env ["CFLAGS", "LDFLAGS"]
-  :inputs [(watch "." should-rerun)])
+  ; Register a function that will run on each change to the current directory
+  ; and instruct whether or not the input should cause a rebuild.
+  :inputs {:watch {"." should-rerun}})
 ```
 Note some things about Magma:
 - Command spawning is specified as an array [^12]. No more dependency on shell quoting rules. If people want shell scripts they can put that in their configure script.
-- Redirecting stdout no longer requires bash syntax, it's supported natively with the `:stdout` parameter of `rule`.
-- Build parameters can be referred to in rules with `:keyword` syntax.
-- `rule` is a wrapper around `def` that injects variables into the current scope. `:rule list-tar` is doing name resolution.
-- `dyndeps` is a [thunk](https://wiki.haskell.org/Thunk); it only registers an intent to add edges in the future, it does not eagerly require `example.tar.dd` to exist.
+- Redirecting stdout no longer requires bash syntax, it's supported natively with the `:stdout` parameter of `:rule`.
+- Build parameters can be referred to in rules through the `vars` argument.
+- `dynout` is a [thunk](https://wiki.haskell.org/Thunk); it only registers an intent to add edges in the future, it does not eagerly require `example.tar.dd` to exist.
 - Our `watch` input edge is generalized and can apply to any rule, not just to the configure step. It executes when a file is modified (or if the tool doesn’t support file watching, on each file in the calculated diff in the next tool invocation).
-- Our `watch` edge provides the file event type, but not the file contents. This allows ronin to automatically map `true` results to one of the three edge kinds: `ifwritten`, `ifcreated`, `ifdeleted`. `always` and `ifchanged` are not available through this API.
-- We naturally distinguish between “phony targets” and files because the former are `group`s and the latter are `build` objects. No more accidentally failing to build if an `all` file is created. [^13]
+- Our `watch` edge provides the file event type, but not the file contents. This allows ronin to automatically map `true` results to one of the three edge kinds: `:ifwritten`, `:ifcreated`, `:ifdeleted`. `:always` and `:ifchanged` are not available through this API.
+- We naturally distinguish between “phony targets” and files because the former are `group`s and the latter are `action`s. No more accidentally failing to build if an `all` file is created. [^13]
 - We naturally distinguish between “groups of targets” and “commands that always need to be rerun”; the latter just uses `:inputs :always`.
+- Data can be transformed in memory using clojure functions without needing a separate process invocation. No more need to use `sed` in your build system.
 
 <!--
 - Our `group` cannot actually be used in a `:inputs` parameter because it doesn’t specify the kind of edge (created/modified/deleted). Our mini-clojure provides other abstractions, like variables; arrays; and `map`, that render this unnecessary.
@@ -238,15 +295,25 @@ Note some things about Magma:
 ### "did you just reinvent [starlark](https://starlark-lang.org/)?"
 Kinda. Magma itself has a lot in common with starlark: it's deterministic, hermetic, immutable, and can be evaluated in parallel. But the APIs are very different, because Magma files are a build *target*, not a build *input*. In particular they only describe dependencies between files and process executions; they cannot be used as libraries and do not have support for selecting between multiple configurations.
 
-The main difference between the languages themselves is that clojure has `:keywords` (equivalent to sympy symbolic variables) and python doesn't. They could be rewritten to `var.keyword`, but I'm not sure how much benefit there is to literally using Starlark when these files are being generated by a configure step in any case.
+The main difference between the languages themselves is that clojure has `:keywords` (equivalent to sympy symbolic variables) and python doesn't. Some of these could be rewritten to keyword arguments, and others could be rewritten to structs, or string keys for a hashmap, or enums; but I'm not sure how much benefit there is to literally using Starlark when these files are being generated by a configure step in any case. Probably it's possible to make a 1-1 mapping between the two in any case.
+### runners
+Buck2 has support for [`RunInfo`](https://buck2.build/docs/api/build/RunInfo/) metadata that describes how to execute a built artifact. I think this is really interesting; `cargo run --bin xyz -- args` is a much nicer interface than `make ARGS='args' xyz`, partly because of shell quoting and word splitting issues, and partly just because it's more discoverable.
+
+I don't have a clean idea for how to fit this into a serialization layer. "Don't put it there and use a `Justfile` instead" *works*, but makes it hard to do things like allow the build graph to say that an artifact needs `LD_LIBRARY_PATH` set or something like that, you end up duplicating the info in both files. Perhaps one option could be to attach a `:run` key/value pair to `action`s.
+### "are you just piling a bunch of features on top of ninja?"
+Well, yes and no. Yes, in that this has basically all the features of ninja and then some.
+But no, because the rules here are all carefully constrained to avoid needing to do expensive file I/O to load the build graph.
+The most expensive new feature is `watch`, and it's intended to avoid an even more expensive step (rerunning the configuration step).
+It's also limited to changed files; it can't do arbitrary globbing on the contents of the directory the way that Make pattern rules can.
+
+Note that this also removes some features in ninja: shell commands are gone, process spawning is much less ambiguous, `dyndep` files are no longer parsed automatically.
+And because this embeds a clojure interpreter, many things that were hard-coded in ninja can instead be library functions: `rule`, response files, `msvc_deps_prefix`, `in_newline`.
 ## next steps
-In this post, we have learned some downsides of Make and Ninja, sketched out how they could possibly be fixed, and designed a language called Magma called Magma that has those characteristics. In the next post, I'll describe the features and design of a tool that evaluates and queries this language.
+In this post, we have learned some downsides of Make and Ninja's build file formats, sketched out how they could possibly be fixed, and designed a language called Magma that has those characteristics. In the next post, I'll describe the features and design of a tool that evaluates and queries this language.
 
 [^1]: You might object and say that "a configuration language" is what CMake is for. Yes. But Make works *just* well enough that people are tempted to use it on its own, bypassing the configuration language.
 
 [^2]: at least a basic version—although several of the features of GNU Make get rather complicated.
-
-[^3]: People familiar with ninja might say this looks odd and it should use a `depfile` with `cc -M` so dependencies are tracked automatically. That makes your files shorter and means you need to run the configure step less often, but it doesn't actually solve the problem of negative dependencies. Ninja still doesn't know when it needs to regenerate the depfile.
 
 [^4]: `ninja_syntax.py` is <https://github.com/ninja-build/ninja/blob/231db65ccf5427b16ff85b3a390a663f3c8a479f/misc/ninja_syntax.py>.
 
@@ -256,8 +323,6 @@ In this post, we have learned some downsides of Make and Ninja, sketched out how
 
 [^7]: This is totally based and not at all a terrible idea.
 
-[^9]: I've heard a clean start of Blaze at Google takes 14 hours (!)
-
 [^10]: see e.g. [this description](https://github.com/facebook/buck2/issues/976#issuecomment-3007201092) of how it works in buck2
 
 [^11]: for example, `make` doesn't meet this criteria because `$(shell)` makes it very expensive to even load the build file.
@@ -265,3 +330,5 @@ In this post, we have learned some downsides of Make and Ninja, sketched out how
 [^12]: This has a whole bunch of problems on Windows, where arguments are passed as a single string instead of an array, and each command has to reimplement its own parsing. But it will work “most” of the time, and at least avoids having to deal with Powershell or CMD quoting. 
 
 [^13]: To make it possible to distinguish the two on the command line, `:all` could unambiguously refer to the group, like in Bazel.
+
+[^14]: technically these aren't true monadic builds because they're constrained a lot more than e.g. Shake rules, they can't fabricate new rules from whole cloth. but they still allow you to add more outputs to the graph at runtime.
