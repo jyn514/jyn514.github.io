@@ -9,6 +9,8 @@ taxonomies:
     - "4"
 extra:
   toc: 2
+  bsky: https://bsky.app/profile/did:plc:h2okxbr76w5522tailkxmidq/post/3m7aotdmjos25
+  fedi: https://tech.lgbt/@jyn/115667410263622000
 description: I want a way to gradually transition existing builds to be hermetic.
 ---
 This post is part 4/4 of [a series about build systems](/four-posts-about-build-systems/).

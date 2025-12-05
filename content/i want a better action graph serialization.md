@@ -9,6 +9,8 @@ taxonomies:
   four-posts-about-build-systems: ["3"]
 extra:
   toc: 2
+  bsky: https://bsky.app/profile/did:plc:h2okxbr76w5522tailkxmidq/post/3m7aotdmjos25
+  fedi: https://tech.lgbt/@jyn/115667410263622000
 ---
 This post is part 3/4 of [a series about build systems](/four-posts-about-build-systems/).
 The next post and last post is [I want a better build executor][build executor].

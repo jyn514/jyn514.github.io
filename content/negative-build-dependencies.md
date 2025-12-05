@@ -2,6 +2,9 @@
 title: negative build dependencies
 date: 2025-12-03
 description: A build system needs to know not just which files exist, but which shouldn't exist.
+extra:
+  bsky: https://bsky.app/profile/did:plc:h2okxbr76w5522tailkxmidq/post/3m7aotdmjos25
+  fedi: https://tech.lgbt/@jyn/115667410263622000
 taxonomies:
   tags:
     - build-systems
