@@ -29,7 +29,7 @@ Say you have a C project with two different include paths: `dependency/include` 
 └── src
     └── main.c
 ```
-and the following build.ninja[^depfiles] :
+and the following build.ninja:[^depfiles]
 ```ninja
 rule cc
   command = cc -I dependency/include -I src $in -o $out
@@ -94,7 +94,7 @@ One possibility is to depend on the *whole directory* of `src`. The semantics of
 
 {% note() %}
 
-Another way to avoid needing negative dependencies is to simply have a [hermetic build](https://jyn.dev/build-system-tradeoffs/#hermetic-builds), so that our `cc src/main.rs | dependency/interface.h` rule never even makes the `src/interface.h` file available to the command. That works, but puts us firmly out of Ninja's design space; hermetic builds come with severe tradeoffs.
+Another way to avoid needing negative dependencies is to simply have a [hermetic build](https://jyn.dev/build-system-tradeoffs/#hermetic-builds), so that our `cc src/main.c | dependency/interface.h` rule never even makes the `src/interface.h` file available to the command. That works, but puts us firmly out of Ninja's design space; hermetic builds come with severe tradeoffs.
 
 {% end %}
 
