@@ -26,7 +26,7 @@ Say you have a C project with two different include paths: `dependency/include` 
 └── src
     └── main.c
 ```
-and the following build.ninja[^3] :
+and the following build.ninja[^depfiles] :
 ```ninja
 rule cc
   command = cc -I dependency/include -I src $in -o $out
@@ -85,18 +85,16 @@ What we want is a way to tell it to rebuild if the file `src/interface.h` is cre
 
 One possibility is to depend on the *whole directory* of `src`. The semantics of this are that `src` gets marked dirty whenever a file is added, moved, or deleted. This has two problems:
 - It rebuilds too often. We only want to rerun when `src/interface.h` is added, not for any other file creation.
-- We don’t actually have a consistent way to find all directories that need to be marked in this way. Here we just hardcoded src, but in larger builds [we would use depfiles](xxx), and depfiles do not contain any information about negative dependencies. This matters a lot when there are a dozen+ directories in the search path!
+- We don’t actually have a consistent way to find all directories that need to be marked in this way. Here we just hardcoded src, but in larger builds [we would use depfiles](#fn-depfiles), and depfiles do not contain any information about negative dependencies. This matters a lot when there are a dozen+ directories in the search path!
 
 {% end %}
 
-x
-
 {% note() %}
 
-One way to avoid needing negative dependencies is to simply have a [hermetic build](https://jyn.dev/build-system-tradeoffs/#hermetic-builds), so that our `cc src/main.rs | dependency/interface.h` rule never even makes the `src/interface.h` file available to the command. That works, but puts us firmly out of Ninja's design space; hermetic builds come with severe tradeoffs.
+Another way to avoid needing negative dependencies is to simply have a [hermetic build](https://jyn.dev/build-system-tradeoffs/#hermetic-builds), so that our `cc src/main.rs | dependency/interface.h` rule never even makes the `src/interface.h` file available to the command. That works, but puts us firmly out of Ninja's design space; hermetic builds come with severe tradeoffs.
 
 {% end %}
 
 Thanks to David Chisnall and Ben Boeckel (**@mathstuf**) for making me aware of this issue.
 
-[^3]: People familiar with ninja might say this looks odd and it should use a `depfile` with `cc -M` so dependencies are tracked automatically. That makes your files shorter and means you need to run the configure step less often, but it doesn't actually solve the problem of negative dependencies. Ninja still doesn't know when it needs to regenerate the depfile.
+[^depfiles]: People familiar with ninja might say this looks odd and it should use a `depfile` with `cc -M` so dependencies are tracked automatically. That makes your files shorter and means you need to run the configure step less often, but it doesn't actually solve the problem of negative dependencies. Ninja still doesn't know when it needs to regenerate the depfile.
