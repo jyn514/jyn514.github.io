@@ -167,7 +167,9 @@ Unlike other build systems I know, state (such as manifest hashes, content hashe
 ## did you just reinvent buck2?
 Kinda. Ronin takes a lot of ideas from buck2. It differs in two major ways:
 - It does not expect to be a top-level build system. It is perfectly happy to read (and encourages) generated files from a higher level configure tool. This allows systems like CMake and Meson to mechanically translate Ninja files into this new format, so builds for existing projects can get nice things.
-- It allows you to gradually transition from non-hermetic to hermetic builds, without forcing you to fix all your rules at once, and with tracing to help you find where you need to make your fixes. Buck2 only supports non-hermetic builds for [system toolchains](https://buck2.build/docs/concepts/toolchains), not anything else, and doesn’t support tracing at all.
+- It allows you to gradually transition from non-hermetic to hermetic builds, without forcing you to fix all your rules at once, and with tracing to help you find where you need to make your fixes. Buck2 doesn’t support tracing at all. It technically supports non-hermetic builds, but you don't get many benefits compared to using a different build system, and it's still high cost to switch build systems [^buck-correction].
+
+The main advantage of Ronin is that it can slot in underneath existing build systems people are already using—CMake and Meson—without needing changes to your build files at all.
 ## summary
 In this post I describe what a build executor does, some features I would like to see from an executor (with a special focus on tracing), and a design for a new executor called `ronin` that allows existing projects generating ninja files to gradually transition to hermetic builds over time, without a “flag day” that requires rewriting the whole build system.
 
@@ -180,3 +182,7 @@ I don’t know yet if I will actually build this tool, that seems like a lot of 
 [^3]: This is not an apple to apples comparison; ideally we would name the target by the output file, not by its alias. Unfortunately output names are unpredictable and quite long in Bazel.
 
 [^4]: what if i simply took buck2 and hacked it to bits,,,
+
+[^buck-correction]: An earlier version of this post read "Buck2 only supports non-hermetic builds for [system toolchains], not anything else", which is not correct.
+
+[system toolchains]: https://buck2.build/docs/concepts/toolchain/
