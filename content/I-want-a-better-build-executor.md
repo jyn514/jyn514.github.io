@@ -14,11 +14,17 @@ description: I want a way to gradually transition existing builds to be hermetic
 This post is part 4/4 of [a series about build systems](/four-posts-about-build-systems/).
 
 ---
-> The market fit is interesting. Git has clearly won, it has all of the mindshare, but since you can use jj to work on Git repositories, it can be adopted incrementally. This is, in my opinion, the only viable way to introduce a new VCS: it has to be able to be partially adopted.
-> —[Steve Klabnik](https://steveklabnik.com/writing/i-see-a-future-in-jj/)
+{% quote(author="Steve Klabnik", url="https://steveklabnik.com/writing/i-see-a-future-in-jj/") %}
 
-> If you've worked with other determinism-based systems, one thing they have in common is they feel really fragile, and you have to be careful that you don't do something that breaks the determinism. But in our case, since we've created every level of the stack to support this, we can offload the determinism to the development environment and you can basically write whatever code you want without having to worry about whether it's going to break something.
-> —[Allan Blomquist](https://www.youtube.com/watch?v=72y2EC5fkcE)
+The market fit is interesting. Git has clearly won, it has all of the mindshare, but since you can use jj to work on Git repositories, it can be adopted incrementally. This is, in my opinion, the only viable way to introduce a new VCS: it has to be able to be partially adopted.
+
+{% end %}
+
+{% quote(author="Allan Blomquist", url="https://www.youtube.com/watch?v=72y2EC5fkcE") %}
+
+If you've worked with other determinism-based systems, one thing they have in common is they feel really fragile, and you have to be careful that you don't do something that breaks the determinism. But in our case, since we've created every level of the stack to support this, we can offload the determinism to the development environment and you can basically write whatever code you want without having to worry about whether it's going to break something.
+
+{% end %}
 
 In [my last post](/i-want-a-better-action-graph-serialization/), I describe an improved build graph serialization. In this post, I describe the build executor that reads those files.
 ## what is a build executor?

@@ -13,8 +13,11 @@ description: "within Rust is a smaller language struggling to get out"
 
 **NOTE: this is not a rust tutorial.**
 
-> Every year it was an incredible challenge to fit teaching Rust into lectures since you basically need all the concepts right from the start to understand a lot of programs. I never knew how to order things. The flip side was that usually when you understand all the basic components in play lots of it just fits together. i.e. there's some point where the interwovenness turns from a barrier into something incredibly valuable and helpful.
-> —[Jana Dönszelmann](https://donsz.nl/)
+{% quote(author="Jana Dönszelmann", url="https://donsz.nl/") %}
+
+Every year it was an incredible challenge to fit teaching Rust into lectures since you basically need all the concepts right from the start to understand a lot of programs. I never knew how to order things. The flip side was that usually when you understand all the basic components in play lots of it just fits together. i.e. there's some point where the interwovenness turns from a barrier into something incredibly valuable and helpful.
+
+{% end %}
 
 ## Vision
 One thing I admire in a language is a strong vision. [Uiua](https://www.uiua.org/), for example, has a very strong vision: what does it take to eliminate all local named variables from a language? [Zig](https://ziglang.org/) similarly has a strong vision: explicit, simple language features, easy to cross compile, drop-in replacement for C.

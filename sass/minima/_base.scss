@@ -123,17 +123,53 @@ a.zola-anchor::before { content: "¶"; };
 /**
  * Blockquotes
  */
-blockquote {
+blockquote:not([cite]) {
   color: $grey-color-light;
-  border-left: 4px solid $grey-color-light;
   padding-left: $spacing-unit / 2;
   @include relative-font-size(1.125);
   letter-spacing: -1px;
   /* font-style: italic; */
 
+  border-left: 4px solid $grey-color-light;
+}
+
+/* uses new shortcode */
+figure:has(blockquote) {
+  color: $grey-color-light;
+  padding-left: $spacing-unit / 2;
+  @include relative-font-size(1.125);
+  letter-spacing: -1px;
+  /* font-style: italic; */
+
+  border-left: 4px solid $grey-color-light;
+}
+
+figure > blockquote {
+  margin-bottom: 0;
   > :last-child {
     margin-bottom: 0;
   }
+
+  p::before {
+    content: "\201C";
+  }
+
+  p::after {
+    content: "\201D";
+  }
+}
+
+figcaption cite {
+  font-style: inherit;
+  font-weight: bold;
+}
+figcaption cite::before {
+  content: "—";
+  font-weight: initial;
+  margin-right: 5px;
+}
+figcaption cite.username a::before {
+  content: "@"
 }
 
 /* Details formatting */

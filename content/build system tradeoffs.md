@@ -16,8 +16,11 @@ This post is part 1/4 of [a series about build systems](/four-posts-about-build-
 The next post is [negative build dependencies](/negative-build-dependencies/).
 
 ---
-> If I am even TEMPTED to use `sed`, in my goddamn build system, you have lost.
-> —[Qyriad](https://chaos.social/@Qyriad/111349762684384063)
+{% quote(author="Qyriad", username=true, url="https://chaos.social/@Qyriad/111349762684384063") %}
+
+If I am even TEMPTED to use `sed`, in my goddamn build system, you have lost.
+
+{% end %}
 
 I am currently employed to work on [the build system for the Rust compiler](https://rustc-dev-guide.rust-lang.org/building/bootstrapping/intro.html) (often called `x.py` or `bootstrap`). As a result, I think about a lot of build system weirdness that most people don't have to. This post aims to give an overview of what builds for complicated projects have to think about, as well as vaguely gesture in the direction of build system ideas that I like.
 

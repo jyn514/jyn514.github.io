@@ -16,20 +16,31 @@ Rik calls Excel “malleable software” and the resulting programs [“vine-lik
 > The dream of malleable software is that we can enlarge the space of possibilities, users can enjoy more freedom and get more out of their software, without having to rely on software developers to provide it for them.
 
 i would go one step further: the dream of malleable software is to unify users and programmers, such that there are just “operators” of a computer, and “writing a program” doesn’t sound any harder than “writing a resume”:
-> the distinction between "user" and "programmer" is an artifact of our presently barely-programmable and barely-usable computing systems.  I would like to use the neutral word "operator" instead.
-> —[Stanislav](http://www.loper-os.org/?p=284)
+
+{% quote(author="Stanislav", url="http://www.loper-os.org/?p=284") %}
+
+the distinction between "user" and "programmer" is an artifact of our presently barely-programmable and barely-usable computing systems.  I would like to use the neutral word "operator" instead.
+
+{% end %}
 
 this is a relatively new distinction! if we look at the history of computing and of programming languages, we see very different patterns:
-> In the 1960’s the supply of programmers was not very deep so IBM and other companies trying to gain a computer sale would often have to sell the business prospect on the idea of creating its own programmer(s). Sometimes it was the shipping clerk; sometimes it was the head order taker; sometimes it was a bookkeeper, and sometimes it was a woman or man packing items in the warehouse.
-> —[Brian M. Kelly, The AS/400 and IBM i RPG Programming Guide](https://www.barnesandnoble.com/w/the-as-400-ibm-i-rpg-rpgiv-programming-guide-brian-w-kelly/1124946681)
+
+{% quote(author="Brian M. Kelly, The AS/400 and IBM i RPG Programming Guide", url="https://www.barnesandnoble.com/w/the-as-400-ibm-i-rpg-rpgiv-programming-guide-brian-w-kelly/1124946681") %}
+
+In the 1960’s the supply of programmers was not very deep so IBM and other companies trying to gain a computer sale would often have to sell the business prospect on the idea of creating its own programmer(s). Sometimes it was the shipping clerk; sometimes it was the head order taker; sometimes it was a bookkeeper, and sometimes it was a woman or man packing items in the warehouse.
+
+{% end %}
 
 this is what i want: for programming to be easy and simple enough to pick up that people can do it without specialized training in the field, so that they can write [situated software](https://gwern.net/doc/technology/2004-03-30-shirky-situatedsoftware.html).
 ## the “user/programmer” distinction
 contrast malleable software to the systems that programmers often build:
 > Many, many technologists have taken one look at an existing workflow of spreadsheets, reacted with performative disgust, and proposed the trifecta of microservices, Kubernetes and something called a "service mesh".
 
-> This kind of Big Enterprise technology however takes away that basic agency of those Excel users, who no longer understand the business process they run and now have to negotiate with [ludicrous technology dweebs](https://www.youtube.com/watch?v=y8OnoxKotPQ) for each software change. The previous pliability of the spreadsheets has been completely lost.
-> —[Cal Peterson](https://calpaterson.com/bank-python.html)
+{% quote(author="Cal Peterson", url="https://calpaterson.com/bank-python.html") %}
+
+This kind of Big Enterprise technology however takes away that basic agency of those Excel users, who no longer understand the business process they run and now have to negotiate with [ludicrous technology dweebs](https://www.youtube.com/watch?v=y8OnoxKotPQ) for each software change. The previous pliability of the spreadsheets has been completely lost.
+
+{% end %}
 
 now, this doesn’t happen because programmers are stupid and evil. it happens because the systems we build are amenable to all the features that programmers [take for granted](https://www.hillelwayne.com/post/what-we-can-learn/#version-control):
 - distributed version control systems (VCS)

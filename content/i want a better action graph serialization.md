@@ -16,8 +16,12 @@ The next post and last post is [I want a better build executor][build executor].
 [build executor]: /i-want-a-better-build-executor/
 
 ---
-> As someone who ends up getting the ping on "my build is weird" _after_ it has gone through a round of "poke it with a stick", I would really appreciate the _mechanisms_ for \[correct dependency edges\] rolling out sooner rather than later.
-> —[mathstuf](https://lobste.rs/s/uwyfpy/build_system_tradeoffs#c_ymm0ad)
+{% quote(author="mathstuf", username=true, url="https://lobste.rs/s/uwyfpy/build_system_tradeoffs#c_ymm0ad") %}
+
+As someone who ends up getting the ping on "my build is weird" _after_ it has gone through a round of "poke it with a stick", I would really appreciate the _mechanisms_ for \[correct dependency edges\] rolling out sooner rather than later.
+
+{% end %}
+
 ## what does "action graph" mean?
 In [a previous post](https://jyn.dev/build-system-tradeoffs/), I talked about various approaches in the design space of build systems. In this post, I want to zero in on one particular area: action graphs.
 

@@ -14,11 +14,17 @@ extra:
 #  unlisted: true
 #  stub: true
 ---
-> **You are trapped in a box. You have been for a long time.**  
-> —[*D. R. MacIver*](https://drmaciver.substack.com/i/145700143/you-are-in-a-box)
+{% quote(author="D. R. MacIver", url="https://drmaciver.substack.com/i/145700143/you-are-in-a-box") %}
 
-> **Every program attempts to expand until it can read mail. Those programs which cannot so expand are replaced by ones which can.**  
-> —[_Zawinski's Law of Software Envelopment_](https://en.wikipedia.org/wiki/Jamie_Zawinski#Zawinski's_Law)
+**You are trapped in a box. You have been for a long time.**  
+
+{% end %}
+
+{% quote(author="Zawinski's Law of Software Envelopment", url="https://en.wikipedia.org/wiki/Jamie_Zawinski#Zawinski's_Law") %}
+
+**Every program attempts to expand until it can read mail. Those programs which cannot so expand are replaced by ones which can.**
+
+{% end %}
 ## switching costs and growth
 most tools simultaneously think too small and too big. “i will let you do anything!”, they promise, “as long as you give up your other tools and switch to me!”
 

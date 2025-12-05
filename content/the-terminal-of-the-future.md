@@ -9,11 +9,17 @@ extra.category = "tools"
 extra.fedi = "https://social.jvns.ca/@b0rk/115534063787288626"
 extra.bsky = "https://bsky.app/profile/jyn.dev/post/3m5ewy5lq3k2h"
 +++
-> Terminal internals are a mess. A lot of it is just the way it is because someone made a decision in the 80s and now it’s impossible to change.
-> —[Julia Evans](https://jvns.ca/blog/2025/06/24/new-zine--the-secret-rules-of-the-terminal/)
+{% quote(author="Julia Evans", url="https://jvns.ca/blog/2025/06/24/new-zine--the-secret-rules-of-the-terminal/") %}
 
-> This is what you have to do to redesign infrastructure. Rich [Hickey] didn't just pile some crap on top of Lisp [when building Clojure]. He took the entire Lisp and moved the whole design at once.
-> —[Gary Bernhardt](https://www.destroyallsoftware.com/talks/a-whole-new-world)
+Terminal internals are a mess. A lot of it is just the way it is because someone made a decision in the 80s and now it’s impossible to change.
+
+{% end %}
+
+{% quote(author="Gary Bernhardt", url="https://www.destroyallsoftware.com/talks/a-whole-new-world") %}
+
+This is what you have to do to redesign infrastructure. Rich [Hickey] didn't just pile some crap on top of Lisp [when building Clojure]. He took the entire Lisp and moved the whole design at once.
+
+{% end %}
 ## a mental model of a terminal
 At a very very high level, a terminal has four parts:
 1. The "[terminal emulator](https://wizardzines.com/comics/meet-the-terminal-emulator/)", which is a program that renders a grid-like structure to your graphical display.
