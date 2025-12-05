@@ -98,6 +98,27 @@ Another way to avoid needing negative dependencies is to simply have a [hermetic
 
 {% end %}
 
+{% note() %}
+
+Yet another idea is to introduce an early-cutoff point:
+1. For each `.c` file, run `cc -M` to get a list of include files. Save that to disk.
+2. Whenever a directory is changed, rerun `cc -M`. If our list has changed, rerun a full build for that file.
+
+<style>var { font-family: monospace; font-style: inherit; }</style>
+
+This has the problem that it's <var>O(n<sup>3</sup>)</var>: For each file, for each include, for each directory in the search path, the preprocessor will try to `stat` that file to see whether it exists.
+
+One possible workaround is to calculate the list of include files *in the build system*:
+Look at the order of the search paths, list each path recursively, ignore filenames that are overridden by an include earlier in the search path.
+Save that to disk.
+Next time a directory is modified, check if the list of include files has changed. If so, only then rerun `cc -M` for all files.
+
+This requires the build system to have some quite deep knowledge of how the language works, but I do think it would work today without changes to Ninja.
+
+Thanks to [Jade Lovelace](https://jade.fyi) for this suggestion.
+
+{% end %}
+
 Thanks to David Chisnall and Ben Boeckel (**@mathstuf**) for making me aware of this issue.
 
 [^depfiles]: People familiar with ninja might say this looks odd and it should use a `depfile` with `cc -M` so dependencies are tracked automatically. That makes your files shorter and means you need to run the configure step less often, but it doesn't actually solve the problem of negative dependencies. Ninja still doesn't know when it needs to regenerate the depfile.
