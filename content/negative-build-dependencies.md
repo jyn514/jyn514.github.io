@@ -1,15 +1,12 @@
 ---
 title: negative build dependencies
-date: 2025-11-30
-draft: true
+date: 2025-12-04
 description: A build system needs to know not just which files exist, but which shouldn't exist.
 taxonomies:
   tags:
     - build-systems
   four-posts-about-build-systems:
     - "2"
-extra:
-  draft: true
 ---
 This post is part 2/4 of [a series about build systems](/four-posts-about-build-systems/).
 The next post is [I want a better action graph serialization](/i-want-a-better-action-graph-serialization/).

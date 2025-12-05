@@ -1,7 +1,6 @@
 ---
 title: I want a better action graph serialization
-date: 2025-11-30
-draft: true
+date: 2025-12-04
 description: Makefiles and Ninja files have limitations, separate from the implementing tool. How can we fix them?
 taxonomies:
   tags:

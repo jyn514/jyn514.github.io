@@ -1,7 +1,6 @@
 ---
 title: I want a better build executor
-date: 2025-12-01
-draft: true
+date: 2025-12-05
 taxonomies:
   tags:
     - build-systems
@@ -9,7 +8,6 @@ taxonomies:
   four-posts-about-build-systems:
     - "4"
 extra:
-  draft: true
   toc: 2
 description: I want a way to gradually transition existing builds to be hermetic.
 ---
