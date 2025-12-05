@@ -20,7 +20,7 @@ This post is part 4/4 of [a series about build systems](/four-posts-about-build-
 > If you've worked with other determinism-based systems, one thing they have in common is they feel really fragile, and you have to be careful that you don't do something that breaks the determinism. But in our case, since we've created every level of the stack to support this, we can offload the determinism to the development environment and you can basically write whatever code you want without having to worry about whether it's going to break something.
 > —[Allan Blomquist](https://www.youtube.com/watch?v=72y2EC5fkcE)
 
-In my last post, I describe an improved build graph serialization. In this post, I describe the build executor that reads those files.
+In [my last post](/i-want-a-better-action-graph-serialization/), I describe an improved build graph serialization. In this post, I describe the build executor that reads those files.
 ## what is a build executor?
 Generally, there are three stages to a build:
 1. Resolving and downloading dependencies. The tool that does this is called a **package manager**. Common examples are `npm`, `pip`, [Conan](https://docs.conan.io/2/index.html)[^1], and the [`cargo` resolver](https://doc.rust-lang.org/cargo/reference/resolver.html).
@@ -141,7 +141,7 @@ There’s also [DynamicRIO](https://dynamorio.org/#autotoc_md180), which support
 
 {% end %}
 
-One last way to do this is with a [SIGSEGV signal handler](https://unix.stackexchange.com/a/532395), but that requires that environment variables are in their own page of memory and therefore a linker script, which means we’re now modifying the binaries being run and might cause unexpected build or runtime failures. I’m also not sure if this works for environment variables specifically, because they aren’t linker symbols in the normal sense, they get injected by the C runtime.
+One last way to do this is with a [SIGSEGV signal handler](https://unix.stackexchange.com/a/532395), but that requires that environment variables are in their own page of memory and therefore a linker script. This doesn’t work for environment variables specifically, because they [aren’t linker symbols in the normal sense, they get injected by the C runtime](https://www.owlfolio.org/development/thread-safe-environment-variable-mutation-working-draft-2022-15/). In general, injecting linker scripts means we’re modifying the binaries being run and might cause unexpected build or runtime failures.
 ## `ronin`: a ninja successor
 Here I describe more concretely the tool I want to build, which I’ve named `ronin`. It would read the [constrained clojure action graph serialization format](/i-want-a-better-action-graph-serialization/#designing-a-new-action-graph) (Magma) that I describe in the previous post; perhaps with a way to automatically convert Ninja files to Magma.
 ### interface
@@ -155,18 +155,13 @@ Like [`n2`](https://neugierig.org/software/blog/2022/03/n2.html), ronin would us
 
 Tracing would be built on top of a FUSE file system that tracked file access. [^2]
 
-<!--
-Like Shake, the tracing would be built on top of [FSATrace](https://neilmitchell.blogspot.com/2020/05/file-tracing.html?m=1). I haven’t decided whether to use the Shake integration, which would require ronin to be written in Haskell, or the standalone executable, which would let me use it from Clojure.
--->
-
 Unlike other build systems I know, state (such as manifest hashes, content hashes, and removed outputs) would be stored in an SQLite database, not in flat files.
-
 ## did you just reinvent buck2?
 Kinda. Ronin takes a lot of ideas from buck2. It differs in two major ways:
 - It does not expect to be a top-level build system. It is perfectly happy to read (and encourages) generated files from a higher level configure tool. This allows systems like CMake and Meson to mechanically translate Ninja files into this new format, so builds for existing projects can get nice things.
 - It allows you to gradually transition from non-hermetic to hermetic builds, without forcing you to fix all your rules at once, and with tracing to help you find where you need to make your fixes. Buck2 only supports non-hermetic builds for [system toolchains](https://buck2.build/docs/concepts/toolchains), not anything else, and doesn’t support tracing at all.
 ## summary
-In this post I describe what a build executor does, some features I would like to see from an executor (with a special focus on tracing) and a design for a new executor called `ronin`.
+In this post I describe what a build executor does, some features I would like to see from an executor (with a special focus on tracing), and a design for a new executor called `ronin` that allows existing projects generating ninja files to gradually transition to hermetic builds over time, without a “flag day” that requires rewriting the whole build system.
 
 I don’t know yet if I will actually build this tool, that seems like a lot of work [^4] 😄 but it’s something I would like to exist in the world.
 
