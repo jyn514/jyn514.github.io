@@ -145,6 +145,12 @@ figure:has(blockquote) {
 }
 
 figure > blockquote {
+  @include media-query($on-laptop) {
+    text-indent: .5em hanging;
+  }
+  @include media-query($on-palm) {
+    text-indent: -.5em;
+  }
   margin-bottom: 0;
   > :last-child {
     margin-bottom: 0;
@@ -157,6 +163,9 @@ figure > blockquote {
   p::after {
     content: "\201D";
   }
+}
+figure > blockquote + figcaption {
+  margin-top: .5em;
 }
 
 figcaption cite {
