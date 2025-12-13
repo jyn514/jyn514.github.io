@@ -3,6 +3,8 @@ title: what is a build system, anyway?
 date: 2025-12-12
 extra:
   toc: 2
+  fedi: https://tech.lgbt/@jyn/115712595989182586
+  bsky: https://bsky.app/profile/jyn.dev/post/3m7uqysx7oc26
 description: Some definitions and an overview of the world of build systems
 ---
 Andrew Nesbitt recently wrote a post titled [What is a Package Manager](https://nesbitt.io/2025/12/02/what-is-a-package-manager.html)? This post attempts to do the same for build systems.
