@@ -1,9 +1,7 @@
 ---
 title: what is a build system, anyway?
 date: 2025-12-12
-draft: true
 extra:
-  draft: true
   toc: 2
 description: Some definitions and an overview of the world of build systems
 ---
@@ -149,7 +147,7 @@ Some build systems also integrate directly with the [**package manager**](https:
 
 Some examples of meta-build systems are CMake, meson, and autotools.
 ### VFS
-Advanced build systems can integrate with a **virtual file system** to check-out source control files on-demand, rather than eagerly ([EdenFS](https://github.com/facebook/sapling?tab=readme-ov-file#ejdenfs)).
+Advanced build systems can integrate with a **virtual file system** (VFS) to check-out source control files on-demand, rather than eagerly ([EdenFS](https://github.com/facebook/sapling?tab=readme-ov-file#ejdenfs)).
 <!--
 ### orchestration
 It is common, especially in build systems that have [grown organically](https://nothingisnttrivial.com/vines.html), for build systems to wrap multiple other build systems. We call such a system, especially in the context of **continuous integration**, a **build orchestrator**.[^17] Usually orchestrators will have only a few “blessed” workflows, and not all features of the underlying tool will be exposed.
@@ -208,10 +206,10 @@ Hopefully this post has given you both a vocabulary to talk about build systems 
 - [Bo Lord, “How to Recalculate a Spreadsheet”](https://lord.io/spreadsheets/)
 - [“ninja—`depfile_parser`”](https://github.com/ninja-build/ninja/blob/4b72b15aac766afe6a9a2c0dad535b0c2035a550/src/depfile_parser.in.cc)
 - [“salsa - A generic framework for on-demand, incrementalized computation”](https://salsa-rs.netlify.app/)
-- - [“Defining the database struct - Salsa”](https://salsa-rs.netlify.app/tutorial/db)
+- [“Defining the database struct - Salsa”](https://salsa-rs.netlify.app/tutorial/db)
 - [Felix Klock and Mark Rousskov on behalf of the Rust compiler team, “Announcing Rust 1.52.1”](https://blog.rust-lang.org/2021/05/10/Rust-1.52.1/)
-- - [Yaron Minsky, “Jane Street Blog - Breaking down FRP ”](https://blog.janestreet.com/breaking-down-frp/)
-- - [“Adding Interactivity – React”](https://react.dev/learn/adding-interactivity)
+- [Yaron Minsky, “Jane Street Blog - Breaking down FRP ”](https://blog.janestreet.com/breaking-down-frp/)
+- [“Adding Interactivity – React”](https://react.dev/learn/adding-interactivity)
 - [“State: A Component's Memory – React”](https://react.dev/learn/state-a-components-memory)
 
 
