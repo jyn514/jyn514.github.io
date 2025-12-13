@@ -60,7 +60,7 @@
     load_data(format="json", literal='{"name":"Hacker News",
       "url": "https://hn.algolia.com/?query=jyn.dev' ~ page.path ~ '&type=story"}'),
     load_data(format="json", literal='{"name":"Lobste.rs",
-      "url": "https://lobste.rs/search?q=domain%3Ajyn.dev+' ~ page.title ~ '&what=stories&order=relevance"}'),
+      "url": "https://lobste.rs/stories/url/latest?url=https://jyn.dev' ~ page.path ~ '"}'),
   ] %}
   {% if page.extra.fedi %}
     {% set fedi = load_data(format="json", literal='{"name": "Mastodon",
