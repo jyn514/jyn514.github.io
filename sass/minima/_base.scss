@@ -455,6 +455,7 @@ span.post-meta > a {
 div[role="tooltip"] {
   visibility: hidden;
   opacity: 0;
+  z-index: 1;
   position: absolute;
   top: 150%;
   left: 50%;
