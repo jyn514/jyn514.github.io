@@ -67,7 +67,7 @@ Build systems that do not require declaring build rules are always monadic.
 
 Some examples of monadic build systems include [Shake](https://shakebuild.com/), ninja [`dyndeps`](https://ninja-build.org/manual.html#ref_dyndep), and Cargo build scripts.
 
-Some examples of applicative build systems include `make` (with [recursive make](https://accu.org/journals/overload/14/71/miller_2004/) disallowed), Bazel (excluding native rules), and map/reduce libraries with memoization, such as [this unison program](https://www.unison-lang.org/articles/distributed-datasets/incremental-evaluation/).
+Some examples of applicative build systems include `make` (with [recursive make](https://accu.org/journals/overload/14/71/miller_2004/) and [self-rebuilding Makefiles](https://www.gnu.org/software/make/manual/html_node/Remaking-Makefiles.html) disallowed), Bazel (excluding native rules), and map/reduce libraries with memoization, such as [this unison program](https://www.unison-lang.org/articles/distributed-datasets/incremental-evaluation/).
 ### early cutoff
 If a dirty rule R has an outdated output, reruns, and creates a new output that matches the old one, the build system has an opportunity to avoid running later rules that depend on R.
 Taking advantage of that opportunity is called **early cutoff**.
@@ -81,6 +81,8 @@ For inter-process build systems, this often involves `touch`ing a file to set it
 A **build executor** runs tasks and is responsible for **scheduling** tasks in an order that respects all dependencies, often using heuristics such as dependency depth or the time taken by the task on the last run.
 They also detect whether rule inputs have been modified, making the rule outdated; this is called **rebuild detection**.
 The build executor is responsible for restarting or suspending tasks in build systems that support it.
+
+Executors usually schedule many tasks in parallel, but this is not inherent to the definition.
 
 Executors often provide **progress reporting**, and sometimes allow **querying** the dependency graph.
 Occasionally they trace the inputs used by the task to enforce they match the declared dependencies, or to automatically add them to an internal dependency graph.
@@ -150,6 +152,7 @@ Some build systems also integrate directly with the [**package manager**](https:
 Some examples of meta-build systems are CMake, meson, and autotools.
 ### VFS
 Advanced build systems can integrate with a **virtual file system** (VFS) to check-out source control files on-demand, rather than eagerly ([EdenFS](https://github.com/facebook/sapling?tab=readme-ov-file#ejdenfs)).
+A VFS can also persistently store **content hashes** and provide efficient **change detection** for files, avoiding the need for file watching or constant re-hashing.
 <!--
 ### orchestration
 It is common, especially in build systems that have [grown organically](https://nothingisnttrivial.com/vines.html), for build systems to wrap multiple other build systems. We call such a system, especially in the context of **continuous integration**, a **build orchestrator**.[^17] Usually orchestrators will have only a few “blessed” workflows, and not all features of the underlying tool will be exposed.
@@ -183,7 +186,7 @@ A build system is pretty much anything that lets you specify dependencies on a p
 Hopefully this post has given you both a vocabulary to talk about build systems and a context to compare them!
 ## bibliography
 
-- [Andrew Nesbitt, “What is a Package Manager? | Andrew Nesbitt”](https://nesbitt.io/2025/12/02/what-is-a-package-manager.html)
+- [Andrew Nesbitt, “What is a Package Manager?”](https://nesbitt.io/2025/12/02/what-is-a-package-manager.html)
 - [jyn, “build system tradeoffs”](https://jyn.dev/build-system-tradeoffs/)
 - [Jade Lovelace, “The postmodern build system”](https://jade.fyi/blog/the-postmodern-build-system/)
 - [Casey Rodarmor, “Just Programmer's Manual”](https://just.systems/man/en/)
