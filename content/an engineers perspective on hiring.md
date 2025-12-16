@@ -3,7 +3,7 @@ title: an engineer's perspective on hiring
 date: 2025-08-08
 description: "hiring in tech is broken and everyone knows it. what can we do better?"
 taxonomies:
-  tags: [ideas, hiring]
+  tags: [ideas, hiring, people]
 extra:
   audience: engineering managers and tech companies
   fedi: https://tech.lgbt/@jyn/114995167878689748

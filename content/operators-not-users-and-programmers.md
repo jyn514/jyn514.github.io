@@ -2,7 +2,7 @@
 title = "operators, not users and programmers"
 date = 2025-07-05
 description = "writing programs should be no harder than writing a resume"
-taxonomies.tags = ["ideas"]
+taxonomies.tags = ["ideas", "people"]
 taxonomies.computer-of-the-future = ["0"]
 extra.category = "principles"
 extra.fedi = "https://tech.lgbt/@jyn/114802397785662813"

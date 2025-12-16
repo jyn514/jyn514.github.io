@@ -2,8 +2,8 @@
 title: "i'm just having fun"
 date: 2025-12-15
 description: "programming isn't a competition"
-#taxonomies:
-#  tags: []
+taxonomies:
+  tags: [art, people]
 #  computer-of-the-future: ["0"]
 extra:
   audience: "everyone"

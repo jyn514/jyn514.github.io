@@ -11,6 +11,7 @@ preview_image: /assets/burned%20out%20rust%20club.png
 taxonomies:
   tags:
     - rust
+    - people
 ---
 
 ![a melting, smiling, ferris. it's surrounded by the cursive text "burned out rust kid club".](/assets/burned%20out%20rust%20club.png)

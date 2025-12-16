@@ -9,6 +9,7 @@ extra:
 taxonomies:
   tags:
     - ideas
+    - people
 ---
 
 Open source is unique in that *energy*, not time or money, is the limiting factor. The existential threats are maintainer burnout and an imploding community, not failing to make payroll. As a result, it’s very important to do three things:

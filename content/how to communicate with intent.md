@@ -1,6 +1,8 @@
 ---
 title: how to communicate with intent
 date: 2025-08-11
+taxonomies:
+  tags: [people]
 extra:
   toc: 2
   fedi: https://tech.lgbt/@jyn/115012590221251738
