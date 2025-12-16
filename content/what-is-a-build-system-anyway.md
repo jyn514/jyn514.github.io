@@ -1,6 +1,8 @@
 ---
 title: what is a build system, anyway?
 date: 2025-12-12
+taxonomies:
+  tags: [build-systems]
 extra:
   toc: 2
   fedi: https://tech.lgbt/@jyn/115712595989182586
