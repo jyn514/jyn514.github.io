@@ -1,13 +1,11 @@
 ---
 title: "pre-commit hooks are fundamentally broken"
 date: 2025-12-26
-draft: true
 description: "use pre-push hooks instead"
 taxonomies:
   tags: [git, workflows, devtools]
 #  computer-of-the-future: ["0"]
 extra:
-  draft: true
 #  category: "tools"
 #  audience: "everyone"
 #  toc: 2
