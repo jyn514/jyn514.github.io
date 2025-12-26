@@ -90,7 +90,7 @@ fn main() { for i in 0.. {
 ```
 
 Maybe we can make the script smarter?
-Let's checkout all the files in the index into a temporary directory and run our pre-commit hook there.
+Let's checkout all the files in the index into a temporary directory and run our pre-commit hook there. [^4]
 
 ```console
 $ cat << 'EOF' > pre-commit
@@ -253,3 +253,5 @@ And don't write `pre-commit` hooks!
 [^2]: By default this doesn't happen when running bare `rebase`, but the second you add `--interactive`, nearly anything you do runs a hook. Hooks will also run when you attempt to resolve merge conflicts.
 
 [^3]: Notice that I don't say "only run on changed files". That's because it's [not actually possible to reliably determine which branch the current commit is based on](https://lore.kernel.org/git/CAHnEOG2o784dk+OpkGt-1qjRJb34=sFMJvh-JRJ3v+GNBxFywQ@mail.gmail.com/), the best you can do is pick a random branch that looks likely.
+
+[^4]: This is really quite slow on large enough repos, but there's not any real alternative. `git stash` destoys the git index state. The only VCS that exposes a FUSE filesystem of its commits is [Sapling](https://github.com/facebook/sapling/blob/main/eden/fs/docs/Overview.md), which is poorly supported outside Facebook.
