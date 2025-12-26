@@ -215,7 +215,7 @@ Two things went wrong here:
 2. Our pre-commit hook *ran on a branch we were rebasing*.
 
 Fixing the first thing doesn't really help us, because we don't control other people's branches.
-They might have used `git commit --no-verify`
+They might have used `git commit --no-verify`.
 They might not even have a pre-commit hook installed.
 They might have had a branch that passed the hook when they originally wrote it, but not after a rebase (e.g. if your hook is `cargo check` or something like that).
 They might have had a branch that used an old version of the hook that didn't have as many checks as a later version.
