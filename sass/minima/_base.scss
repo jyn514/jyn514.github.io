@@ -507,3 +507,10 @@ video {
   width: 100%;
   object-fit: contain;
 }
+
+/* `console` code doesn't copy `$` start of line
+ * can't find a way to do this for the following space with only CSS :( */
+pre.language-console > code.language-console > span.z-console.z-source > span.z-keyword {
+  user-select: none;
+}
+
