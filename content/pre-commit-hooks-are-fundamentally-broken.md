@@ -6,6 +6,8 @@ taxonomies:
   tags: [git, workflows, devtools]
 #  computer-of-the-future: ["0"]
 extra:
+  bsky: https://bsky.app/profile/jyn.dev/post/3mavyvzwiqs2k
+  fedi: https://tech.lgbt/@jyn/115787459350131224
 #  category: "tools"
 #  audience: "everyone"
 #  toc: 2
