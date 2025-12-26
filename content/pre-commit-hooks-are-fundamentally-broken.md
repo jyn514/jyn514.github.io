@@ -236,12 +236,12 @@ of [other](https://dev.to/afl_ext/are-pre-commit-git-hooks-a-good-idea-i-dont-th
 This doesn't even count the fact that nearly all pre-commit hooks are implemented in a broken way and just blindly run on the worktree, and are slow or unreliable or both.
 Don't get me started on pre-commit hooks that try to add things to the commit you're about to make.
 
-Please just don't use them. Use `pre-push` instead [^1].
+Please just don't use them. Use `pre-push` instead. [^1]
 `pre-push` hooks nearly avoid all of these issues.
 
 ## Tips for writing a `pre-push` hook
 
-- Run on the index, not the working tree, as described above.
+- Run on the index, not the working tree, as described above. [^3]
 - Only add checks that are fast and reliable. Checks that touch the network should never go in a hook. Checks that are slow and require an update-to-date build cache should never go in a hook. Checks that require credentials or a running local service should never go in a hook.
 - Be as quiet as possible. This hook is running buried inside a bunch of other commands, often without the developer knowing that the hook is going to run. Don't hide other important output behind a wall of progress messages.
 - Don't set the hook up automatically. Whatever tool you use that promises to make this reliable is wrong. There is not a way to do this reliably, and the number of times it's broken on me is more than I can count. Please just add docs for how to set it up manually, prominantly featured in your CONTRIBUTING docs. (You do have contributing docs, right?)
@@ -251,3 +251,5 @@ And don't write `pre-commit` hooks!
 [^1]: For more info about the difference, and a full list of possible hooks, see [`man 5 githooks`](https://git-scm.com/docs/githooks).
 
 [^2]: By default this doesn't happen when running bare `rebase`, but the second you add `--interactive`, nearly anything you do runs a hook. Hooks will also run when you attempt to resolve merge conflicts.
+
+[^3]: Notice that I don't say "only run on changed files". That's because it's [not actually possible to reliably determine which branch the current commit is based on](https://lore.kernel.org/git/CAHnEOG2o784dk+OpkGt-1qjRJb34=sFMJvh-JRJ3v+GNBxFywQ@mail.gmail.com/), the best you can do is pick a random branch that looks likely.
