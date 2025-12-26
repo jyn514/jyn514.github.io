@@ -214,7 +214,7 @@ Could not apply 3d1bbf7... Add print.rs
 
 Two things went wrong here:
 1. Our pre-commit hook can't handle commits that don't have any Rust files.
-2. Our pre-commit hook *ran on a branch we were rebasing*.
+2. Our pre-commit hook *ran on a branch we were rebasing*. [^2]
 
 Fixing the first thing doesn't really help us, because we don't control other people's branches.
 They might have used `git commit --no-verify`.
@@ -249,3 +249,5 @@ Please just don't use them. Use `pre-push` instead [^1].
 And don't write `pre-commit` hooks!
 
 [^1]: For more info about the difference, and a full list of possible hooks, see [`man 5 githooks`](https://git-scm.com/docs/githooks).
+
+[^2]: By default this doesn't happen when running bare `rebase`, but the second you add `--interactive`, nearly anything you do runs a hook. Hooks will also run when you attempt to resolve merge conflicts.
