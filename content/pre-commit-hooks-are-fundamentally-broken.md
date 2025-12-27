@@ -254,4 +254,4 @@ And don't write `pre-commit` hooks!
 
 [^3]: Notice that I don't say "only run on changed files". That's because it's [not actually possible to reliably determine which branch the current commit is based on](https://lore.kernel.org/git/CAHnEOG2o784dk+OpkGt-1qjRJb34=sFMJvh-JRJ3v+GNBxFywQ@mail.gmail.com/), the best you can do is pick a random branch that looks likely.
 
-[^4]: This is really quite slow on large enough repos, but there's not any real alternative. `git stash` destoys the git index state. The only VCS that exposes a FUSE filesystem of its commits is [Sapling](https://github.com/facebook/sapling/blob/main/eden/fs/docs/Overview.md), which is poorly supported outside Facebook.
+[^4]: This is really quite slow on large enough repos, but there's not any real alternative. `git stash` destoys the git index state. The only VCS that exposes a FUSE filesystem of its commits is [Sapling](https://github.com/facebook/sapling/blob/main/eden/fs/docs/Overview.md), which is poorly supported outside Facebook. The best you can do is give up on looking at the whole working copy and only write hooks that read a single file at a time.
