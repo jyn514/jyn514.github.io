@@ -251,6 +251,9 @@ It doesn't fix the issues about running during a rebase, nor does it prevent hoo
 Please just don't use `pre-commit` hooks. Use `pre-push` instead. [^1]
 `pre-push` hooks nearly avoid all of these issues.
 
+The only use case where I think pre-commit hooks are a good idea is for things that must *never* committed, that are worth interrupting a complicated rebase to prevent; namely: credentials.
+Once credentials are committed they're quite difficult to get out, and even harder to be sure you haven't missed them.
+
 ## Tips for writing a `pre-push` hook
 
 - Run on the index, not the working tree, as described above. [^3]
