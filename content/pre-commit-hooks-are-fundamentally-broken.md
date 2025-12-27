@@ -236,7 +236,19 @@ of [other](https://dev.to/afl_ext/are-pre-commit-git-hooks-a-good-idea-i-dont-th
 This doesn't even count the fact that nearly all pre-commit hooks are implemented in a broken way and just blindly run on the worktree, and are slow or unreliable or both.
 Don't get me started on pre-commit hooks that try to add things to the commit you're about to make.
 
-Please just don't use them. Use `pre-push` instead. [^1]
+{% note() %}
+
+The [`pre-commit`](https://pre-commit.com/) framework (or its cousin, [lint-staged](https://github.com/lint-staged/lint-staged)) does *not* fix this.
+It fixes the issues about running on the index by stashing your changes with
+[`--keep-index`](https://git-scm.com/docs/git-stash#Documentation/git-stash.txt---keep-index),
+which works but modifies your git state.
+It doesn't fix the issues about running during a rebase, nor does it prevent hooks from trying to add things to the current commit. [^lint-staged]
+
+"Just don't write bad hooks" doesn't work if I'm working on someone else's project where I don't control the hook.
+
+{% end %}
+
+Please just don't use `pre-commit` hooks. Use `pre-push` instead. [^1]
 `pre-push` hooks nearly avoid all of these issues.
 
 ## Tips for writing a `pre-push` hook
@@ -245,6 +257,15 @@ Please just don't use them. Use `pre-push` instead. [^1]
 - Only add checks that are fast and reliable. Checks that touch the network should never go in a hook. Checks that are slow and require an update-to-date build cache should never go in a hook. Checks that require credentials or a running local service should never go in a hook.
 - Be as quiet as possible. This hook is running buried inside a bunch of other commands, often without the developer knowing that the hook is going to run. Don't hide other important output behind a wall of progress messages.
 - Don't set the hook up automatically. Whatever tool you use that promises to make this reliable is wrong. There is not a way to do this reliably, and the number of times it's broken on me is more than I can count. Please just add docs for how to set it up manually, prominantly featured in your CONTRIBUTING docs. (You do have contributing docs, right?)
+
+{% note() %}
+
+If the hook does fail, and the changes affect an older commit than the most recent,
+you can use a combination of [`git-absorb`](github.com/tummychow/git-absorb), [`git-revise`](https://git-revise.readthedocs.io/en/latest/man.html),
+and [`git rebase -X ours --exec`](https://git-scm.com/docs/git-rebase#Documentation/git-rebase.txt---execcmd)
+to put them in the appropriate commit before pushing again.
+
+{% end %}
 
 And don't write `pre-commit` hooks!
 
@@ -255,3 +276,5 @@ And don't write `pre-commit` hooks!
 [^3]: Notice that I don't say "only run on changed files". That's because it's [not actually possible to reliably determine which branch the current commit is based on](https://lore.kernel.org/git/CAHnEOG2o784dk+OpkGt-1qjRJb34=sFMJvh-JRJ3v+GNBxFywQ@mail.gmail.com/), the best you can do is pick a random branch that looks likely.
 
 [^4]: This is really quite slow on large enough repos, but there's not any real alternative. `git stash` destoys the git index state. The only VCS that exposes a FUSE filesystem of its commits is [Sapling](https://github.com/facebook/sapling/blob/main/eden/fs/docs/Overview.md), which is poorly supported outside Facebook. The best you can do is give up on looking at the whole working copy and only write hooks that read a single file at a time.
+
+[^lint-staged]: `lint-staged` does actually have a `--fail-on-changes` flag which aborts the commit, but that still modifies the working tree, and it's not on by default.
