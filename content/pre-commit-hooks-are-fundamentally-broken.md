@@ -254,7 +254,7 @@ Please just don't use `pre-commit` hooks. Use `pre-push` instead. [^1]
 ## Tips for writing a `pre-push` hook
 
 - Run on the index, not the working tree, as described above. [^3]
-- Only add checks that are fast and reliable. Checks that touch the network should never go in a hook. Checks that are slow and require an update-to-date build cache should never go in a hook. Checks that require credentials or a running local service should never go in a hook.
+- Only add checks that are fast and reliable. Checks that touch the network should never go in a hook. Checks that are slow and require an up-to-date build cache should never go in a hook. Checks that require credentials or a running local service should never go in a hook.
 - Be as quiet as possible. This hook is running buried inside a bunch of other commands, often without the developer knowing that the hook is going to run. Don't hide other important output behind a wall of progress messages.
 - Don't set the hook up automatically. Whatever tool you use that promises to make this reliable is wrong. There is not a way to do this reliably, and the number of times it's broken on me is more than I can count. Please just add docs for how to set it up manually, prominantly featured in your CONTRIBUTING docs. (You do have contributing docs, right?)
 
@@ -275,6 +275,6 @@ And don't write `pre-commit` hooks!
 
 [^3]: Notice that I don't say "only run on changed files". That's because it's [not actually possible to reliably determine which branch the current commit is based on](https://lore.kernel.org/git/CAHnEOG2o784dk+OpkGt-1qjRJb34=sFMJvh-JRJ3v+GNBxFywQ@mail.gmail.com/), the best you can do is pick a random branch that looks likely.
 
-[^4]: This is really quite slow on large enough repos, but there's not any real alternative. `git stash` destoys the git index state. The only VCS that exposes a FUSE filesystem of its commits is [Sapling](https://github.com/facebook/sapling/blob/main/eden/fs/docs/Overview.md), which is poorly supported outside Facebook. The best you can do is give up on looking at the whole working copy and only write hooks that read a single file at a time.
+[^4]: This is really quite slow on large enough repos, but there's not any real alternative. `git stash --keep-index` messes with git index state and also with your stashes. The only VCS that exposes a FUSE filesystem of its commits is [Sapling](https://github.com/facebook/sapling/blob/main/eden/fs/docs/Overview.md), which is poorly supported outside Facebook. The best you can do is give up on looking at the whole working copy and only write hooks that read a single file at a time.
 
 [^lint-staged]: `lint-staged` does actually have a `--fail-on-changes` flag which aborts the commit, but that still modifies the working tree, and it's not on by default.
