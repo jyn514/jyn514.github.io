@@ -232,7 +232,7 @@ Commits don't even necessarily mean that that the code is ready to publish—pre
 I don't use `git stash`, I use `git commit` so that my stashes are tied to a branch, and hooks completely break this workflow.
 
 More than that, pre-commit hooks are *preventing you from saving your work*.
-There should be a *really, really good reason* to prevent you from saving your work, and IMO"doesn't pass the test suite" is not that.
+There should be a *really, really good reason* to prevent you from saving your work, and IMO "doesn't pass the test suite" is not that.
 I have similar feelings about format-on-save hooks.
 
 There are a [bunch](https://blog.plover.com/prog/git/hook-disaster.html)
