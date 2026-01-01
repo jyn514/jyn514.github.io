@@ -232,7 +232,7 @@ Commits don't even necessarily mean that that the code is ready to publish—pre
 I don't use `git stash`, I use `git commit` so that my stashes are tied to a branch, and hooks completely break this workflow.
 
 There are a [bunch](https://blog.plover.com/prog/git/hook-disaster.html)
-of [other](https://dev.to/afl_ext/are-pre-commit-git-hooks-a-good-idea-i-dont-think-so-38j6) footguns with pre-commit hooks.
+of [other](https://dev.to/afl_ext/are-pre-commit-git-hooks-a-good-idea-i-dont-think-so-38j6) [footguns](https://github.com/rust-lang/rust/issues/77620) with pre-commit hooks.
 This doesn't even count the fact that nearly all pre-commit hooks are implemented in a broken way and just blindly run on the worktree, and are slow or unreliable or both.
 Don't get me started on pre-commit hooks that try to add things to the commit you're about to make.
 
@@ -264,7 +264,7 @@ Once credentials are committed they're quite difficult to get out, and even hard
 {% note() %}
 
 If the hook does fail, and the changes affect an older commit than the most recent,
-you can use a combination of [`git-absorb`](github.com/tummychow/git-absorb), [`git-revise`](https://git-revise.readthedocs.io/en/latest/man.html),
+you can use a combination of [`git-absorb`](https://github.com/tummychow/git-absorb), [`git-revise`](https://git-revise.readthedocs.io/en/latest/man.html),
 and [`git rebase -X ours --exec`](https://git-scm.com/docs/git-rebase#Documentation/git-rebase.txt---execcmd)
 to put them in the appropriate commit before pushing again.
 
