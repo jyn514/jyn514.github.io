@@ -231,10 +231,14 @@ Commits that are local to a developer machine do not ever go through CI.
 Commits don't even necessarily mean that that the code is ready to publish—pre-commit hooks don't run on `git stash` for a reason!
 I don't use `git stash`, I use `git commit` so that my stashes are tied to a branch, and hooks completely break this workflow.
 
+More than that, pre-commit hooks are *preventing you from saving your work*.
+There should be a *really, really good reason* to prevent you from saving your work, and IMO"doesn't pass the test suite" is not that.
+I have similar feelings about format-on-save hooks.
+
 There are a [bunch](https://blog.plover.com/prog/git/hook-disaster.html)
 of [other](https://dev.to/afl_ext/are-pre-commit-git-hooks-a-good-idea-i-dont-think-so-38j6) [footguns](https://github.com/rust-lang/rust/issues/77620) with pre-commit hooks.
 This doesn't even count the fact that nearly all pre-commit hooks are implemented in a broken way and just blindly run on the worktree, and are slow or unreliable or both.
-Don't get me started on pre-commit hooks that try to add things to the commit you're about to make.
+Don't get me started on pre-commit hooks that try to add things to the commit you're about to make, or projects that try to automatically install a hook when you run the test suite.
 
 {% note() %}
 
