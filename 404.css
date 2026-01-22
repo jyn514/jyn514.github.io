@@ -1,0 +1,74 @@
+/* Dedicated to the public domain by Sam Hocevar under CC0
+ * See https://github.com/LeoColomb/perfectmotherfuckingwebsite/blob/main/fuckingstyle.scss
+ * Modifications are copyright Jynn Nelson under MIT license */
+
+/* TODO: auto-reload these files when they change
+ * That requires making this a flower page, which is currently broken;
+ * see https://codeberg.org/jyn514/flower/issues/73
+ */
+
+body {
+  #max-width: 750px;
+  margin: auto;
+  margin-top: 40px;
+  padding: 0 10px;
+  font: 18px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  color: #444;
+  text-align: center;
+}
+body > p { text-wrap: balance; }
+/* picture and text side by side */
+@media screen and (min-width: 1100px) {
+	figure {
+		display: flex;
+		gap: 20px;
+		justify-content: center;
+		align-items: center;
+	}
+	img { max-width: 75vw; }
+}
+/* picture above text */
+@media screen and (max-width: 1099px) {
+	figcaption {
+		display: flex;
+	}
+	body {
+		font-size: xx-large;
+		padding: 0;
+		margin: 0;
+	}
+	figure { margin: 0; }
+	/*figcaption { margin-top: -10vh; }*/
+	/*p { margin-top: 0px; }*/
+	img { max-width: 100vw; }
+}
+
+img {
+	max-height: 75vh;
+}
+figcaption {
+	text-align: left;
+	justify-content: center;
+}
+pre, code {
+  overflow-x: auto;
+}
+h1, h2, h3 {
+  line-height: 1.2;
+}
+/* TODO: code blocks are not indicated in light mode :/ */
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #c9d1d9;
+    background: #0d1117;
+  }
+  pre, code {
+    background-color: black;
+  }
+  a:link {
+    color: #58a6ff;
+  }
+  a:visited {
+    color: #8e96f0;
+  }
+}
