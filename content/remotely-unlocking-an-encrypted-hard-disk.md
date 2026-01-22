@@ -6,7 +6,7 @@ taxonomies:
   tags: [stories, terminal, walkthroughs]
 #  computer-of-the-future: ["0"]
 extra:
-  draft: true
+#  draft: true
 #  category: "tools"
 #  audience: "everyone"
 #  toc: 2
