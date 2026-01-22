@@ -6,6 +6,8 @@ taxonomies:
   tags: [stories, terminal, walkthroughs]
 #  computer-of-the-future: ["0"]
 extra:
+  fedi: https://tech.lgbt/@jyn/115939595372361611
+  bsky: https://bsky.app/profile/jyn.dev/post/3mczl3u4v7s2o
 #  draft: true
 #  category: "tools"
 #  audience: "everyone"
