@@ -1,0 +1,34 @@
+{% extends "default.html" %}
+
+{% block content %}
+
+This page contains citations for my zine, <b>computers should be liberating</b>.
+The full text of the PDF is reproduced below.
+
+<br>
+<br>
+
+<embed type="application/pdf" src="/assets/liberating.pdf" width="100%" style="height: 100vh">
+
+{% set links = load_data(path="data/liberating.yml") %}
+
+<h2 id=citations>
+  citations
+  <a class="zola-anchor" href="#citations"></a>
+</h2>
+
+<ul>
+
+{% for name, meta in links %}
+
+<li id="{{name}}">
+  <a href="{{meta.url}}">{{name}}</a>:
+  {% if meta.author %}{{meta.author}}, {% endif %} “{{meta.title}}”
+  <a class="zola-anchor" href="#{{name}}"></a>
+</li>
+
+{% endfor %}
+
+</ul>
+
+{% endblock content %}

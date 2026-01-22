@@ -1,0 +1,66 @@
+operators:
+  author: jyn
+  url: "https://jyn.dev/operators-not-users-and-programmers/"
+  title: "operators, not users and programmers"
+
+persistence:
+  author: jyn
+  url: "https://jyn.dev/complected-and-orthogonal-persistence/"
+  title: "Complected and Orthogonal Persistence"
+
+tomorrow:
+  author: "Allan Blomquist"
+  url: "https:/youtube.com/watch?v=72y2EC5fkcE"
+  title: "Tomorrow Corporation Tech Demo"
+
+audacious:
+  url: "https://dependenttyp.es/pdf/audacious.pdf"
+  title: "AUDACIOUS: User-Driven Access Control with Unmodified Operating Systems"
+  author: "Talia Ringers, Dan Grossman, and Franziska Roesner"
+
+capabilities:
+  url: "https://habitatchronicles.com/2017/05/what-are-capabilities/"
+  title: "What Are Capabilities?"
+  author: Chip Morningstar
+
+ghosts:
+  url: https://blog.sunfishcode.online/no-ghosts/
+  author: Dan Gohman
+  title: "No Ghosts!"
+
+tailscale:
+  url: https://tailscale.com/kb/1151/what-is-tailscale
+  title: "What is Tailscale?"
+
+terminal:
+  url: https://jyn.dev/the-terminal-of-the-future/
+  author: jyn
+  title: "the terminal of the future"
+
+CTF:
+  url: https://lwn.net/Articles/795532/
+  title: "some future CTF API ideas [LWN.net]"
+
+Pharo:
+  url: https://pharo.org
+  title: "Welcome to Pharo!"
+
+Dynamicland:
+  url: https://www.youtube.com/watch?v=5Q9r-AEzRMA
+  title: "Dynamicland intro, Aug 2024"
+  author: "Bret Victor"
+
+coherent:
+  url: https://jyn.dev/the-core-of-rust/
+  author: jyn
+  title: "the core of rust"
+
+fun:
+  url: https://jyn.dev/i-m-just-having-fun/
+  author: jyn
+  title: "i'm just having fun"
+
+procrustean:
+  url: https://siderea.dreamwidth.org/1540620.html
+  author: Siderea
+  title: "Procrustean Epistemologies, Pt 1: The Allergy Problem"
