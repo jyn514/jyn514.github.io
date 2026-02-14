@@ -263,7 +263,7 @@ Once credentials are committed they're quite difficult to get out, and even hard
 - Run on the index, not the working tree, as described above. [^3]
 - Only add checks that are fast and reliable. Checks that touch the network should never go in a hook. Checks that are slow and require an up-to-date build cache should never go in a hook. Checks that require credentials or a running local service should never go in a hook.
 - Be as quiet as possible. This hook is running buried inside a bunch of other commands, often without the developer knowing that the hook is going to run. Don't hide other important output behind a wall of progress messages.
-- Don't set the hook up automatically. Whatever tool you use that promises to make this reliable is wrong. There is not a way to do this reliably, and the number of times it's broken on me is more than I can count. Please just add docs for how to set it up manually, prominantly featured in your CONTRIBUTING docs. (You do have contributing docs, right?)
+- Don't set the hook up automatically. Whatever tool you use that promises to make this reliable is wrong. There is not a way to do this reliably, and the number of times it's broken on me is more than I can count. Please just add docs for how to set it up manually, prominently featured in your CONTRIBUTING docs. (You do have contributing docs, right?)
 
 {% note() %}
 
