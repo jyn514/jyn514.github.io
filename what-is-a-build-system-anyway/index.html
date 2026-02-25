@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>what is a build system, anyway?</title>
+    
+    <meta name="description" content="Some definitions and an overview of the world of build systems">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="Some definitions and an overview of the world of build systems" class="post-title" itemprop="name headline">what is a build system, anyway?</h1>
+    <p class="post-meta">
+      <time datetime="2025-12-12" itemprop="datePublished">
+        2025-12-12
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/build-systems/">build-systems</a>
+        
+      
+    </p>
+  </header>
+
+  
+
+	
+
+
+<div class=toc-container><div class="toc-content">
+	<details><summary>Table of contents</summary>
+	
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#big-picture">big picture</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#specifying-dependencies">specifying dependencies</a>
+		
+
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#applicative-and-monadic-structure">applicative and monadic structure</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#early-cutoff">early cutoff</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#rebuild-detection">rebuild detection</a>
+		
+	</li>
+		</ol>
+	</li>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#the-executor">the executor</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#inter-process-builds">inter-process builds</a>
+		
+
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#determinism">determinism</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#remote-caching">remote caching</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#interface">interface</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#meta-build-systems">meta-build systems</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#vfs">VFS</a>
+		
+	</li>
+		</ol>
+	</li>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#intra-process-builds">intra-process builds</a>
+		
+
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#tracing">tracing</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#frp">FRP</a>
+		
+	</li>
+		</ol>
+	</li>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#so-what-counts-as-a-build-system">so, what counts as a build system?</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/what-is-a-build-system-anyway/#bibliography">bibliography</a>
+		
+	</li>
+		</ol></details></div></div>
+	
+
+  
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Andrew Nesbitt recently wrote a post titled <a href="https://nesbitt.io/2025/12/02/what-is-a-package-manager.html">What is a Package Manager</a>? This post attempts to do the same for build systems.</p>
+<h2 id="big-picture">big picture<a class="zola-anchor" href="#big-picture" aria-label="Anchor link for: big-picture"></a>
+</h2>
+<p>At a high level, <strong>build systems</strong> are tools or libraries that provide a way to <strong>define</strong> and <strong>execute</strong> a series of transformations from <strong>input</strong> data to <strong>output</strong> data that are <strong>memoized</strong> by <strong>caching</strong> them in an <strong>object store</strong>.</p>
+<p>Transformations are called <strong>steps</strong> or <strong>rules</strong> <sup class="footnote-reference" id="fr-14-1"><a href="#fn-14">1</a></sup> and define how to execute a <strong>task</strong> that generates zero or more outputs from zero or more inputs.
+A rule is usually the <strong>unit of caching</strong>; i.e. the <strong>cache points</strong> are the outputs of a rule, and <strong>cache invalidations</strong> must happen on the inputs of a rule.
+Rules can have <strong>dependencies</strong> on previous outputs, forming a directed graph called a <strong>dependency graph</strong>.
+Dependencies that form a cyclic graph are called <strong>circular dependencies</strong> and are usually banned.<sup class="footnote-reference" id="fr-5-1"><a href="#fn-5">2</a></sup></p>
+<p>Outputs that are only used by other rules, but not “interesting” to the end-user, are called <strong>intermediate outputs</strong>.</p>
+<p>A output is <strong>outdated</strong>, <strong>dirty</strong>, or <strong>stale</strong> if one of its dependencies is modified, or, <strong>transitively</strong>, if one of its dependencies is outdated.
+Stale outputs invalidate the cache and require the outputs to be <strong>rebuilt</strong>.
+An output that is cached and not dirty is <strong>up-to-date</strong>.
+Rules are outdated if any of their outputs are outdated.
+If a rule has no outputs, it is always outdated.</p>
+<p>Each invocation of the build tool is called a <strong>build</strong>.
+A <strong>full build</strong> or <strong>clean build</strong> occurs when the cache is empty and all transformations are executed as a <strong>batch job</strong>.
+A cache is <strong>full</strong> if all its rules are up-to-date.
+An <strong>incremental build</strong> occurs when the cache is partially full but some outputs are outdated and need to be rebuilt.
+Deleting the cache is called <strong>cleaning</strong>.</p>
+<p>A build is <strong>correct</strong> or <strong>sound</strong> if all possible incremental builds have the same result as a full build.<sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">3</a></sup>
+A build is <strong>minimal</strong> (occasionally <strong>optimal</strong>) if rules are rerun at most once per build, and only run if necessary for soundness (<a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2018/03/build-systems.pdf">Build Systems à la Carte</a>, <a href="https://www.mathematik.uni-marburg.de/~seba/publications/pluto-incremental-build.pdf">Pluto</a>).</p>
+<p>In order for a build to be sound, all possible cache invalidations must be <strong>tracked</strong> as dependencies.</p>
+<p>A build system without caching is called a <strong>task runner</strong> or <strong>batch compiler</strong>.
+Note that task runners still often support dependencies even if they don't support caching.
+Build systems with caching can emulate a task runner by only defining tasks with zero outputs, but they are usually not designed for this use case. <sup class="footnote-reference" id="fr-7-1"><a href="#fn-7">4</a></sup></p>
+<p>Some examples of build systems: <code>make</code>, <code>docker build</code>, rustc.
+Some examples of task runners: <a href="https://just.systems/man/en/"><code>just</code></a>, shell scripts, <a href="https://fabiensanglard.net/dc/driver.php">gcc</a>.</p>
+<h2 id="specifying-dependencies">specifying dependencies<a class="zola-anchor" href="#specifying-dependencies" aria-label="Anchor link for: specifying-dependencies"></a>
+</h2>
+<p>A build can be either <strong>inter-process</strong>, in which case the task is usually a single <strong>process execution</strong> and its input and output files, or <strong>intra-process</strong>, in which case a task is usually a single function call and its arguments and return values.</p>
+<p>In order to track dependencies, either all inputs and outputs must be <strong>declared</strong> in source code ahead of time, or it must be possible to <strong>infer</strong> them from the execution of a task.</p>
+<p>Build systems that track changes to a rule definition are called <strong>self-tracking</strong>. Past versions of the rule are called its <strong>history</strong> (<a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2018/03/build-systems.pdf">Build Systems à la Carte</a>).</p>
+<p>The act of inferring dependencies from runtime behavior is called <strong>tracing</strong>.
+If a traced rule depends on a dependency that hasn’t been built yet, the build system may either error, <strong>suspend</strong> the task and <strong>resume</strong> it later once the dependency is built, or <strong>abort</strong> the task and <strong>restart</strong> it later once the dependency is built (<a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2018/03/build-systems.pdf">Build Systems à la Carte</a>).</p>
+<p>Inter-process builds often declare their inputs and outputs, and intra-process builds often infer them, but this is not inherent to the definition. <sup class="footnote-reference" id="fr-8-1"><a href="#fn-8">5</a></sup></p>
+<p>Some example of intra-process builds include spreadsheets, the <a href="https://davidlattimore.github.io/posts/2024/11/19/designing-wilds-incremental-linking.html">wild</a> linker, and memoization libraries such as python’s <a href="https://docs.python.org/3/library/functools.html#functools.cache"><code>functools.cache</code></a>.</p>
+<h3 id="applicative-and-monadic-structure">applicative and monadic structure<a class="zola-anchor" href="#applicative-and-monadic-structure" aria-label="Anchor link for: applicative-and-monadic-structure"></a>
+</h3>
+<p>A build graph is <strong>applicative</strong> if all inputs, outputs, and rules are declared ahead of time.
+We say in this case the graph is <strong>statically known</strong>.
+Very few build systems are purely applicative, almost all have an escape hatch.</p>
+<p>The graph is <strong>monadic</strong> if not all outputs are known ahead of time, or if rules can generate other rules dynamically at runtime. Inputs that aren’t known ahead of time are called <strong>dynamic dependencies</strong>. Dynamic dependencies are weaker than a fully monadic build system, in the sense that they can <a href="https://buttondown.com/hillelwayne/archive/the-capability-tractability-tradeoff/">express</a> fewer build graphs. <sup class="footnote-reference" id="fr-15-1"><a href="#fn-15">6</a></sup></p>
+<p>Build systems that do not require declaring build rules are always monadic.</p>
+<p>Some examples of monadic build systems include <a href="https://shakebuild.com/">Shake</a>, ninja <a href="https://ninja-build.org/manual.html#ref_dyndep"><code>dyndeps</code></a>, and Cargo build scripts.</p>
+<p>Some examples of applicative build systems include <code>make</code> (with <a href="https://accu.org/journals/overload/14/71/miller_2004/">recursive make</a> and <a href="https://www.gnu.org/software/make/manual/html_node/Remaking-Makefiles.html">self-rebuilding Makefiles</a> disallowed), Bazel (excluding native rules), and map/reduce libraries with memoization, such as <a href="https://www.unison-lang.org/articles/distributed-datasets/incremental-evaluation/">this unison program</a>.</p>
+<h3 id="early-cutoff">early cutoff<a class="zola-anchor" href="#early-cutoff" aria-label="Anchor link for: early-cutoff"></a>
+</h3>
+<p>If a dirty rule R has an outdated output, reruns, and creates a new output that matches the old one, the build system has an opportunity to avoid running later rules that depend on R.
+Taking advantage of that opportunity is called <strong>early cutoff</strong>.</p>
+<p>See <a href="https://rustc-dev-guide.rust-lang.org/queries/incremental-compilation-in-detail.html">the rustc-dev-guide</a> for much more information about early cutoff. <sup class="footnote-reference" id="fr-9-1"><a href="#fn-9">7</a></sup></p>
+<h3 id="rebuild-detection">rebuild detection<a class="zola-anchor" href="#rebuild-detection" aria-label="Anchor link for: rebuild-detection"></a>
+</h3>
+<p>In unsound build systems, it’s possible that the build system does not accurately <strong>detect</strong> that it needs to rebuild.
+Such systems sometimes offer a way to <strong>force-rerun</strong> a target: keeping the existing cache, but rerunning a single rule.
+For inter-process build systems, this often involves <code>touch</code>ing a file to set its modification date to the current time.</p>
+<h2 id="the-executor">the executor<a class="zola-anchor" href="#the-executor" aria-label="Anchor link for: the-executor"></a>
+</h2>
+<p>A <strong>build executor</strong> runs tasks and is responsible for <strong>scheduling</strong> tasks in an order that respects all dependencies, often using heuristics such as dependency depth or the time taken by the task on the last run.
+They also detect whether rule inputs have been modified, making the rule outdated; this is called <strong>rebuild detection</strong>.
+The build executor is responsible for restarting or suspending tasks in build systems that support it.</p>
+<p>Executors usually schedule many tasks in parallel, but this is not inherent to the definition.</p>
+<p>Executors often provide <strong>progress reporting</strong>, and sometimes allow <strong>querying</strong> the dependency graph.
+Occasionally they trace the inputs used by the task to enforce they match the declared dependencies, or to automatically add them to an internal dependency graph.</p>
+<h2 id="inter-process-builds">inter-process builds<a class="zola-anchor" href="#inter-process-builds" aria-label="Anchor link for: inter-process-builds"></a>
+</h2>
+<p>In the context of inter-process builds, an <strong>artifact</strong> is an output file generated by a rule.<sup class="footnote-reference" id="fr-6-1"><a href="#fn-6">8</a></sup>
+A <strong>source file</strong> is an input file that is specific to the current <strong>project</strong><sup class="footnote-reference" id="fr-11-1"><a href="#fn-11">9</a></sup> (sometimes <strong>repository</strong> or <strong>workspace</strong>) as opposed to a <strong>system dependency</strong> that is reused across multiple projects.
+A project is loosely defined but generally refers to the set of all input and output files that the build system knows about, usually contained in a single directory.
+Source files can be <strong>generated</strong>, which means they are an output of a previous rule.</p>
+<p><strong>Build files</strong> contain rule definitions, including (but not limited to) task definitions, input and output declarations, and metadata such as a human-readable description of the rule.
+Inputs are usually split into <strong>explicit inputs</strong> passed to the spawned process, <strong>implicit inputs</strong> that are tracked by the build system but not used in the task definition, and <strong>order-only inputs</strong> that must exist before the rule can execute, but do not invalidate the cache when modified.</p>
+<p>Process executions have more inputs than just files, such as the rule itself, environment variables, the current time, the current working directory, and occasionally network services or local daemons <sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">10</a></sup>.</p>
+<p>The set of all inputs that are not source files or command line arguments is called the <strong>environment</strong>.
+Processes can be <strong>sandboxed</strong> to prevent them from depending on the network, a daemon, or occasionally system dependencies; this is sometimes called a <strong>sandboxed environment</strong> or <strong>isolated environment</strong>.</p>
+<p>System dependencies are more expansive than I think they are often understood to be.
+They include compilers, linkers, programming language libraries <sup class="footnote-reference" id="fr-3-1"><a href="#fn-3">11</a></sup>, and <a href="https://jyn.dev/build-system-tradeoffs/#dynamic-linking-and-platform-maintainers">static and dynamically linked object files</a>, but also the dynamic loader, language runtime, and various system configuration files.
+The subset of these dependencies needed for building a minimal program in a given language, along with various tools for inspecting and modifying the outputs at runtime, are called a <strong>toolchain</strong>.
+Toolchains are inherently specific to a given language, but sometimes (e.g. in GCC) a single compiler will support multiple languages as inputs.</p>
+<p>A build is <strong>hermetic</strong> (rarely, <strong>self-contained</strong> or <strong>isolated</strong> <sup class="footnote-reference" id="fr-16-1"><a href="#fn-16">12</a></sup>) if it uses no system dependencies and instead defines all its dependencies in the project (<a href="https://bazel.build/basics/hermeticity">Bazel</a>).
+Sandboxing and hermeticity are orthogonal axes; neither one implies the other.
+For example, docker builds are sandboxed but not hermetic, and nix shells are hermetic but not sandboxed.</p>
+<p>Compiler or linkers sometimes have their own <strong>incremental caches</strong>.
+Reusing the cache requires you to <strong>trust</strong> the compiler to be sound when incrementally rebuilding.
+This is usually implicit, but hermetic or sandboxed builds require an opt-in to reuse the cache.
+Bazel calls this kind of reuse a <a href="https://bazel.build/versions/7.0.0/remote/persistent"><strong>persistent worker</strong></a>.</p>
+<h3 id="determinism">determinism<a class="zola-anchor" href="#determinism" aria-label="Anchor link for: determinism"></a>
+</h3>
+<p>A build is <strong>deterministic</strong> if it creates the same output every time in some specific environment.
+A build is <strong>reproducible</strong> if it is deterministic and also has the same output in <a href="https://reproducible-builds.org/docs/commandments/">any environment</a>, as long as the system dependencies remain the same.</p>
+<h3 id="remote-caching">remote caching<a class="zola-anchor" href="#remote-caching" aria-label="Anchor link for: remote-caching"></a>
+</h3>
+<p>Caching can be remote or local.
+<strong>Remote caching</strong> is almost always unsound unless the build is both hermetic and reproducible (i.e. its only environment dependencies are controlled by the build system).</p>
+<p>Downloading files from the remote cache is called <strong>materializing</strong> them.
+Most build systems with remote caching <strong>defer materialization</strong> as long as possible, since in large build graphs the cache is often too large to fit on disk.
+Builds where the cache is never fully materialized are called <strong>shallow builds</strong> (<a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2018/03/build-systems.pdf">Build Systems à la Carte</a>).</p>
+<p>Remote caching usually, but not necessarily, uses <strong>content addressed hashing</strong> in a <strong>key-value store</strong> to identify which artifact to download.</p>
+<p>Some example build systems that use remote caching: Bazel, Buck2, nix, <code>docker build</code>.</p>
+<h3 id="interface">interface<a class="zola-anchor" href="#interface" aria-label="Anchor link for: interface"></a>
+</h3>
+<p>Build systems usually have a way to run a subset of the build.
+The identifier used to specify which part of the build you want to run is called a <strong>target</strong>.<sup class="footnote-reference" id="fr-4-1"><a href="#fn-4">13</a></sup>
+Targets are usually the filenames of an artifact, but can also be abstract names of one or more rules.
+Bazel-descended build systems call these names <a href="https://bazel.build/concepts/labels"><strong>labels</strong></a>.
+Make-descended build systems call these <a href="https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html"><strong>phony targets</strong></a>.
+Some build systems, such as cargo, do not use target identifiers but instead only have subcommands with arguments; the combination of arguments together specifies a set of targets.</p>
+<p>Some example targets:</p>
+<ul>
+<li><code>make all</code></li>
+<li><code>cargo build --test http_integration</code></li>
+<li><code>buck2 build :main</code></li>
+</ul>
+<h3 id="meta-build-systems">meta-build systems<a class="zola-anchor" href="#meta-build-systems" aria-label="Anchor link for: meta-build-systems"></a>
+</h3>
+<p>Inter-process build systems are often divided into a <strong>configuration</strong> step and a <strong>build</strong> step.
+A build system that only runs the configuration step, and requires another tool for the build step, is called a <strong>meta-build system</strong>.</p>
+<p>Usually this meta-build system <strong>discovers</strong> the rules that need to be executed (often through file globbing or some other programmatic way to describe dependencies), then <strong>serializes</strong> these rules into an <a href="/i-want-a-better-action-graph-serialization/"><strong>action graph</strong></a>, which can be stored either in-memory or on-disk. On-disk serialized action graphs are usually themselves build files, in the sense that you can write them by hand but you wouldn't want to.</p>
+<p>Configuration steps usually allow the developer to choose a set of <strong>configuration flags</strong> (occasionally, <strong>build flags</strong>) that affect the generated rules.</p>
+<p>Some build systems also integrate directly with the <a href="https://nesbitt.io/2025/12/02/what-is-a-package-manager.html"><strong>package manager</strong></a>, but this is uncommon, and usually the build system expects all packages to be pre-downloaded into a known location.</p>
+<p>Some examples of meta-build systems are CMake, meson, and autotools.</p>
+<h3 id="vfs">VFS<a class="zola-anchor" href="#vfs" aria-label="Anchor link for: vfs"></a>
+</h3>
+<p>Advanced build systems can integrate with a <strong>virtual file system</strong> (VFS) to check-out source control files on-demand, rather than eagerly (<a href="https://github.com/facebook/sapling?tab=readme-ov-file#ejdenfs">EdenFS</a>).
+A VFS can also persistently store <strong>content hashes</strong> and provide efficient <strong>change detection</strong> for files, avoiding the need for file watching or constant re-hashing.</p>
+<!--
+### orchestration
+It is common, especially in build systems that have [grown organically](https://nothingisnttrivial.com/vines.html), for build systems to wrap multiple other build systems. We call such a system, especially in the context of **continuous integration**, a **build orchestrator**.[^17] Usually orchestrators will have only a few “blessed” workflows, and not all features of the underlying tool will be exposed.
+
+Some examples: [Rust’s bootstrap build system](https://rustc-dev-guide.rust-lang.org/building/bootstrapping/intro.html), Firefox’s [mach](https://firefox-source-docs.mozilla.org/mach/usage.html#)
+-->
+<h2 id="intra-process-builds">intra-process builds<a class="zola-anchor" href="#intra-process-builds" aria-label="Anchor link for: intra-process-builds"></a>
+</h2>
+<p>The equivalent of system dependencies within a process is <strong>non-local state</strong>, including environment variables, globals, thread-locals, and class member fields (for languages where <code>this</code> is passed implicitly).
+Especially tricky are function calls that do <strong>inter-process communication</strong> (IPC), which are basically never sound to cache.
+Tracing intra-process builds is very very hard since it’s easy to call a function that depends on global state without you knowing. <sup class="footnote-reference" id="fr-19-1"><a href="#fn-19">14</a></sup></p>
+<p>In this intra-process context, most object stores are <strong>in-memory caches</strong>. A build system that supports saving (<strong>persisting</strong>) the cache to disk is said to have <a href="/complected-and-orthogonal-persistence/"><strong>persistence</strong></a>. The system for persisting the cache is sometimes called a <strong>database</strong>, even if it is not a general-purpose database in the sense the term is normally used (<a href="https://salsa-rs.netlify.app/tutorial/db">Salsa</a>).</p>
+<h3 id="tracing">tracing<a class="zola-anchor" href="#tracing" aria-label="Anchor link for: tracing"></a>
+</h3>
+<p>Tracing intra-process build systems are sometimes called a <strong>query system</strong>. <sup class="footnote-reference" id="fr-18-1"><a href="#fn-18">15</a></sup> They work similarly to their inter-process equivalents: the interface looks like normal function calls, and the build system tracks which functions call which other functions, so it knows which to rerun later.</p>
+<p>Some examples of tools with tracing intra-process build systems: <a href="https://docs.rs/salsa/latest/salsa/">salsa</a>, the <a href="https://rustc-dev-guide.rust-lang.org/query.html">rustc query system</a>.</p>
+<h3 id="frp">FRP<a class="zola-anchor" href="#frp" aria-label="Anchor link for: frp"></a>
+</h3>
+<p>Intra-process build systems that allow you to explicitly declare dependencies usually come from the background of <a href="https://blog.janestreet.com/breaking-down-frp/"><strong>functional reactive programming</strong></a> (FRP). FRP is most often used in UI and frontend design, but many of the ideas are the same as the build systems used for compiling programs.</p>
+<p>Unlike any of the build systems we've talked about so far, FRP libraries let you look at <em>past versions</em> of your outputs, which is sometimes called <strong>remembering</strong> state (<a href="https://react.dev/learn/state-a-components-memory">React</a>). To make this easier to reason about, rules can be written as <strong>event handlers</strong>.</p>
+<p>Some examples of libraries with dependency declarations: <a href="https://react.dev/learn/adding-interactivity">React</a>.</p>
+<h2 id="so-what-counts-as-a-build-system">so, what counts as a build system?<a class="zola-anchor" href="#so-what-counts-as-a-build-system" aria-label="Anchor link for: so-what-counts-as-a-build-system"></a>
+</h2>
+<p>A build system is pretty much anything that lets you specify dependencies on a previous artifact 😄 Some more weird examples of build systems:</p>
+<ul>
+<li>Github Actions (jobs and workflows)</li>
+<li>Static site generators</li>
+<li>Docker-compose files</li>
+<li>Systemd unit files</li>
+<li>Excel</li>
+</ul>
+<p>Hopefully this post has given you both a vocabulary to talk about build systems and a context to compare them!</p>
+<h2 id="bibliography">bibliography<a class="zola-anchor" href="#bibliography" aria-label="Anchor link for: bibliography"></a>
+</h2>
+<ul>
+<li><a href="https://nesbitt.io/2025/12/02/what-is-a-package-manager.html">Andrew Nesbitt, “What is a Package Manager?”</a></li>
+<li><a href="https://jyn.dev/build-system-tradeoffs/">jyn, “build system tradeoffs”</a></li>
+<li><a href="https://jade.fyi/blog/the-postmodern-build-system/">Jade Lovelace, “The postmodern build system”</a></li>
+<li><a href="https://just.systems/man/en/">Casey Rodarmor, “Just Programmer's Manual”</a></li>
+<li><a href="https://fabiensanglard.net/dc/driver.php">Fabien Sanglard, “Driving Compilers”</a></li>
+<li><a href="https://rustc-dev-guide.rust-lang.org/queries/incremental-compilation-in-detail.html">The Rust Project Contributors, “Incremental compilation in detail”</a></li>
+<li><a href="https://rustc-dev-guide.rust-lang.org/query.html">The Rust Project Contributors, “Queries: demand-driven compilation”</a></li>
+<li><a href="https://docs.python.org/3/library/functools.html">“functools — Higher-order functions and operations on callable objects — Python 3.14.2 documentation”</a></li>
+<li><a href="https://buttondown.com/hillelwayne/archive/the-capability-tractability-tradeoff/">Hillel Wayne, “The Capability-Tractability Tradeoff”</a></li>
+<li><a href="https://shakebuild.com/">Neil Mitchell, “Shake Build System”</a></li>
+<li><a href="https://ninja-build.org/manual.html">“The Ninja build system”</a></li>
+<li><a href="https://accu.org/journals/overload/14/71/miller_2004/">Peter Miller, “Recursive Make Considered Harmful”</a></li>
+<li><a href="https://www.unison-lang.org/articles/distributed-datasets/incremental-evaluation/">Rebecca Mark and Paul Chiusano,  “Incremental evaluation via memoization · Unison programming language”</a></li>
+<li><a href="https://bazel.build/basics/hermeticity">“Hermeticity  |  Bazel”</a></li>
+<li><a href="https://bazel.build/versions/7.0.0/remote/persistent">“Persistent Workers  |  Bazel”</a></li>
+<li><a href="https://bazel.build/concepts/labels">“Labels  |  Bazel”</a></li>
+<li><a href="https://reproducible-builds.org/docs/commandments/">“Commandments of reproducible builds”</a></li>
+<li><a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2018/03/build-systems.pdf">Mokhov et. al., Build Systems à la Carte</a></li>
+<li><a href="https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html">“Phony Targets (GNU make)”</a></li>
+<li><a href="https://github.com/facebook/sapling?tab=readme-ov-file">Facebook, “Sapling: A Scalable, User-Friendly Source Control System.”</a></li>
+<li><a href="https://www.mathematik.uni-marburg.de/~seba/publications/pluto-incremental-build.pdf">Erdweg et. al., "A Sound and Optimal Incremental Build System with Dynamic Dependencies"</a></li>
+<li><a href="https://davidlattimore.github.io/posts/2024/11/19/designing-wilds-incremental-linking.html">David Lattimore, “Designing Wild's incremental linking”</a></li>
+<li><a href="https://lord.io/spreadsheets/">Bo Lord, “How to Recalculate a Spreadsheet”</a></li>
+<li><a href="https://github.com/ninja-build/ninja/blob/4b72b15aac766afe6a9a2c0dad535b0c2035a550/src/depfile_parser.in.cc">“ninja—<code>depfile_parser</code>”</a></li>
+<li><a href="https://salsa-rs.netlify.app/">“salsa - A generic framework for on-demand, incrementalized computation”</a></li>
+<li><a href="https://salsa-rs.netlify.app/tutorial/db">“Defining the database struct - Salsa”</a></li>
+<li><a href="https://blog.rust-lang.org/2021/05/10/Rust-1.52.1/">Felix Klock and Mark Rousskov on behalf of the Rust compiler team, “Announcing Rust 1.52.1”</a></li>
+<li><a href="https://blog.janestreet.com/breaking-down-frp/">Yaron Minsky, “Jane Street Blog - Breaking down FRP ”</a></li>
+<li><a href="https://react.dev/learn/adding-interactivity">“Adding Interactivity – React”</a></li>
+<li><a href="https://react.dev/learn/state-a-components-memory">“State: A Component's Memory – React”</a></li>
+</ul>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-14">
+<p>Nearly all build systems are inconsistent about whether a rule refers to an <em>abstract description</em> of how to build an output (i.e., can be reused for multiple sets of inputs and outputs), or a <em>concrete instantiation</em> of that description for a specific set of inputs and outputs. We have to live with the ambiguity, unfortunately. <a href="#fr-14-1">↩</a></p>
+</li>
+<li id="fn-5">
+<p>Weird things can happen here though; for example early cutoff can allow circular dependencies. This sometimes comes up for generated build.ninja files. <a href="#fr-5-1">↩</a></p>
+</li>
+<li id="fn-1">
+<p>The <a href="https://www.mathematik.uni-marburg.de/~seba/publications/pluto-incremental-build.pdf">pluto paper</a> defines this as “after a build, generated files consistently reflect the latest source files”. Neither my definition nor pluto's definition are particularly well-defined if the build is non-deterministic. Defining this formally would probably require constructing an isomorphism between all programs with the same runtime behavior; but “runtime behavior” is not well-defined for a general-purpose build system that can output artifacts that are not programs. <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="fn-7">
+<p>As we'll see later, the reverse is also true: a common design for build systems is to automatically inject cache points into an existing task runner, or to design the rule file to look as similar to a shell script or function call as possible. <a href="#fr-7-1">↩</a></p>
+</li>
+<li id="fn-8">
+<p>In particular, nearly all modern inter-process build systems have a limited form of tracing where they ask the compiler to generate "dep-info" files <sup class="footnote-reference" id="fr-13-1"><a href="#fn-13">16</a></sup> that show which files were used (usually through imports) by a given source file. Note that this dep-info is not available until after the first time a build has run, and that this only works if the compiler supports it. <a href="#fr-8-1">↩</a></p>
+</li>
+<li id="fn-15">
+<p>For more information about the spectrum of designs between applicative and monadic, see <a href="https://jade.fyi/blog/the-postmodern-build-system/">the post-modern build system</a>. <a href="#fr-15-1">↩</a></p>
+</li>
+<li id="fn-9">
+<p>Note that the dev-guide assumes that tasks are expensive relative to the cost of constructing the graph. This is true in the context of rustc, where LLVM codegen <sup class="footnote-reference" id="fr-10-1"><a href="#fn-10">17</a></sup> normally dominates compilation time, but it isn't true for e.g. <a href="https://lord.io/spreadsheets/">spreadsheets</a>. <a href="#fr-9-1">↩</a></p>
+</li>
+<li id="fn-6">
+<p>It's possible for tasks to create files that aren't tracked by the build system, but these aren't called artifacts. I don't know a good word for these; "byproducts" is the closest but some build systems use that to mean <em>any</em> intermediate artifacts. <a href="#fr-6-1">↩</a></p>
+</li>
+<li id="fn-11">
+<p>I'm not super happy with this definition because it conflicts with how compilers use the term, but I do think it describes how most build systems think about files. <a href="#fr-11-1">↩</a></p>
+</li>
+<li id="fn-2">
+<p>Poorly written rules can also depend on which other rules are executing at the same time, which is called a <strong>race condition</strong>. Note this does not require the rule to be unsound, only for it to use intermediate files the build system doesn’t know about. <a href="#fr-2-1">↩</a></p>
+</li>
+<li id="fn-3">
+<p>for C, header files; for other languages, usually source files or intermediate representations. <a href="#fr-3-1">↩</a></p>
+</li>
+<li id="fn-16">
+<p>Yes, this overlaps with the term for sandboxing. Try to avoid the word "isolated" if possible. <a href="#fr-16-1">↩</a></p>
+</li>
+<li id="fn-4">
+<p>This has no relation to a <strong>target platfom</strong>, which is related to cross-compiling. I wish we had better names for these things. <a href="#fr-4-1">↩</a></p>
+</li>
+<li id="fn-19">
+<p>I would actually describe this as much harder than tracing an inter-process build system, since <a href="/i-want-a-better-build-executor/#environment-variables">there aren't very good systems for tracking memory access</a>. See <a href="https://blog.rust-lang.org/2021/05/10/Rust-1.52.1/">this post about unstable fingerprints</a> for an idea of what bugs this causes in practice. <a href="#fr-19-1">↩</a></p>
+</li>
+<li id="fn-18">
+<p>This actually has very strong analogies to the way "query" is used in a database context: just like a tracing query system, a database has to be able to restart a query's transaction if the data it's trying to access has been modified. <a href="#fr-18-1">↩</a></p>
+</li>
+<li id="fn-13">
+<p>What is a dep-info file? Good question! It's a makefile. It's literally a makefile. Don't you just love <a href="https://github.com/ninja-build/ninja/blob/4b72b15aac766afe6a9a2c0dad535b0c2035a550/src/depfile_parser.in.cc#L27-L47">proving backslashes by induction</a>? <a href="#fr-13-1">↩</a></p>
+</li>
+<li id="fn-10">
+<p>Or, more rarely, type-checking, borrow-checking, or coherence checking. <a href="#fr-10-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+    
+    
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;what-is-a-build-system-anyway&#x2F;&amp;type=story">Hacker News</a>,
+    
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;what-is-a-build-system-anyway&#x2F;">Lobste.rs</a>,
+    
+    <a href="https:&#x2F;&#x2F;tech.lgbt&#x2F;@jyn&#x2F;115712595989182586">Mastodon</a>, or
+    <a href="https:&#x2F;&#x2F;bsky.app&#x2F;profile&#x2F;jyn.dev&#x2F;post&#x2F;3m7uqysx7oc26">Bluesky</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Some definitions and an overview of the world of build systems</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

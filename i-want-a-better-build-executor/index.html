@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>I want a better build executor</title>
+    
+    <meta name="description" content="I want a way to gradually transition existing builds to be hermetic.">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="I want a way to gradually transition existing builds to be hermetic." class="post-title" itemprop="name headline">I want a better build executor</h1>
+    <p class="post-meta">
+      <time datetime="2025-12-05" itemprop="datePublished">
+        2025-12-05
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/build-systems/">build-systems</a>
+        
+      • <a href="https://jyn.dev/tags/ideas/">ideas</a>
+        
+      
+        
+    </p>
+  </header>
+
+  
+
+	
+
+
+<div class=toc-container><div class="toc-content">
+	<details><summary>Table of contents</summary>
+	
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-build-executor/#what-is-a-build-executor">what is a build executor?</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-build-executor/#change-detection">change detection</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-build-executor/#querying">querying</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-build-executor/#tracing">tracing</a>
+		
+
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-build-executor/#environment-variables">environment variables</a>
+		
+	</li>
+		</ol>
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-build-executor/#ronin-a-ninja-successor">ronin: a ninja successor</a>
+		
+
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-build-executor/#interface">interface</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-build-executor/#architecture">architecture</a>
+		
+	</li>
+		</ol>
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-build-executor/#did-you-just-reinvent-buck2">did you just reinvent buck2?</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-build-executor/#summary">summary</a>
+		
+	</li>
+		</ol></details></div></div>
+	
+
+  
+    
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <p>This post is part 4/4 of <a href="/four-posts-about-build-systems/">a series about build systems</a>.</p>
+<hr />
+<figure>
+<blockquote cite="https://steveklabnik.com/writing/i-see-a-future-in-jj/">
+<p>The market fit is interesting. Git has clearly won, it has all of the mindshare, but since you can use jj to work on Git repositories, it can be adopted incrementally. This is, in my opinion, the only viable way to introduce a new VCS: it has to be able to be partially adopted.</p>
+</blockquote>
+<figcaption>
+<cite ><a href="https://steveklabnik.com/writing/i-see-a-future-in-jj/">Steve Klabnik</a></cite>
+</figcaption>
+</figure>
+<figure>
+<blockquote cite="https://www.youtube.com/watch?v=72y2EC5fkcE">
+<p>If you've worked with other determinism-based systems, one thing they have in common is they feel really fragile, and you have to be careful that you don't do something that breaks the determinism. But in our case, since we've created every level of the stack to support this, we can offload the determinism to the development environment and you can basically write whatever code you want without having to worry about whether it's going to break something.</p>
+</blockquote>
+<figcaption>
+<cite ><a href="https://www.youtube.com/watch?v=72y2EC5fkcE">Allan Blomquist</a></cite>
+</figcaption>
+</figure>
+<p>In <a href="/i-want-a-better-action-graph-serialization/">my last post</a>, I describe an improved build graph serialization. In this post, I describe the build executor that reads those files.</p>
+<h2 id="what-is-a-build-executor">what is a build executor?<a class="zola-anchor" href="#what-is-a-build-executor" aria-label="Anchor link for: what-is-a-build-executor"></a>
+</h2>
+<p>Generally, there are three stages to a build:</p>
+<ol>
+<li>Resolving and downloading dependencies. The tool that does this is called a <a href="https://nesbitt.io/2025/12/02/what-is-a-package-manager.html"><strong>package manager</strong></a>. Common examples are <code>npm</code>, <code>pip</code>, <a href="https://docs.conan.io/2/index.html">Conan</a><sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">1</a></sup>, and the <a href="https://doc.rust-lang.org/cargo/reference/resolver.html"><code>cargo</code> resolver</a>.</li>
+<li>Configuring the build based on the host environment and build targets. I am not aware of any common name for this, other than maybe <strong>configure script</strong> (but there exist many tools for this that are not just shell scripts). Common examples are CMake, Meson, autotools, and the Cargo CLI interface (e.g. <code>--feature</code> and <code>--target</code>).</li>
+<li>Executing a bunch of processes and reporting on their progress. The tool that does this is called a <strong>build executor</strong>. Common examples are <code>make</code>, <code>ninja</code>,  <code>docker build</code>, and the <code>Compiling</code> phase of <code>cargo build</code>.</li>
+</ol>
+<p>There are a lot more things an executor can do than just spawning processes and showing a progress report!
+This post explores what those are and sketches a design for a tool that could improve on current executors.</p>
+<h2 id="change-detection">change detection<a class="zola-anchor" href="#change-detection" aria-label="Anchor link for: change-detection"></a>
+</h2>
+<p>Ninja depends on <a href="https://apenwarr.ca/log/20181113">mtimes, which have many issues</a>. Ideally, it would take notes from <a href="https://apenwarr.ca/log/20181113#:~:text=redo:%20mtime%20dependencies"><code>redo</code></a> and look at file attributes, not just the mtime, which eliminates many more false positives.</p>
+<h2 id="querying">querying<a class="zola-anchor" href="#querying" aria-label="Anchor link for: querying"></a>
+</h2>
+<p>I wrote earlier about <a href="/build-system-tradeoffs/#reflection">querying the build graph</a>.
+There are two kinds of things you can query: The configuration graph (what bazel calls the <a href="https://bazel.build/query/language">target graph</a>), which shows dependencies between "human meaningful" packages; and the <a href="https://bazel.build/query/aquery">action graph</a>, which shows dependencies between files.</p>
+<p>Queries on the action graph live in the executor; queries on the configuration graph live in the configure script. For example, <code>cargo metadata</code>/<code>cargo tree</code>, <code>bazel query</code>, and <code>cmake --graphiz</code> query the configuration graph; <code>ninja -t inputs</code> and <code>bazel aquery</code> query the action graph. Cargo has no stable way to query the action graph.</p>
+<p>Note that “querying the graph” is not a binary yes/no. Ninja's query language is much more restricted than Bazel's. Compare Ninja's syntax for querying “the command line for all C++ files used to build the target <code>//:hello_world</code>” <sup class="footnote-reference" id="fr-3-1"><a href="#fn-3">2</a></sup>:</p>
+<pre data-lang="console" class="language-console z-code"><code class="language-console" data-lang="console"><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">ninja</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>t</span> inputs hello_world</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">grep</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-string z-quoted z-single z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&#39;</span>\.c++$<span class="z-punctuation z-definition z-string z-end z-shell">&#39;</span></span></span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">xargs</span></span><span class="z-meta z-function-call z-arguments z-shell"> ninja<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>t</span> targets</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cut</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>d</span> :<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>f</span> 1</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">xargs</span></span><span class="z-meta z-function-call z-arguments z-shell"> ninja<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>t</span> commands</span>
+</span><span class="z-source z-shell z-console">g++ -c -o my_lib.o my_lib.cpp
+</span><span class="z-source z-shell z-console">g++ -o hello_world hello_world.cpp my_lib.o
+</span></code></pre>
+<p>to Bazel's:</p>
+<pre data-lang="console" class="language-console z-code"><code class="language-console" data-lang="console"><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">bazel</span></span><span class="z-meta z-function-call z-arguments z-shell"> aquery <span class="z-string z-quoted z-single z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&#39;</span>inputs(&quot;.*cpp&quot;, deps(//:hello_world))<span class="z-punctuation z-definition z-string z-end z-shell">&#39;</span></span></span>
+</span><span class="z-source z-shell z-console">action &#39;Compiling hello_world.cpp&#39;
+</span><span class="z-source z-shell z-console">  Mnemonic: CppCompile
+</span><span class="z-source z-shell z-console">  Target: //:hello_world
+</span><span class="z-source z-shell z-console">  Configuration: k8-fastbuild
+</span><span class="z-source z-shell z-console">  Execution platform: @@platforms//host:host
+</span><span class="z-source z-shell z-console">  ActionKey: 155b2cdb875736efc8d218ea790d2ef9ce698f0b1b1700d58de3c135145b1d12
+</span><span class="z-source z-shell z-console">  Inputs: [external/rules_cc++cc_configure_extension+local_config_cc/builtin_include_directory_paths, external/rules_cc++cc_configure_extension+local_config_cc/cc_wrapper.sh, external/rules_cc++cc_configure_extension+local_config_cc/deps_scanner_wrapper.sh, external/rules_cc++cc_configure_extension+local_config_cc/validate_static_library.sh, hello_world.cpp, my_lib.h]
+</span><span class="z-source z-shell z-console">  Outputs: [bazel-out/k8-fastbuild/bin/_objs/hello_world/hello_world.pic.d, bazel-out/k8-fastbuild/bin/_objs/hello_world/hello_world.pic.o]
+</span><span class="z-source z-shell z-console">  Command Line: (exec /nix/store/vr15iyyykg9zai6fpgvhcgyw7gckl78w-gcc-wrapper-14.3.0/bin/gcc \
+</span></code></pre>
+<details><summary>full command line</summary>
+<pre class="z-code"><code><span class="z-text z-plain">    -U_FORTIFY_SOURCE \
+</span><span class="z-text z-plain">    -fstack-protector \
+</span><span class="z-text z-plain">    -Wall \
+</span><span class="z-text z-plain">    -Wunused-but-set-parameter \
+</span><span class="z-text z-plain">    -Wno-free-nonheap-object \
+</span><span class="z-text z-plain">    -fno-omit-frame-pointer \
+</span><span class="z-text z-plain">    &#39;-std=c++17&#39; \
+</span><span class="z-text z-plain">    -MD \
+</span><span class="z-text z-plain">    -MF \
+</span><span class="z-text z-plain">    bazel-out/k8-fastbuild/bin/_objs/hello_world/hello_world.pic.d \
+</span><span class="z-text z-plain">    &#39;-frandom-seed=bazel-out/k8-fastbuild/bin/_objs/hello_world/hello_world.pic.o&#39; \
+</span><span class="z-text z-plain">    -fPIC \
+</span><span class="z-text z-plain">    -iquote \
+</span><span class="z-text z-plain">    . \
+</span><span class="z-text z-plain">    -iquote \
+</span><span class="z-text z-plain">    bazel-out/k8-fastbuild/bin \
+</span><span class="z-text z-plain">    -iquote \
+</span><span class="z-text z-plain">    external/rules_cc+ \
+</span><span class="z-text z-plain">    -iquote \
+</span><span class="z-text z-plain">    bazel-out/k8-fastbuild/bin/external/rules_cc+ \
+</span><span class="z-text z-plain">    -iquote \
+</span><span class="z-text z-plain">    external/bazel_tools \
+</span><span class="z-text z-plain">    -iquote \
+</span><span class="z-text z-plain">    bazel-out/k8-fastbuild/bin/external/bazel_tools \
+</span><span class="z-text z-plain">    -c \
+</span><span class="z-text z-plain">    hello_world.cpp \
+</span><span class="z-text z-plain">    -o \
+</span><span class="z-text z-plain">    bazel-out/k8-fastbuild/bin/_objs/hello_world/hello_world.pic.o \
+</span><span class="z-text z-plain">    -fno-canonical-system-headers \
+</span><span class="z-text z-plain">    -Wno-builtin-macro-redefined \
+</span><span class="z-text z-plain">    &#39;-D__DATE__=&quot;redacted&quot;&#39; \
+</span><span class="z-text z-plain">    &#39;-D__TIMESTAMP__=&quot;redacted&quot;&#39; \
+</span><span class="z-text z-plain">    &#39;-D__TIME__=&quot;redacted&quot;&#39;)
+</span></code></pre>
+</details>
+<p>Bazel’s language has graph operators, such as union, intersection, and filtering, that let you build up quite complex predicates. Ninja can only express one predicate at a time, with much more limited filtering—but unlike Bazel, allows you to filter to individual parts of the action, like the command line invocation, without needing a full protobuf parser or trying to do text post-processing.</p>
+<p>I would like to see a query language that combines both these strengths: the same nested predicate structure of Bazel queries, but add a new <code>emit()</code> predicate that takes another predicate as an argument for complex output filtering:</p>
+<pre class="z-code"><code><span class="z-text z-plain">emit(commands, inputs(&quot;.*cpp&quot;, deps(./src/hello_world)))
+</span></code></pre>
+<p>We could even go so far as to give this a jq-like syntax:</p>
+<pre data-lang="jq" class="language-jq z-code"><code class="language-jq" data-lang="jq"><span class="z-text z-plain">./src/hello_world | deps | inputs &quot;*.c++&quot; | emit commands
+</span></code></pre>
+<p>For more complex predicates that have multiple sets as inputs, such as set union and intersection, we could introduce a <code>subquery</code> operator:</p>
+<pre class="z-code"><code><span class="z-text z-plain">glob &quot;src/**&quot; | except subquery(glob(&quot;src/package/**&quot;) | executable)
+</span></code></pre>
+<h2 id="tracing">tracing<a class="zola-anchor" href="#tracing" aria-label="Anchor link for: tracing"></a>
+</h2>
+<p>In <a href="/build-system-tradeoffs/">my previous post</a>, I talked about two main uses for a tracing build system: first, to automatically add dependency edges for you; and second, to verify at runtime that no dependency edges are missing. This especially shines when the action graph has a way to express negative dependencies, because the tracing system <em>sees</em> every attempted file access and can add them to the graph automatically.</p>
+<p>For prior art, see the <a href="https://shakebuild.com/">Shake build system</a>. Shake is higher-level than an executor and doesn't work on an action graph, but it has <a href="https://neilmitchell.blogspot.com/2020/05/file-tracing.html">built-in support for file tracing</a> in all three of these modes: warning about incorrect edges; adding new edges to the graph when they're detected at runtime; and finally, <a href="https://blogs.ncl.ac.uk/andreymokhov/stroll/">fully inferring all edges from the nodes alone</a>.</p>
+<p>I would want my executor to only support linting and hard errors for missing edges. Inferring a full action graph is scary and IMO belongs in a higher-level tool, and adding dependency edges automatically can be done by a tool that wraps the executor and parses the lints.</p>
+<p>What's really cool about this linting system is that it allows you to gradually transition to a hermetic build over time, without frontloading all the work to when you switch to the tool.</p>
+<aside role=note class=note-container><div class=note-content>
+<p>The main downside of tracing is that it's highly non-portable, and in particular is very limited on macOS.</p>
+<p>One possible alternative I've thought of is to do a buck2-style unsandboxed hermetic builds, where you copy exactly the specified inputs into a tempdir and run the build from the tempdir. If that fails, rerun the build from the main source directory. This can't tell <em>which</em> dependency edges are missing, but it can tell you <em>a</em> dependency is missing without fully failing the build.</p>
+<p>The downside to <em>that</em> is it assumes command spawning is a pure function, which of course it's not; anything that talks to a socket is trouble because it might be stateful.</p>
+</div></aside>
+<h3 id="environment-variables">environment variables<a class="zola-anchor" href="#environment-variables" aria-label="Anchor link for: environment-variables"></a>
+</h3>
+<p>Tracing environment variable access is … hard. Traditionally access goes through the libc <code>getenv</code> function, but it’s also possible to take an <code>envp</code> in a main function, in which case accesses are just memory reads. That means we need to trace memory reads somehow.</p>
+<p>On x86 machines, there’s something called <a href="https://stackoverflow.com/a/77056006">PIN</a> that can do this directly in the CPU without needing compile time instrumentation. On ARM there’s <a href="https://developer.arm.com/community/arm-community-blogs/b/architectures-and-processors-blog/posts/statistical-profile-extension">SPE</a>, which is how <a href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/monitoring_and_managing_system_status_and_performance/profiling-memory-accesses-with-perf-mem_monitoring-and-managing-system-status-and-performance"><code>perf mem</code></a> works, but I’m not sure whether it can be configured to track 100% of memory accesses. I need to do more research here.</p>
+<p>On Linux, this is all abstracted by <a href="https://man7.org/linux/man-pages/man2/perf_event_open.2.html"><code>perf_event_open</code></a>. I’m not sure if there’s equivalent wrappers on Windows and macOS.</p>
+<aside role=note class=note-container><div class=note-content>
+<p>There’s also <a href="https://dynamorio.org/#autotoc_md180">DynamicRIO</a>, which supports a bunch of platforms, but I believe it works in a similar way to QEMU, by interposing itself between the program and the CPU, which comes with a bunch of overhead. That could work as an opt-in.</p>
+</div></aside>
+<p>One last way to do this is with a <a href="https://unix.stackexchange.com/a/532395">SIGSEGV signal handler</a>, but that requires that environment variables are in their own page of memory and therefore a linker script. This doesn’t work for environment variables specifically, because they <a href="https://www.owlfolio.org/development/thread-safe-environment-variable-mutation-working-draft-2022-15/">aren’t linker symbols in the normal sense, they get injected by the C runtime</a>. In general, injecting linker scripts means we’re modifying the binaries being run and might cause unexpected build or runtime failures.</p>
+<h2 id="ronin-a-ninja-successor"><code>ronin</code>: a ninja successor<a class="zola-anchor" href="#ronin-a-ninja-successor" aria-label="Anchor link for: ronin-a-ninja-successor"></a>
+</h2>
+<p>Here I describe more concretely the tool I want to build, which I’ve named <code>ronin</code>. It would read the <a href="/i-want-a-better-action-graph-serialization/#designing-a-new-action-graph">constrained clojure action graph serialization format</a> (Magma) that I describe in the previous post; perhaps with a way to automatically convert Ninja files to Magma.</p>
+<h3 id="interface">interface<a class="zola-anchor" href="#interface" aria-label="Anchor link for: interface"></a>
+</h3>
+<p>Like <a href="https://github.com/capnproto/ekam/">Ekam</a>, Ronin would have a <code>--watch</code> continuous rebuild mode (but unlike Bazel and Buck2, no background server). Like Shake, It would have runtime tracing, with all of <code>--tracing=never|warn|error</code> options, to allow gradually transitioning to a hermetic build. And it would have bazel-like querying for the action graph, both through CLI arguments with an jq syntax and through a programmatic API.</p>
+<p>Finally, it would have pluggable backends for file watching, tracing, stat-ing, progress reporting, and checksums, so that it can take advantage of systems that have more features while still being reasonably fast on systems that don’t. For example, on Windows stats are slow, so it would cache stat info; but on Linux stats are fast so it would just directly make a syscall.</p>
+<h3 id="architecture">architecture<a class="zola-anchor" href="#architecture" aria-label="Anchor link for: architecture"></a>
+</h3>
+<p>Like Ninja, Ronin would keep a command log with a history of past versions of the action graph. It would reuse the <a href="https://neugierig.org/software/blog/2020/05/ninja.html#:~:text=Some%20architecture%20notes">bipartite graph structure</a>, with one half being files and the other being commands. It would parse depfiles and dyndeps files just after they’re built, while the cache is still hot.</p>
+<p>Like <a href="https://neugierig.org/software/blog/2022/03/n2.html"><code>n2</code></a>, ronin would use a single-pass approach to support early cutoff. It would hash an "input manifest" to decide whether to rebuild. Unlike <code>n2</code>, it would store a mapping from that hash back to the original manifest so you can query why a rebuild happened.</p>
+<p>Tracing would be built on top of a FUSE file system that tracked file access. <sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">3</a></sup></p>
+<p>Unlike other build systems I know, state (such as manifest hashes, content hashes, and removed outputs) would be stored in an SQLite database, not in flat files.</p>
+<h2 id="did-you-just-reinvent-buck2">did you just reinvent buck2?<a class="zola-anchor" href="#did-you-just-reinvent-buck2" aria-label="Anchor link for: did-you-just-reinvent-buck2"></a>
+</h2>
+<p>Kinda. Ronin takes a lot of ideas from buck2. It differs in two major ways:</p>
+<ul>
+<li>It does not expect to be a top-level build system. It is perfectly happy to read (and encourages) generated files from a higher level configure tool. This allows systems like CMake and Meson to mechanically translate Ninja files into this new format, so builds for existing projects can get nice things.</li>
+<li>It allows you to gradually transition from non-hermetic to hermetic builds, without forcing you to fix all your rules at once, and with tracing to help you find where you need to make your fixes. Buck2 doesn’t support tracing at all. It technically supports non-hermetic builds, but you don't get many benefits compared to using a different build system, and it's still high cost to switch build systems <sup class="footnote-reference" id="fr-buck-correction-1"><a href="#fn-buck-correction">4</a></sup>.</li>
+</ul>
+<p>The main advantage of Ronin is that it can slot in underneath existing build systems people are already using—CMake and Meson—without needing changes to your build files at all.</p>
+<h2 id="summary">summary<a class="zola-anchor" href="#summary" aria-label="Anchor link for: summary"></a>
+</h2>
+<p>In this post I describe what a build executor does, some features I would like to see from an executor (with a special focus on tracing), and a design for a new executor called <code>ronin</code> that allows existing projects generating ninja files to gradually transition to hermetic builds over time, without a “flag day” that requires rewriting the whole build system.</p>
+<p>I don’t know yet if I will actually build this tool, that seems like a lot of work <sup class="footnote-reference" id="fr-4-1"><a href="#fn-4">5</a></sup> 😄 but it’s something I would like to exist in the world.</p>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-1">
+<p>In many ways Conan <a href="https://docs.conan.io/2/tutorial/consuming_packages/build_simple_cmake_project.html">profiles</a> are analogous to ninja files: profiles are the interface between Conan and CMake in the same way that ninja files are the interface between CMake and Ninja. Conan is the only tool I'm aware of where the split between the package manager and the configure step is explicit. <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="fn-3">
+<p>This is not an apple to apples comparison; ideally we would name the target by the output file, not by its alias. Unfortunately output names are unpredictable and quite long in Bazel. <a href="#fr-3-1">↩</a></p>
+</li>
+<li id="fn-2">
+<p>macOS does not have native support for FUSE. <a href="https://macfuse.github.io/">MacFuse</a> exists but does not <a href="https://github.com/macfuse/macfuse/wiki/FUSE-Backends#limitations">support getting the PID</a> of the calling process. A possible workaround would be to start a new FUSE server for each spawned process group. FUSE on Windows is possible through <a href="https://github.com/billziss-gh/winfsp">winfsp</a>. <a href="#fr-2-1">↩</a></p>
+</li>
+<li id="fn-buck-correction">
+<p>An earlier version of this post read "Buck2 only supports non-hermetic builds for <a href="https://buck2.build/docs/concepts/toolchain/">system toolchains</a>, not anything else", which is not correct. <a href="#fr-buck-correction-1">↩</a></p>
+</li>
+<li id="fn-4">
+<p>what if i simply took buck2 and hacked it to bits,,, <a href="#fr-4-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+    
+    
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;i-want-a-better-build-executor&#x2F;&amp;type=story">Hacker News</a>,
+    
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;i-want-a-better-build-executor&#x2F;">Lobste.rs</a>,
+    
+    <a href="https:&#x2F;&#x2F;tech.lgbt&#x2F;@jyn&#x2F;115667410263622000">Mastodon</a>, or
+    <a href="https:&#x2F;&#x2F;bsky.app&#x2F;profile&#x2F;did:plc:h2okxbr76w5522tailkxmidq&#x2F;post&#x2F;3m7aotdmjos25">Bluesky</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>I want a way to gradually transition existing builds to be hermetic.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

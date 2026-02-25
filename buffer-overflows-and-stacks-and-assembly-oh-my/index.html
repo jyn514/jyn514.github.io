@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Buffer Overflows and Stacks and Assembly, Oh My!</title>
+    
+    <meta name="description" content="i write about code, and things that bring me joy, and sometimes other things too">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1  class="post-title" itemprop="name headline">Buffer Overflows and Stacks and Assembly, Oh My!</h1>
+    <p class="post-meta">
+      <time datetime="2019-04-29" itemprop="datePublished">
+        2019-04-29
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/stories/">stories</a>
+        
+      
+    </p>
+  </header>
+
+  
+
+	
+
+  
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Google has a 'Intro' Capture The Flag competition at
+<a href="https://capturetheflag.withgoogle.com/#beginners/">https://capturetheflag.withgoogle.com/#beginners/</a>.
+I've been trying it out because, why not?
+The challenges aren't easy by any means - they range from javascript crypto
+(let me know if you find out how to break JS Safe!) to SQL injections to steganography.
+The challenge this post about, however, is a reverse engineering challenge: three, in fact.</p>
+<p>10-second summary of reverse engineering: you have a binary and no source code,
+and you want to exploit it somehow. In this case, the binary is across a network
+connection, so you can't modify the code, you have to use what's there already.
+If you want to try it yourself, the binary is <a href="/assets/mngmnt">here</a>,
+it runs on 64-bit Linux 2.4+ (but may work on other machines, I haven't tried).
+I highly recommend going through the whole CTF first, though.</p>
+<h2 id="challenge-1">Challenge 1<a class="zola-anchor" href="#challenge-1" aria-label="Anchor link for: challenge-1"></a>
+</h2>
+<blockquote>
+<p>Do some black box testing here, it'll go well with your hat.
+<code>nc mngmnt-iface.ctfcompetition.com 1337</code></p>
+</blockquote>
+<p>When you connect, you get a screen saying</p>
+<pre class="z-code"><code><span class="z-text z-plain">=== Management Interface ===
+</span><span class="z-text z-plain"> 1) Service access
+</span><span class="z-text z-plain"> 2) Read EULA/patch notes
+</span><span class="z-text z-plain"> 3) Quit
+</span></code></pre>
+<p>Let's read the patchnotes!</p>
+<pre class="z-code"><code><span class="z-text z-plain">2
+</span><span class="z-text z-plain">The following patchnotes were found:
+</span><span class="z-text z-plain"> - Version0.2
+</span><span class="z-text z-plain"> - Version0.3
+</span><span class="z-text z-plain">Which patchnotes should be shown?
+</span><span class="z-text z-plain">Version0.2
+</span><span class="z-text z-plain"># Release 0.2
+</span><span class="z-text z-plain"> - Updated library X to version 0.Y
+</span><span class="z-text z-plain"> - Fixed path traversal bug
+</span><span class="z-text z-plain"> - Improved the UX
+</span><span class="z-text z-plain">=== Management Interface ===
+</span><span class="z-text z-plain"> 1) Service access
+</span><span class="z-text z-plain"> 2) Read EULA/patch notes
+</span><span class="z-text z-plain"> 3) Quit
+</span><span class="z-text z-plain">2
+</span><span class="z-text z-plain">The following patchnotes were found:
+</span><span class="z-text z-plain"> - Version0.2
+</span><span class="z-text z-plain"> - Version0.3
+</span><span class="z-text z-plain">Which patchnotes should be shown?
+</span><span class="z-text z-plain">Version0.3
+</span><span class="z-text z-plain"># Version 0.3
+</span><span class="z-text z-plain"> - Rollback of version 0.2 because of random reasons
+</span><span class="z-text z-plain"> - Blah Blah
+</span><span class="z-text z-plain"> - Fix random reboots at 2:32 every second Friday when it&#39;s new-moon.
+</span></code></pre>
+<p>Well, look at that. There's a path traversal bug:
+fixed in .2 and rolled back in .3 for 'random reasons'.
+A path traversal bug is when you have a public server which is meant to serve
+files in the starting directory, but instead servers files from the whole machine if
+you use relative paths. An example:</p>
+<pre class="z-code"><code><span class="z-text z-plain">=== Management Interface ===
+</span><span class="z-text z-plain"> 1) Service access
+</span><span class="z-text z-plain"> 2) Read EULA/patch notes
+</span><span class="z-text z-plain"> 3) Quit
+</span><span class="z-text z-plain">2
+</span><span class="z-text z-plain">The following patchnotes were found:
+</span><span class="z-text z-plain"> - Version0.2
+</span><span class="z-text z-plain"> - Version0.3
+</span><span class="z-text z-plain">Which patchnotes should be shown?
+</span><span class="z-text z-plain">../../../../../etc/passwd
+</span><span class="z-text z-plain">root:x:0:0:root:/root:/bin/bash
+</span><span class="z-text z-plain">...
+</span><span class="z-text z-plain">user:x:1337:1337::/home/user:
+</span></code></pre>
+<p>From here you have a couple options to get the flag: you can either guess
+('fuzz') the filename, or you can download the binary and see what file it's
+trying to open. Let's do the second.</p>
+<p>But wait, how do we get the binary? It turns out on linux there's a <code>proc</code> filesystem
+which <em>looks</em> like it has a bunch of files but really is a bunch of kernel info about
+the running system. What that means for us is we can get the program without knowing the filename or current directory.</p>
+<pre class="z-code"><code><span class="z-text z-plain">=== Management Interface ===
+</span><span class="z-text z-plain"> 1) Service access
+</span><span class="z-text z-plain"> 2) Read EULA/patch notes
+</span><span class="z-text z-plain"> 3) Quit
+</span><span class="z-text z-plain">2
+</span><span class="z-text z-plain">The following patchnotes were found:
+</span><span class="z-text z-plain"> - Version0.2
+</span><span class="z-text z-plain"> - Version0.3
+</span><span class="z-text z-plain">Which patchnotes should be shown?
+</span><span class="z-text z-plain">../../../../../proc/self/exe
+</span><span class="z-text z-plain">ELF&gt;PAAA@X�@8
+</span><span class="z-text z-plain">... more binary follows ...
+</span></code></pre>
+<p><code>/proc</code> is the start of the filesystem, <code>self</code> is the directory for the currently running process
+(in this case the vulnerable program), and <code>exe</code> is the executable file as it was
+when the process started running. So now that we've got the binary, we can take a look at what it's doing.</p>
+<h3 id="enter-gdb">Enter GDB<a class="zola-anchor" href="#enter-gdb" aria-label="Anchor link for: enter-gdb"></a>
+</h3>
+<p>If you don't know how to use GDB, I highly recommend learning. Not only will it
+be useful for debugging your own code, but it's the main way I know of to
+reverse engineer executables.</p>
+<p>The first thing I normally do is look at the main function:</p>
+<pre class="z-code"><code><span class="z-text z-plain">gdb -q ./mngmnt
+</span><span class="z-text z-plain">Reading symbols from ./mngmnt...done.
+</span><span class="z-text z-plain">(gdb) break main
+</span><span class="z-text z-plain">Breakpoint 1 at 0x41414660: file main.cpp, line 133.
+</span><span class="z-text z-plain">(gdb) run
+</span><span class="z-text z-plain">Starting program: /home/jyn/Documents/Programming/challenges/googlectf/mngmnt
+</span><span class="z-text z-plain">
+</span><span class="z-text z-plain">Breakpoint 1, main (argc=1, argv=0x7fffffffdc28) at main.cpp:133
+</span><span class="z-text z-plain">133     main.cpp: No such file or directory.
+</span><span class="z-text z-plain">(gdb) disas
+</span><span class="z-text z-plain">Dump of assembler code for function main(int, char**):
+</span><span class="z-text z-plain">   0x0000000041414648 &lt;+0&gt;:     push   %rbp
+</span><span class="z-text z-plain">   0x0000000041414649 &lt;+1&gt;:     mov    %rsp,%rbp
+</span><span class="z-text z-plain">   0x000000004141464c &lt;+4&gt;:     sub    $0x1e0,%rsp
+</span><span class="z-text z-plain">   0x0000000041414653 &lt;+11&gt;:    mov    %edi,-0x1d4(%rbp)
+</span><span class="z-text z-plain">   0x0000000041414659 &lt;+17&gt;:    mov    %rsi,-0x1e0(%rbp)
+</span><span class="z-text z-plain">=&gt; 0x0000000041414660 &lt;+24&gt;:    mov    0x201a99(%rip),%rax        # 0x41616100 &lt;stdin@@GLIBC_2.2.5&gt;
+</span><span class="z-text z-plain">
+</span><span class="z-text z-plain">... lots of assembly follows, about 600 lines ...
+</span></code></pre>
+<p>Well that's a lot to look at. There's a function called <code>primary_login</code>
+about halfway down though, that looks promising.</p>
+<pre class="z-code"><code><span class="z-text z-plain">(gdb) break primary_login()
+</span><span class="z-text z-plain">Breakpoint 2 at 0x41414576: file main.cpp, line 112.
+</span><span class="z-text z-plain">(gdb) continue
+</span><span class="z-text z-plain">Continuing.
+</span><span class="z-text z-plain">=== Management Interface ===
+</span><span class="z-text z-plain"> 1) Service access
+</span><span class="z-text z-plain"> 2) Read EULA/patch notes
+</span><span class="z-text z-plain"> 3) Quit
+</span><span class="z-text z-plain">1
+</span><span class="z-text z-plain">
+</span><span class="z-text z-plain">Breakpoint 2, primary_login () at main.cpp:112
+</span><span class="z-text z-plain">112     in main.cpp
+</span><span class="z-text z-plain">(gdb) disas
+</span><span class="z-text z-plain">Dump of assembler code for function primary_login():
+</span><span class="z-text z-plain">   0x000000004141456b &lt;+0&gt;:     push   %rbp
+</span><span class="z-text z-plain">   0x000000004141456c &lt;+1&gt;:     mov    %rsp,%rbp
+</span><span class="z-text z-plain">   0x000000004141456f &lt;+4&gt;:     sub    $0x110,%rsp
+</span><span class="z-text z-plain">=&gt; 0x0000000041414576 &lt;+11&gt;:    lea    0x62b(%rip),%rdi        # 0x41414ba8
+</span><span class="z-text z-plain">   0x000000004141457d &lt;+18&gt;:    callq  0x400a90 &lt;puts@plt&gt;
+</span><span class="z-text z-plain">   0x0000000041414582 &lt;+23&gt;:    mov    $0x0,%esi
+</span><span class="z-text z-plain">   0x0000000041414587 &lt;+28&gt;:    lea    0x49e(%rip),%rdi        # 0x41414a2c &lt;_ZL9FLAG_FILE&gt;
+</span><span class="z-text z-plain">   0x000000004141458e &lt;+35&gt;:    mov    $0x0,%eax
+</span><span class="z-text z-plain">   0x0000000041414593 &lt;+40&gt;:    callq  0x400be0 &lt;open@plt&gt;
+</span><span class="z-text z-plain">... about 200 more lines of assembly ...
+</span></code></pre>
+<p>What's <code>_ZL9FLAG_FILE</code>?</p>
+<pre class="z-code"><code><span class="z-text z-plain">(gdb) printf &quot;%s\n&quot;, 0x41414a2c
+</span><span class="z-text z-plain">flag
+</span></code></pre>
+<p>After all that, that was it? Well, at least we know how to get the flag now.
+One last trick - we can get the current directory of the running process with
+<code>/proc/self/cwd</code>:</p>
+<pre class="z-code"><code><span class="z-text z-plain">nc mngmnt-iface.ctfcompetition.com 1337
+</span><span class="z-text z-plain">=== Management Interface ===
+</span><span class="z-text z-plain"> 1) Service access
+</span><span class="z-text z-plain"> 2) Read EULA/patch notes
+</span><span class="z-text z-plain"> 3) Quit
+</span><span class="z-text z-plain">2
+</span><span class="z-text z-plain">The following patchnotes were found:
+</span><span class="z-text z-plain"> - Version0.2
+</span><span class="z-text z-plain"> - Version0.3
+</span><span class="z-text z-plain">Which patchnotes should be shown?
+</span><span class="z-text z-plain">../../../../../proc/self/cwd/flag
+</span><span class="z-text z-plain">CTF{I_luv_buggy_sOFtware}
+</span></code></pre>
+<h2 id="challenge-2">Challenge 2<a class="zola-anchor" href="#challenge-2" aria-label="Anchor link for: challenge-2"></a>
+</h2>
+<p>That got our feet wet. The next challenge is a bit trickier.
+Can we get through the login screen?</p>
+<pre class="z-code"><code><span class="z-text z-plain">nc mngmnt-iface.ctfcompetition.com 1337&#39;
+</span><span class="z-text z-plain">=== Management Interface ===
+</span><span class="z-text z-plain"> 1) Service access
+</span><span class="z-text z-plain"> 2) Read EULA/patch notes
+</span><span class="z-text z-plain"> 3) Quit
+</span><span class="z-text z-plain">1
+</span><span class="z-text z-plain">Please enter the backdoo^Wservice password:
+</span><span class="z-text z-plain">CTF{I_luv_buggy_sOFtware}
+</span><span class="z-text z-plain">! Two factor authentication required !
+</span><span class="z-text z-plain">Please enter secret secondary password:
+</span></code></pre>
+<p>Oh boy, what now? Let's look at the program again.</p>
+<pre class="z-code"><code><span class="z-text z-plain">gdb ./mngmnt
+</span><span class="z-text z-plain">Reading symbols from ./mngmnt...done.
+</span><span class="z-text z-plain">(gdb) disas primary_login
+</span><span class="z-text z-plain">Dump of assembler code for function primary_login():
+</span><span class="z-text z-plain">... lots of code ...
+</span><span class="z-text z-plain">   0x0000000041414627 &lt;+188&gt;:   jne    0x41414630 &lt;primary_login()+197&gt;
+</span><span class="z-text z-plain">   0x0000000041414629 &lt;+190&gt;:   callq  0x41414446 &lt;secondary_login()&gt;
+</span><span class="z-text z-plain">   0x000000004141462e &lt;+195&gt;:   jmp    0x41414646 &lt;primary_login()+219&gt;
+</span><span class="z-text z-plain">   0x0000000041414630 &lt;+197&gt;:   lea    0x5b9(%rip),%rdi        # 0x41414bf0
+</span><span class="z-text z-plain">   0x0000000041414637 &lt;+204&gt;:   callq  0x400a90 &lt;puts@plt&gt;
+</span><span class="z-text z-plain">   0x000000004141463c &lt;+209&gt;:   mov    $0x1,%edi
+</span><span class="z-text z-plain">---Type &lt;return&gt; to continue, or q &lt;return&gt; to quit---
+</span><span class="z-text z-plain">   0x0000000041414641 &lt;+214&gt;:   callq  0x400aa0 &lt;exit@plt&gt;
+</span><span class="z-text z-plain">   0x0000000041414646 &lt;+219&gt;:   leaveq
+</span><span class="z-text z-plain">   0x0000000041414647 &lt;+220&gt;:   retq
+</span><span class="z-text z-plain">End of assembler dump.
+</span></code></pre>
+<p><code>secondary_login</code> looks promising, what's that look like?
+Note: this is really long because we do need to read it this time.</p>
+<pre class="z-code"><code><span class="z-text z-plain">(gdb) disas secondary_login
+</span><span class="z-text z-plain">Dump of assembler code for function secondary_login():
+</span><span class="z-text z-plain">   0x0000000041414446 &lt;+0&gt;:     push   %rbp
+</span><span class="z-text z-plain">   0x0000000041414447 &lt;+1&gt;:     mov    %rsp,%rbp
+</span><span class="z-text z-plain">   0x000000004141444a &lt;+4&gt;:     sub    $0x90,%rsp
+</span><span class="z-text z-plain">   0x0000000041414451 &lt;+11&gt;:    lea    0x6d8(%rip),%rdi        # 0x41414b30
+</span><span class="z-text z-plain">   0x0000000041414458 &lt;+18&gt;:    callq  0x400a90 &lt;puts@plt&gt;
+</span><span class="z-text z-plain">   0x000000004141445d &lt;+23&gt;:    lea    0x6f4(%rip),%rdi        # 0x41414b58
+</span><span class="z-text z-plain">   0x0000000041414464 &lt;+30&gt;:    callq  0x400a90 &lt;puts@plt&gt;
+</span><span class="z-text z-plain">   0x0000000041414469 &lt;+35&gt;:    lea    -0x90(%rbp),%rax
+</span><span class="z-text z-plain">   0x0000000041414470 &lt;+42&gt;:    mov    %rax,%rsi
+</span><span class="z-text z-plain">   0x0000000041414473 &lt;+45&gt;:    lea    0x706(%rip),%rdi        # 0x41414b80
+</span><span class="z-text z-plain">   0x000000004141447a &lt;+52&gt;:    mov    $0x0,%eax
+</span><span class="z-text z-plain">   0x000000004141447f &lt;+57&gt;:    callq  0x400b00 &lt;scanf@plt&gt;
+</span><span class="z-text z-plain">   0x0000000041414484 &lt;+62&gt;:    lea    -0x90(%rbp),%rax
+</span><span class="z-text z-plain">   0x000000004141448b &lt;+69&gt;:    mov    %rax,%rdi
+</span><span class="z-text z-plain">   0x000000004141448e &lt;+72&gt;:    callq  0x400b10 &lt;strlen@plt&gt;
+</span><span class="z-text z-plain">   0x0000000041414493 &lt;+77&gt;:    mov    %rax,-0x10(%rbp)
+</span><span class="z-text z-plain">   0x0000000041414497 &lt;+81&gt;:    movq   $0x0,-0x8(%rbp)
+</span><span class="z-text z-plain">   0x000000004141449f &lt;+89&gt;:    mov    -0x8(%rbp),%rax
+</span><span class="z-text z-plain">   0x00000000414144a3 &lt;+93&gt;:    cmp    -0x10(%rbp),%rax
+</span><span class="z-text z-plain">   0x00000000414144a7 &lt;+97&gt;:    jae    0x414144d6 &lt;secondary_login()+144&gt;
+</span><span class="z-text z-plain">   0x00000000414144a9 &lt;+99&gt;:    lea    -0x90(%rbp),%rdx
+</span><span class="z-text z-plain">   0x00000000414144b0 &lt;+106&gt;:   mov    -0x8(%rbp),%rax
+</span><span class="z-text z-plain">   0x00000000414144b4 &lt;+110&gt;:   add    %rdx,%rax
+</span><span class="z-text z-plain">   0x00000000414144b7 &lt;+113&gt;:   movzbl (%rax),%eax
+</span><span class="z-text z-plain">   0x00000000414144ba &lt;+116&gt;:   xor    $0xffffffc7,%eax
+</span><span class="z-text z-plain">   0x00000000414144bd &lt;+119&gt;:   mov    %eax,%ecx
+</span><span class="z-text z-plain">   0x00000000414144bf &lt;+121&gt;:   lea    -0x90(%rbp),%rdx
+</span><span class="z-text z-plain">   0x00000000414144c6 &lt;+128&gt;:   mov    -0x8(%rbp),%rax
+</span><span class="z-text z-plain">   0x00000000414144ca &lt;+132&gt;:   add    %rdx,%rax
+</span><span class="z-text z-plain">   0x00000000414144cd &lt;+135&gt;:   mov    %cl,(%rax)
+</span><span class="z-text z-plain">   0x00000000414144cf &lt;+137&gt;:   addq   $0x1,-0x8(%rbp)
+</span><span class="z-text z-plain">   0x00000000414144d4 &lt;+142&gt;:   jmp    0x4141449f &lt;secondary_login()+89&gt;
+</span><span class="z-text z-plain">   0x00000000414144d6 &lt;+144&gt;:   cmpq   $0x23,-0x10(%rbp)
+</span><span class="z-text z-plain">   0x00000000414144db &lt;+149&gt;:   jne    0x41414537 &lt;secondary_login()+241&gt;
+</span><span class="z-text z-plain">   0x00000000414144dd &lt;+151&gt;:   mov    0x55c(%rip),%rax        # 0x41414a40 &lt;_ZL4FLAG&gt;
+</span><span class="z-text z-plain">   0x00000000414144e4 &lt;+158&gt;:   mov    0x55d(%rip),%rdx        # 0x41414a48 &lt;_ZL4FLAG+8&gt;
+</span><span class="z-text z-plain">   0x00000000414144eb &lt;+165&gt;:   mov    %rax,-0x90(%rbp)
+</span><span class="z-text z-plain">   0x00000000414144f2 &lt;+172&gt;:   mov    %rdx,-0x88(%rbp)
+</span><span class="z-text z-plain">   0x00000000414144f9 &lt;+179&gt;:   mov    0x550(%rip),%rax        # 0x41414a50 &lt;_ZL4FLAG+16&gt;
+</span><span class="z-text z-plain">   0x0000000041414500 &lt;+186&gt;:   mov    0x551(%rip),%rdx        # 0x41414a58 &lt;_ZL4FLAG+24&gt;
+</span><span class="z-text z-plain">   0x0000000041414507 &lt;+193&gt;:   mov    %rax,-0x80(%rbp)
+</span><span class="z-text z-plain">   0x000000004141450b &lt;+197&gt;:   mov    %rdx,-0x78(%rbp)
+</span><span class="z-text z-plain">   0x000000004141450f &lt;+201&gt;:   movzwl 0x54a(%rip),%eax        # 0x41414a60 &lt;_ZL4FLAG+32&gt;
+</span><span class="z-text z-plain">   0x0000000041414516 &lt;+208&gt;:   mov    %ax,-0x70(%rbp)
+</span><span class="z-text z-plain">   0x000000004141451a &lt;+212&gt;:   movzbl 0x541(%rip),%eax        # 0x41414a62 &lt;_ZL4FLAG+34&gt;
+</span><span class="z-text z-plain">   0x0000000041414521 &lt;+219&gt;:   mov    %al,-0x6e(%rbp)
+</span><span class="z-text z-plain">   0x0000000041414524 &lt;+222&gt;:   lea    -0x90(%rbp),%rax
+</span><span class="z-text z-plain">---Type &lt;return&gt; to continue, or q &lt;return&gt; to quit---
+</span><span class="z-text z-plain">   0x000000004141452b &lt;+229&gt;:   test   %rax,%rax
+</span><span class="z-text z-plain">   0x000000004141452e &lt;+232&gt;:   je     0x41414537 &lt;secondary_login()+241&gt;
+</span><span class="z-text z-plain">   0x0000000041414530 &lt;+234&gt;:   mov    $0x1,%eax
+</span><span class="z-text z-plain">   0x0000000041414535 &lt;+239&gt;:   jmp    0x4141453c &lt;secondary_login()+246&gt;
+</span><span class="z-text z-plain">   0x0000000041414537 &lt;+241&gt;:   mov    $0x0,%eax
+</span><span class="z-text z-plain">   0x000000004141453c &lt;+246&gt;:   test   %al,%al
+</span><span class="z-text z-plain">   0x000000004141453e &lt;+248&gt;:   je     0x41414553 &lt;secondary_login()+269&gt;
+</span><span class="z-text z-plain">   0x0000000041414540 &lt;+250&gt;:   lea    0x63f(%rip),%rdi        # 0x41414b86
+</span><span class="z-text z-plain">   0x0000000041414547 &lt;+257&gt;:   callq  0x400a90 &lt;puts@plt&gt;
+</span><span class="z-text z-plain">   0x000000004141454c &lt;+262&gt;:   callq  0x4141428e &lt;command_line()&gt;
+</span><span class="z-text z-plain">   0x0000000041414551 &lt;+267&gt;:   jmp    0x41414569 &lt;secondary_login()+291&gt;
+</span><span class="z-text z-plain">   0x0000000041414553 &lt;+269&gt;:   lea    0x63a(%rip),%rdi        # 0x41414b94
+</span><span class="z-text z-plain">   0x000000004141455a &lt;+276&gt;:   callq  0x400a90 &lt;puts@plt&gt;
+</span><span class="z-text z-plain">   0x000000004141455f &lt;+281&gt;:   mov    $0x1,%edi
+</span><span class="z-text z-plain">   0x0000000041414564 &lt;+286&gt;:   callq  0x400aa0 &lt;exit@plt&gt;
+</span><span class="z-text z-plain">   0x0000000041414569 &lt;+291&gt;:   leaveq
+</span><span class="z-text z-plain">   0x000000004141456a &lt;+292&gt;:   retq
+</span></code></pre>
+<p>There's a few things of note here. First is the <code>command_line</code> function,
+which looks promising. Next is <code>_ZL4FLAG</code>, which seems useful. What's there?</p>
+<pre class="z-code"><code><span class="z-text z-plain">(gdb) printf &quot;%s\n&quot;, 0x41414a40
+</span><span class="z-text z-plain">�����������������������������������/bin/sh
+</span></code></pre>
+<p>That's not helpful, it's binary data. And why does it have a shell at the end there?
+And finally, how do we get to <code>command_line</code>? Let's trace the execution.
+If you've heard of 'basic blocks' in compilers, that's basically what we're going
+to do now: split up the code into segments divided by jumps.</p>
+<p>First we start at +0. Then execution is linear until line +93, where there's a
+<code>cmp</code> (compare) and a <code>jae</code> (jump above equal) to +144. At 144, it compares
+-0x10(%rbp) to 0x23, or 35 in decimal.</p>
+<p>That's funny, the number of <code>�</code> characters in the data above is 35.
+Coincidence? I think not. What happens if we just put in a string with 35 characters?</p>
+<pre class="z-code"><code><span class="z-text z-plain">! Two factor authentication required !
+</span><span class="z-text z-plain">Please enter secret secondary password:
+</span><span class="z-text z-plain">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+</span><span class="z-text z-plain">Authenticated
+</span><span class="z-text z-plain">&gt;
+</span></code></pre>
+<p>Wait, what? That's it? Where's the flag?
+It turns out this program forgot to check that you had the right password.
+I couldn't figure out what was going on, so I cheated and looked at
+https://jhalon.github.io/2018-google-ctf-beginners-pwn-solutions-1/
+(which is a much better writeup). Long story short, there's an inner loop
+doing funny things with <code>xor</code>. If we xor the binary at <code>_ZL4FLAG</code> with
+<code>0xc7</code>, we get back the flag. GDB and python will both be helpful here.</p>
+<pre class="z-code"><code><span class="z-text z-plain">(gdb) print/x _ZL4FLAG
+</span><span class="z-text z-plain">$5 = {0x84, 0x93, 0x81, 0xbc, 0x93, 0xb0, 0xa8, 0x98, 0x97, 0xa6, 0xb4, 0x94, 0xb0, 0xa8,
+</span><span class="z-text z-plain">  0xb5, 0x83, 0xbd, 0x98, 0x85, 0xa2, 0xb3, 0xb3, 0xa2, 0xb5, 0x98, 0xb3, 0xaf, 0xf3, 0xa9,
+</span><span class="z-text z-plain">  0x98, 0xf6, 0x98, 0xac, 0xf8, 0xba}
+</span><span class="z-text z-plain">(gdb) quit
+</span><span class="z-text z-plain">$ python -q
+</span><span class="z-text z-plain">&gt;&gt;&gt; import re
+</span><span class="z-text z-plain">&gt;&gt;&gt; hexes = &quot;&quot;&quot;0x84, 0x93, 0x81, 0xbc, 0x93, 0xb0, 0xa8, 0x98, 0x97, 0xa6, 0xb4, 0x94, 0xb0, 0xa8,
+</span><span class="z-text z-plain">...   0xb5, 0x83, 0xbd, 0x98, 0x85, 0xa2, 0xb3, 0xb3, 0xa2, 0xb5, 0x98, 0xb3, 0xaf, 0xf3, 0xa9,
+</span><span class="z-text z-plain">...   0x98, 0xf6, 0x98, 0xac, 0xf8, 0xba&quot;&quot;&quot;
+</span><span class="z-text z-plain">&gt;&gt;&gt; chars = &#39;&#39;.join(hexes.split()).replace(&#39;,&#39;, &#39;&#39;).replace(&#39;0x&#39;, &#39;&#39;)
+</span><span class="z-text z-plain">&gt;&gt;&gt; chars
+</span><span class="z-text z-plain">&#39;849381bc93b0a89897a6b494b0a8b583bd9885a2b3b3a2b598b3aff3a998f698acf8ba&#39;
+</span><span class="z-text z-plain">&gt;&gt;&gt; &#39;&#39;.join([chr(int(c, 16) ^ 0xc7) for c in re.findall(&#39;..&#39;, chars)])
+</span><span class="z-text z-plain">&#39;CTF{Two_PasSworDz_Better_th4n_1_k?}&#39;
+</span></code></pre>
+<p>Quick explanation of that awful and hacky code:
+<code>print/x</code> means print as hexidecimal instead of decimal or binary.
+<code>''.join(hexes.split())</code> is a hacky way of removing whitespace.
+The <code>replace</code> calls are just getting rid of formatting we don't care about.
+<code>re.findall('..', chars)</code> splits the strings into 2-character sequences.
+The rest is a list comprehesion which converts each string to an int,
+xors it with hexidecimal c7, then finally joins the whole list into a string.</p>
+<p>Side note: originally this was even more hacky - I used gdb's <code>&lt;address&gt;@n</code> syntax
+which gives you back the memory in architecture-endian order. 1/10 do not recommend.</p>
+<!--
+
+## Challenge 3
+> It's a sure bet that they can't handle their memory properly
+
+The last challenge was also the hardest to exploit. Once you enter the second flag,
+you get a shell without any instructions:
+
+```
+$  ./mngmnt
+=== Management Interface ===
+ 1) Service access
+ 2) Read EULA/patch notes
+ 3) Quit
+1
+Please enter the backdoo^Wservice password:
+flag
+! Two factor authentication required !
+Please enter secret secondary password:
+CTF{Two_PasSworDz_Better_th4n_1_k?}
+Authenticated
+> help
+Unknown command 'help'
+> ls
+Unknown command 'ls'
+> whoami
+Unknown command 'whoami'
+```
+
+Let's see if we can find what's going on. Looking back up at the assembly,
+we see that it calls `command_line` once you put in the second password.
+What's that doing?
+
+```
+gdb ./mngmnt
+Reading symbols from ./mngmnt...done.
+(gdb) disas command_line
+Dump of assembler code for function command_line():
+   0x000000004141428e <+0>:     push   %rbp
+   0x000000004141428f <+1>:     mov    %rsp,%rbp
+   0x0000000041414292 <+4>:     push   %rbx
+   0x0000000041414293 <+5>:     sub    $0x128,%rsp
+   0x000000004141429a <+12>:    lea    0x7ca(%rip),%rdi        # 0x41414a6b
+   0x00000000414142a1 <+19>:    mov    $0x0,%eax
+   0x00000000414142a6 <+24>:    callq  0x400a70 <printf@plt>
+   0x00000000414142ab <+29>:    lea    -0x30(%rbp),%rax
+   0x00000000414142af <+33>:    mov    %rax,%rdi
+   0x00000000414142b2 <+36>:    callq  0x4141423a <getsx(char*)>
+   0x00000000414142b7 <+41>:    mov    0x201e77(%rip),%eax        # 0x41616134 <_ZL13cmds_executed>
+   0x00000000414142bd <+47>:    add    $0x1,%eax
+   0x00000000414142c0 <+50>:    mov    %eax,0x201e6e(%rip)        # 0x41616134 <_ZL13cmds_executed>
+   0x00000000414142c6 <+56>:    lea    -0x30(%rbp),%rax
+   0x00000000414142ca <+60>:    lea    0x79d(%rip),%rsi        # 0x41414a6e
+   0x00000000414142d1 <+67>:    mov    %rax,%rdi
+   0x00000000414142d4 <+70>:    callq  0x400ba0 <strcmp@plt>
+   0x00000000414142d9 <+75>:    test   %eax,%eax
+   0x00000000414142db <+77>:    jne    0x414142ee <command_line()+96>
+   0x00000000414142dd <+79>:    lea    0x78f(%rip),%rdi        # 0x41414a73
+   0x00000000414142e4 <+86>:    callq  0x400a90 <puts@plt>
+   0x00000000414142e9 <+91>:    jmpq   0x4141443c <command_line()+430>
+   0x00000000414142ee <+96>:    lea    -0x30(%rbp),%rax
+   0x00000000414142f2 <+100>:   lea    0x77f(%rip),%rsi        # 0x41414a78
+   0x00000000414142f9 <+107>:   mov    %rax,%rdi
+   0x00000000414142fc <+110>:   callq  0x400ba0 <strcmp@plt>
+   0x0000000041414301 <+115>:   test   %eax,%eax
+   0x0000000041414303 <+117>:   jne    0x41414313 <command_line()+133>
+   0x0000000041414305 <+119>:   lea    0x774(%rip),%rdi        # 0x41414a80
+   0x000000004141430c <+126>:   callq  0x400a90 <puts@plt>
+... snip ...
+   0x00000000414143ff <+369>:   lea    0x708(%rip),%rdi        # 0x41414b0e
+   0x0000000041414406 <+376>:   callq  0x400a90 <puts@plt>
+   0x000000004141440b <+381>:   lea    -0x130(%rbp),%rax
+   0x0000000041414412 <+388>:   mov    %rax,%rdi
+   0x0000000041414415 <+391>:   callq  0x400ae0 <system@plt>
+   0x000000004141441a <+396>:   jmpq   0x4141429a <command_line()+12>
+---Type <return> to continue, or q <return> to quit---
+   0x000000004141441f <+401>:   lea    -0x30(%rbp),%rax
+   0x0000000041414423 <+405>:   mov    %rax,%rsi
+   0x0000000041414426 <+408>:   lea    0x6ec(%rip),%rdi        # 0x41414b19
+   0x000000004141442d <+415>:   mov    $0x0,%eax
+   0x0000000041414432 <+420>:   callq  0x400a70 <printf@plt>
+   0x0000000041414437 <+425>:   jmpq   0x4141429a <command_line()+12>
+   0x000000004141443c <+430>:   add    $0x128,%rsp
+   0x0000000041414443 <+437>:   pop    %rbx
+   0x0000000041414444 <+438>:   pop    %rbp
+   0x0000000041414445 <+439>:   retq
+```
+
+This looks long and compilicated, but it's really doing the same thing
+over and over: comparing a string to a bunch of other strings.
+That begs the question: What other strings?
+
+```
+(gdb) printf "%s\n", 0x41414a6e
+quit
+(gdb) printf "%s\n", 0x41414a78
+version
+(gdb) printf "%s\n", 0x41414a8c
+shell
+(gdb) printf "%s\n", 0x41414ac3
+echo
+(gdb) printf "%s\n", 0x41414ac8
+debug
+```
+
+Let's see what these do.
+
+```
+> version
+Version 0.3
+> shell
+Security made us disable the shell, sorry!
+> echo hi
+hi
+> debug
+Debug data dump:
+ pid=30575 cmds executed=0x41616134->8 Mappings:
+───────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+       │ File: /proc/30575/maps
+───────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   1   │ 00400000-00401000 r-xp 00000000 08:04 315016                             /home/jyn/Documents/Programming/challenges/googlectf/mngmnt
+   2   │ 41414000-41415000 r-xp 00014000 08:04 315016                             /home/jyn/Documents/Programming/challenges/googlectf/mngmnt
+   3   │ 41615000-41616000 r--p 00015000 08:04 315016                             /home/jyn/Documents/Programming/challenges/googlectf/mngmnt
+   4   │ 41616000-41617000 rw-p 00016000 08:04 315016                             /home/jyn/Documents/Programming/challenges/googlectf/mngmnt
+   5   │ 41617000-41638000 rw-p 00000000 00:00 0                                  [heap]
+   6   │ 7ffff70a5000-7ffff728c000 r-xp 00000000 08:05 1840331                    /lib/x86_64-linux-gnu/libc-2.27.so
+   7   │ 7ffff728c000-7ffff748c000 ---p 001e7000 08:05 1840331                    /lib/x86_64-linux-gnu/libc-2.27.so
+   8   │ 7ffff748c000-7ffff7490000 r--p 001e7000 08:05 1840331                    /lib/x86_64-linux-gnu/libc-2.27.so
+   9   │ 7ffff7490000-7ffff7492000 rw-p 001eb000 08:05 1840331                    /lib/x86_64-linux-gnu/libc-2.27.so
+  10   │ 7ffff7492000-7ffff7496000 rw-p 00000000 00:00 0 
+  11   │ 7ffff7496000-7ffff74ad000 r-xp 00000000 08:05 1840694                    /lib/x86_64-linux-gnu/libgcc_s.so.1
+  12   │ 7ffff74ad000-7ffff76ac000 ---p 00017000 08:05 1840694                    /lib/x86_64-linux-gnu/libgcc_s.so.1
+  13   │ 7ffff76ac000-7ffff76ad000 r--p 00016000 08:05 1840694                    /lib/x86_64-linux-gnu/libgcc_s.so.1
+  14   │ 7ffff76ad000-7ffff76ae000 rw-p 00017000 08:05 1840694                    /lib/x86_64-linux-gnu/libgcc_s.so.1
+  15   │ 7ffff76ae000-7ffff784b000 r-xp 00000000 08:05 1840394                    /lib/x86_64-linux-gnu/libm-2.27.so
+  16   │ 7ffff784b000-7ffff7a4a000 ---p 0019d000 08:05 1840394                    /lib/x86_64-linux-gnu/libm-2.27.so
+  17   │ 7ffff7a4a000-7ffff7a4b000 r--p 0019c000 08:05 1840394                    /lib/x86_64-linux-gnu/libm-2.27.so
+  18   │ 7ffff7a4b000-7ffff7a4c000 rw-p 0019d000 08:05 1840394                    /lib/x86_64-linux-gnu/libm-2.27.so
+  19   │ 7ffff7a4c000-7ffff7bc5000 r-xp 00000000 08:05 1706663                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+  20   │ 7ffff7bc5000-7ffff7dc5000 ---p 00179000 08:05 1706663                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+  21   │ 7ffff7dc5000-7ffff7dcf000 r--p 00179000 08:05 1706663                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+  22   │ 7ffff7dcf000-7ffff7dd1000 rw-p 00183000 08:05 1706663                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+  23   │ 7ffff7dd1000-7ffff7dd5000 rw-p 00000000 00:00 0 
+  24   │ 7ffff7dd5000-7ffff7dfc000 r-xp 00000000 08:05 1840303                    /lib/x86_64-linux-gnu/ld-2.27.so
+  25   │ 7ffff7fc4000-7ffff7fca000 rw-p 00000000 00:00 0 
+  26   │ 7ffff7ff7000-7ffff7ffa000 r--p 00000000 00:00 0                          [vvar]
+  27   │ 7ffff7ffa000-7ffff7ffc000 r-xp 00000000 00:00 0                          [vdso]
+  28   │ 7ffff7ffc000-7ffff7ffd000 r--p 00027000 08:05 1840303                    /lib/x86_64-linux-gnu/ld-2.27.so
+  29   │ 7ffff7ffd000-7ffff7ffe000 rw-p 00028000 08:05 1840303                    /lib/x86_64-linux-gnu/ld-2.27.so
+  30   │ 7ffff7ffe000-7ffff7fff000 rw-p 00000000 00:00 0 
+  31   │ 7ffffffdd000-7ffffffff000 rw-p 00000000 00:00 0                          [stack]
+  32   │ ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+> quit
+Bye!
+```
+
+Well, no dice. That debug info is a little strange.
+And why have a shell option if it's disabled?
+Let's look at that more closely.
+
+```
+   0x0000000041414317 <+137>:   lea    0x76e(%rip),%rsi        # 0x41414a8c
+   0x000000004141431e <+144>:   mov    %rax,%rdi
+   0x0000000041414321 <+147>:   callq  0x400ba0 <strcmp@plt>
+   0x0000000041414326 <+152>:   test   %eax,%eax
+   0x0000000041414328 <+154>:   jne    0x41414353 <command_line()+197>
+   0x000000004141432a <+156>:   movzbl 0x201e07(%rip),%eax        # 0x41616138 <_ZL13shell_enabled>
+   0x0000000041414331 <+163>:   xor    $0x1,%eax
+   0x0000000041414334 <+166>:   test   %al,%al
+   0x0000000041414336 <+168>:   je     0x41414349 <command_line()+187>
+   0x0000000041414338 <+170>:   lea    0x759(%rip),%rdi        # 0x41414a98
+   0x000000004141433f <+177>:   callq  0x400a90 <puts@plt>
+   0x0000000041414344 <+182>:   jmpq   0x4141429a <command_line()+12>
+   0x0000000041414349 <+187>:   callq  0x41414227 <debug_shell()>
+```
+
+This is basically doing three things - checking if we input 'shell',
+checking if `_ZL13shell_enabled` is 0, and if so launching a shell on the host.
+Unfortunately, `_ZL13shell_enabled` is _always_ 0. What can we do?
+
+Well, the challenge description mentioned memory.
+Could there be a buffer overrun somewhere? Let's open gdb and check it out.
+For this bit I'm actually going to use a gdb addon called
+[peda](https://github.com/longld/peda) which makes debugging much nicer
+without changing any behaviour.
+
+What happens if we put in a really long string?
+
+```
+
+!-->
+<p>(Challenge 3 will probably not be forthcoming, I finished it but never got around to writing it up.)</p>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;buffer-overflows-and-stacks-and-assembly-oh-my&#x2F;&amp;type=story">Hacker News</a> or
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;buffer-overflows-and-stacks-and-assembly-oh-my&#x2F;">Lobste.rs</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>i write about code, and things that bring me joy, and sometimes other things too</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

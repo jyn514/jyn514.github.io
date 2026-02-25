@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>How to maintain an Open Source project</title>
+    
+    <meta name="description" content="How to maintain a project without burning yourself out">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="How to maintain a project without burning yourself out" class="post-title" itemprop="name headline">How to maintain an Open Source project</h1>
+    <p class="post-meta">
+      <time datetime="2023-12-04" itemprop="datePublished">
+        2023-12-04
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/ideas/">ideas</a>
+        
+      • <a href="https://jyn.dev/tags/people/">people</a>
+        
+      
+    </p>
+  </header>
+
+  
+
+	
+
+  
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Open source is unique in that <em>energy</em>, not time or money, is the limiting factor. The existential threats are maintainer burnout and an imploding community, not failing to make payroll. As a result, it’s very important to do three things:</p>
+<ol>
+<li>Recruit new maintainers as frequently as possible.</li>
+<li>Ruthlessly prioritize the energy of existing maintainers.</li>
+<li>Be kind to your users.</li>
+</ol>
+<p>All other concerns are in some sense secondary; it doesn’t matter if a project has lots of useful features if it’s been abandoned for 4 years and no longer compiles, or if it has no users.</p>
+<p>Note that "be kind to your users" is not the same as doing everything they ask for. You can and should say no to features. Being kind is really more simple stuff – don’t be rude in discussions, don’t make breaking changes unless there’s a good reason (there’s tools for this, like <a href="https://github.com/obi1kenobi/cargo-semver-checks#cargo-semver-checks">cargo-semver-checks</a>!), make it easy for people to submit bug reports and ask questions. If you close an issue as WONTFIX, tell them why; if it's not too much effort, perhaps say the circumstances under which you might change your mind, or give an example of another way to solve their problem.</p>
+<h2 id="balancing-priorities">Balancing priorities<a class="zola-anchor" href="#balancing-priorities" aria-label="Anchor link for: balancing-priorities"></a>
+</h2>
+<p>One might notice that all three of those bullets are contradictory: recruiting new maintainers takes energy from existing maintainers; a feature that’s fun for a developer to write may not be useful for users, or vice versa; the more features a project has, the more complicated it gets and the harder it is to onboard new maintainers. Balancing these concerns is the cornerstone of an open source project.</p>
+<p>Here are a few concrete examples of how to meet those goals:</p>
+<ul>
+<li>Automate everything you find boring. CI, releases, updating dependencies, formatting, documentation are all good candidates here. Remember that it’s better to e.g. have a release that’s missing pre-compiled binaries than no release at all. There are many tools that can do this for you; a few examples in the rust ecosystem are Github Actions, <a href="https://opensource.axo.dev/cargo-dist/">cargo-dist</a>, dependabot, rustfmt, and rustdoc.</li>
+<li>Post about the project frequently on social media or other platforms. This is both a good motivator for you to see what you’ve accomplished and a great way to get other people’s interest, either as users or maintainers. Don’t wait until you have something polished, a half-baked post is better than no post at all. Start a platform dedicated to your project where you can talk with users and contributors; this can be as simple as a Discord server or as complicated as a self-hosted Zulip instance. The important thing is, again, that it should be fun for you to set up.</li>
+<li>Document how to develop the project, and how to write documentation. The former pays dividends – not just for recruiting new maintainers, but also for reminding yourself how the project works when you come back from vacation in two weeks. The latter reduces your burden for writing documentation by making it easy for other people to help you write it.</li>
+<li>Take vacations, even extended vacations. If you know you'll be on vacation ahead of time, be kind to your users or fellow maintainers by telling them you're gone. If you have automated review assignments, set it up to allow people to take breaks.</li>
+</ul>
+<h2 id="culture">Culture<a class="zola-anchor" href="#culture" aria-label="Anchor link for: culture"></a>
+</h2>
+<p>Past those concrete things, though, it’s important to set a culture for the project that makes you eager to work on it.</p>
+<ul>
+<li>Develop a taste for when to say no to features. This is especially hard because it changes as a project grows. Early on, features are easy and fun to add, and open up lots of possibilities for your users. Later, they get harder to add, and new features make the tool more complicated for your existing users (who after all, started using your tool when it was more simpler) and new users (who have to read through all your documentation); and you have enough users it becomes less important to grow your user base.</li>
+<li>Find people who are as excited about the project as you are. Invite constructive criticism – it’s a great way for you to learn and improve the project at the same time! – but at the same time make sure you balance it with positive feedback so you don’t get overwhelmed.</li>
+<li>Don’t let yourself get burned out. This is in some ways the hardest part. There is only so much work you can do every week before you get tired. Pushing yourself past that will work, temporarily, but at the cost of draining your energy and making you less willing to work on the project in the future. You are not a company and do not have an SLA to your users; if they are really harmed they can use an older release or submit a patch themselves.</li>
+</ul>
+<h2 id="recruiting-maintainers">Recruiting maintainers<a class="zola-anchor" href="#recruiting-maintainers" aria-label="Anchor link for: recruiting-maintainers"></a>
+</h2>
+<p>Most people will never ask to be maintainers. Either they don't want to be presumptuous, or they don't feel experienced enough, or it just won't occur to them. Instead, you should reach out to them.</p>
+<p>As a general rule, I suggest leaning towards trusting people with merge privileges early. Anyone who's active in the project is likely going to stick around for a while; you can always revert code they merge, and you don't have to give them publish access. This is a great way to make people feel like part of the project, which in turns makes them more likely to keep contributing.</p>
+<p>I have a lot more to say on this, but most of it has already been said by my friend Alice Cecile in <a href="https://www.youtube.com/watch?v=xM7bI2OPPLQ">this wonderful talk</a>. Go watch it. Seriously, go watch it, it's only 20 minutes and none of them are wasted.</p>
+<p>Projects can become self-sustaining rather quickly – you really only need to recruit one or two other people, get five or ten users, and have a decent codebase to expand on. Once you’ve done that, you can mentor your other contributors into taking a leading role, and, eventually, step back from your role as the founder.</p>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+    
+    
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;how-to-maintain-an-open-source-project&#x2F;&amp;type=story">Hacker News</a>,
+    
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;how-to-maintain-an-open-source-project&#x2F;">Lobste.rs</a>,
+    
+    <a href="https:&#x2F;&#x2F;tech.lgbt&#x2F;@jyn&#x2F;111529383945540933">Mastodon</a>, or
+    <a href="https:&#x2F;&#x2F;bsky.app&#x2F;profile&#x2F;jyn.dev&#x2F;post&#x2F;3kfszvdhc6325">Bluesky</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>How to maintain a project without burning yourself out</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

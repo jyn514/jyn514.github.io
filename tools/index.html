@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>tools</title>
+    
+    <meta name="description" content="tools i use or want to use">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="tools i use or want to use" class="post-title" itemprop="name headline">tools</h1>
+    <p class="post-meta">
+      <time datetime="2025-05-03" itemprop="datePublished">
+        2025-05-03
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/links/">links</a>
+        
+      
+    </p>
+  </header>
+
+  
+
+	
+
+  
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <p>i care a lot about my tools. i have very high standards for tools along some axes, and low standards along others—but that's the topic of a different blog post. this post is about the tools i <em>do</em> use, and about tools i have my eye on and may use in the future. hopefully it will be useful to other people, such as programmers, sysadmins, etc.</p>
+<p>this is also not a description of <em>how</em> i use these tools, which also deserves its own blog post (i pride myself on integrating tools that were not designed to integrate with each other). this is just a list of the tools themselves.</p>
+<p>i have a version of <a href="https://jyn.dev/tools/#tools-i-have-my-eye-on">tools i have my eye on</a> for myself that i keep regularly updated. i will probably not keep this public copy updated, unless i find a tool that's sufficiently good i want to tell people about it.</p>
+<p>i'm always on the lookout for more useful tools. if you have a tool you use regularly that's not on this list (and not specific to a single language ecosystem), please <a href="mailto:blog@jyn.dev">let me know</a>. the one exception is containerization software. i am interested in tools to <em>interact</em> with containers, but at this time i am not looking for more container hosts (podman, kubernetes, vagrant, lxc, systemd-nspawn, firejail, chroot, etc).</p>
+<h2 id="tools-i-use">tools i use<a class="zola-anchor" href="#tools-i-use" aria-label="Anchor link for: tools-i-use"></a>
+</h2>
+<h3 id="basics">basics<a class="zola-anchor" href="#basics" aria-label="Anchor link for: basics"></a>
+</h3>
+<p>you have probably seen someone else recommend these tools. it's not just hype. they are useful.</p>
+<ul>
+<li><a href="https://github.com/BurntSushi/ripgrep">ripgrep</a>: file contents searching</li>
+<li><a href="https://github.com/sharkdp/fd">fd</a>: file name searching</li>
+<li><a href="https://jqlang.org/">jq</a>: json processing. note that most data formats can be converted to json, which i recommend over <a href="https://github.com/mikefarah/yq">yq</a> or other format-specific filtering tools; the exception is XML and things isomorphic to it, which <a href="https://fwslc.blogspot.com/2014/10/json-m.html">cannot be represented in json with fidelity</a>. i tried a rewrite, <a href="https://github.com/01mf02/jaq">jaq</a>, that promised to be faster, but it had fewer features and it turns out that i rarely care about the speed of jq.</li>
+<li><a href="https://man7.org/linux/man-pages/man1/killall.1.html"><code>killall</code></a>: kill matching processes</li>
+<li><a href="https://linux.die.net/man/1/pkill"><code>pkill</code></a>: kill specific matching process</li>
+</ul>
+<h3 id="shell">shell<a class="zola-anchor" href="#shell" aria-label="Anchor link for: shell"></a>
+</h3>
+<p><a href="https://docs.jade.fyi/zsh/zsh.html#Introduction-1">zsh</a>. i cannot in good conscience recommend this to anyone else; most people will be better served by <a href="https://fishshell.com/">fish</a>. i just have sunk cost from learning entirely too much bash syntax in my misspent youth.</p>
+<p>i tried <a href="https://xon.sh/">xonsh</a> and was annoyed by how poorly python variables interact with regular shell variables.</p>
+<p>i was very pleasantly surprised by <a href="https://learn.microsoft.com/en-us/powershell/">powershell</a>, which it turns out runs on linux these days. it has actual data types instead of just strings, which means you aren't constantly doing string munging in a language not designed for it. i would probably use it interactively if i were willing to give up my sunk cost on bash syntax.</p>
+<p>i tried <a href="https://www.nushell.sh/">nushell</a>, which is like powershell but not made by microsoft and without the .NET integration. i found it extremely verbose - it's a good scripting language but not a good interactive shell. also it breaks a bunch of bash syntax for no reason, even when the syntax is unambiguous. (much of bash's syntax <em>is</em> ambiguous and i can forgive breaking that.)</p>
+<h3 id="editor">editor<a class="zola-anchor" href="#editor" aria-label="Anchor link for: editor"></a>
+</h3>
+<p>i use <a href="https://neovim.io/">neovim</a> with a <a href="https://github.com/jyn514/dotfiles/blob/master/config/nvim.lua">truly absurd amount of custom configuration</a>. i cannot in good conscience recommend this to anyone else; most people will be better served by vscode and a few plugins.</p>
+<p>i tried various other editors and was disappointed by all of them. <code>kakoune</code> required more configuration than i was willing to put in to just to get a "basic" experience. <code>helix</code> was extraordinarily resistant to being configured past very basic key remapping (for a while i forked it, but this didn't scale very well for the amount of configuration i wanted). VSCode dropped keystrokes and was generally laggy, both of which got worse when i installed a vim plugin. <code>zed</code> had various issues with the integrated terminal and window management (although this may have changed since i tried it in mid-2024). i have not tried <code>emacs</code> and dread the day i do because it will probably suck up weeks of my time.</p>
+<h3 id="terminal-multiplexing">terminal multiplexing<a class="zola-anchor" href="#terminal-multiplexing" aria-label="Anchor link for: terminal-multiplexing"></a>
+</h3>
+<p>i use <a href="https://github.com/jyn514/tmux/tree/working">a fork</a> of tmux with <a href="https://github.com/jyn514/dotfiles/blob/master/config/tmux.conf">more absurd amounts of configuration</a>. again, i cannot in good conscience recommend this to anyone else. most people will be better served by the integrated terminal in vscode (i spent a couple weeks on trying to get back ctrl-click for filepaths alone). vscode also works on windows MSVC, unlike terminal multiplexers.</p>
+<p>various people have recommended <a href="https://zellij.dev/">zellij</a> to me. i think zellij is good if you like the default keybinds, or if you use a terminal multiplexer infrequently enough that having the basic commands on-screen is helpful for you. i found that the default keybinds interfered with a bunch of programs and didn't look further into it.</p>
+<p>wezterm and kitty are not really in the running because they don't have session save/resume.</p>
+<h3 id="debugging">debugging<a class="zola-anchor" href="#debugging" aria-label="Anchor link for: debugging"></a>
+</h3>
+<ul>
+<li><a href="https://docs.jade.fyi/zsh/zsh.html#index-XTRACE"><code>set -x</code></a>: trace shell programs</li>
+<li><a href="https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables#_debugging"><code>GIT_TRACE</code></a>: trace git commands</li>
+<li><a href="https://strace.io/">strace</a>: trace system calls. this doesn't exist on macOS; it has a counterpart, dtruss, which <a href="https://poweruser.blog/using-dtrace-with-sip-enabled-3826a352e64b">kinda sorta mostly works</a>.</li>
+<li><a href="https://rr-project.org/">rr</a>: time travel debugging. this doesn't exist on macOS; if you know a counterpart <em>please</em> <a href="mailto:blog@jyn.dev">let me know</a>.</li>
+</ul>
+<h3 id="c-c-tools">C/C++ tools<a class="zola-anchor" href="#c-c-tools" aria-label="Anchor link for: c-c-tools"></a>
+</h3>
+<ul>
+<li>for cmake projects: <a href="https://cmake.org/cmake/help/latest/manual/cmake.1.html#cmdoption-cmake-G"><code>cmake -G Ninja</code></a>. uses <a href="https://ninja-build.org/manual.html#_comparison_to_make"><code>ninja</code></a> instead of <code>make</code>, improving compile times and with a much nicer progress bar.</li>
+<li>for cmake projects: <a href="https://cmake.org/cmake/help/latest/variable/CMAKE_EXPORT_COMPILE_COMMANDS.html"><code>cmake -D CMAKE_EXPORT_COMPILE_COMMANDS=On</code></a>. Generates a <code>compile_commands.json</code> file that most LSPs know how to read.</li>
+<li>for everything else: <a href="https://github.com/rizsotto/Bear"><code>bear</code></a>. like above, but works for arbitrary build systems.</li>
+</ul>
+<h3 id="rust-tools">rust tools<a class="zola-anchor" href="#rust-tools" aria-label="Anchor link for: rust-tools"></a>
+</h3>
+<ul>
+<li><a href="https://github.com/Canop/bacon/"><code>bacon</code></a>: background code checker</li>
+<li><a href="https://doc.rust-lang.org/cargo/commands/cargo-tree.html#tree-options"><code>cargo tree -i</code></a>: figure out why a package was built</li>
+<li><a href="https://doc.crates.io/contrib/implementation/debugging.html#logging"><code>CARGO_LOG</code></a>: trace <a href="https://doc.rust-lang.org/cargo/"><code>cargo</code></a> commands</li>
+<li><a href="https://rustc-dev-guide.rust-lang.org/tracing.html"><code>RUSTC_LOG</code></a>: trace <a href="https://doc.rust-lang.org/rustc/"><code>rustc</code></a> commands</li>
+<li><a href="https://github.com/rust-lang/cargo-bisect-rustc"><code>cargo bisect-rustc</code></a>: figure out when a compiler regression happened</li>
+</ul>
+<h3 id="everything-else">"everything else"<a class="zola-anchor" href="#everything-else" aria-label="Anchor link for: everything-else"></a>
+</h3>
+<ul>
+<li><a href="https://github.com/watchexec/watchexec/"><code>watchexec</code></a>: bacon but generalized to arbitrary files and commands. i find this quite useful for a variety of tasks, including minimizing bugs.</li>
+<li><a href="https://github.com/aristocratos/btop">btop</a>: like top but easier to use and easier to understand the output</li>
+<li><a href="https://tailscale.com/">tailscale</a>: software-defined networking. i mainly use it for easy NAT punching and DDNS, but it's much more flexible than that.</li>
+<li><a href="https://obsidian.md/">obsidian</a>: flexible and pretty markdown editor. i use it for journaling and drafting blog posts. <a href="https://obsidian.md/sync">obsidian sync</a> is not required but "just works" and makes it much more convenient; it's nice to have access to the same files everywhere.</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Fragment/Text_fragments"><code>#:~:text=xyz</code></a>: link to specifically the text "xyz" on a web page. works in firefox since around the end of 2024, and in chrome since a lot earlier.</li>
+</ul>
+<h2 id="tools-i-have-my-eye-on">tools i have my eye on<a class="zola-anchor" href="#tools-i-have-my-eye-on" aria-label="Anchor link for: tools-i-have-my-eye-on"></a>
+</h2>
+<p>i either use these occasionally enough i need a reference, or haven't used them yet but want to.</p>
+<h3 id="debugging-1">debugging<a class="zola-anchor" href="#debugging-1" aria-label="Anchor link for: debugging-1"></a>
+</h3>
+<ul>
+<li><a href="https://man7.org/linux/man-pages/man1/strace.1.html#:~:text=y,decode-fds"><code>strace -y</code></a>: show absolute paths</li>
+<li><a href="https://man7.org/linux/man-pages/man1/strace.1.html#:~:text=summary-only"><code>strace -c</code></a>: show performance stats</li>
+<li><a href="https://crates.io/crates/elf-info"><code>elf-info</code></a>: ELF inspector</li>
+<li><a href="https://binsider.dev/blog/v020/"><code>binsider</code></a>: another ELF inspector</li>
+<li><a href="https://docs.racket-lang.org/zordoz/index.html"><code>zordoz</code></a>: racket decompiler</li>
+<li><a href="https://github.com/dnSpyEx/dnSpy"><code>dnSpyEx</code></a>: .NET disassembler</li>
+<li><a href="https://github.com/Syllo/nvtop"><code>nvtop</code></a>: gpu monitoring</li>
+<li><a href="https://linux.die.net/man/1/xdpyinfo"><code>xdpyinfo</code></a>: X11 debugging</li>
+</ul>
+<h3 id="operating-systems">operating systems<a class="zola-anchor" href="#operating-systems" aria-label="Anchor link for: operating-systems"></a>
+</h3>
+<ul>
+<li><a href="https://github.com/pop-os/launcher/blob/master/plugins/src/web/config.ron">popos launcher config</a>, since i couldn't find docs for it (local copy in <code>/usr/lib/pop-launcher/plugins/web/config.ron</code>). this is what runs custom searches when you hit Super-R on PopOS 22.04.</li>
+<li><a href="https://github.com/uobikiemukot/yaft?tab=readme-ov-file">yaft</a>: linux framebuffer terminal</li>
+<li><a href="https://github.com/kellyjonbrazil/jc">jc</a>: structured parsing for unix tools</li>
+<li><a href="https://docs.fedoraproject.org/en-US/quick-docs/cups-debug-scanning-issues/">CUPS debugging</a></li>
+<li><a href="https://yggdrasil-network.github.io/about.html">yggrasil-network</a>: "ipv6 for everyone"</li>
+</ul>
+<h3 id="containers">containers<a class="zola-anchor" href="#containers" aria-label="Anchor link for: containers"></a>
+</h3>
+<ul>
+<li><a href="https://github.com/containers/bubblewrap">bubblewrap</a>: flexible adhoc sandboxing</li>
+<li><a href="https://github.com/Mic92/cntr">cntr</a>: overlayfs that works with a running container</li>
+</ul>
+<h3 id="development">development<a class="zola-anchor" href="#development" aria-label="Anchor link for: development"></a>
+</h3>
+<ul>
+<li><a href="https://crates.io/crates/cargo-bounds"><code>cargo-bounds</code></a>: check your crate semver bounds are correct</li>
+<li><a href="https://victoriametrics.com/products/victorialogs/">VictoriaLogs</a>: structured database for logs</li>
+<li><a href="https://cron.help/">cron.help</a>: crontab reference</li>
+<li><a href="https://hurl.dev">hurl.dev</a>: HTTP test assertion framework
+<ul>
+<li><a href="https://docs.racket-lang.org/riposte/">riposte</a>: similar for <a href="https://racket-lang.org/">racket</a></li>
+</ul>
+</li>
+<li><a href="https://rosie-lang.org/">rosie-lang</a>: maintainable, composable regexes. really these are PEG parsers but they are designed to look similar to regex.</li>
+<li><a href="https://github.com/brushtechnology/fabricate">fabricate</a>: <a href="https://gittup.org/tup/">tup</a> but python</li>
+<li><a href="https://spoofax.dev/">spoofax</a>: dsl builder</li>
+<li><a href="https://github.com/Ericsson/codechecker">codechecker</a>: advanced static analysis for c/c++</li>
+<li><a href="https://google.github.io/zx/getting-started">zx</a>: terse process spawning in js</li>
+<li><a href="https://jsonnet.org">jsonnet</a>: like <a href="https://dhall-lang.org/">dhall</a> but lua-coded instead of haskell-coded</li>
+<li><a href="https://sql.datapage.app/">generate a webpage from an sql query</a></li>
+</ul>
+<h3 id="editing-and-diffing">editing and diffing<a class="zola-anchor" href="#editing-and-diffing" aria-label="Anchor link for: editing-and-diffing"></a>
+</h3>
+<ul>
+<li><a href="https://ast-grep.github.io/">ast-grep</a>. language-aware structured search and replace.</li>
+<li><a href="https://diffoscope.org/">diffoscope</a>: recursive diffing</li>
+<li>fix tabs and spaces: <code>unexpand -t 4 foo.c | sponge foo.c</code></li>
+</ul>
+<h3 id="graphics">graphics<a class="zola-anchor" href="#graphics" aria-label="Anchor link for: graphics"></a>
+</h3>
+<ul>
+<li><a href="https://typst.app/">typst</a>: <a href="https://www.latex-project.org/">latex</a> but not evil</li>
+<li><a href="https://excalidraw.com/">excalidraw</a>: online diagram editor</li>
+<li><a href="https://github.com/Aloxaf/silicon">silicon</a>: pretty screenshots of source code</li>
+</ul>
+<h3 id="benchmarking">benchmarking<a class="zola-anchor" href="#benchmarking" aria-label="Anchor link for: benchmarking"></a>
+</h3>
+<ul>
+<li><a href="https://github.com/andrewrk/poop"><code>poop</code></a>: like <a href="https://github.com/sharkdp/hyperfine">hyperfine</a> but also reports memory usage</li>
+<li><a href="https://github.com/sharkdp/hyperfine#parameterized-benchmarks"><code>hyperfine --parameter-list</code></a>: parameterized benchmarking</li>
+<li><a href="https://man7.org/linux/man-pages/man1/strace.1.html#:~:text=summary-wall-clock"><code>strace -wc</code></a>: measure syscall timing</li>
+<li><a href="https://man7.org/linux/man-pages/man1/ltrace.1.html#:~:text=count%20time"><code>ltrace -c</code></a>: measure library call timing</li>
+<li><a href="https://linux.die.net/man/1/x11perf"><code>x11perf</code></a>: X11 performance testing</li>
+<li><a href="https://manpages.debian.org/testing/freetype2-demos/ftbench.1.en.html"><code>ftbench</code></a>: font performance testing</li>
+<li><a href="https://man.openbsd.org/ts#i"><code>ts -i</code></a>: show the elapsed time between each line of output in a pipe. useful with <code>bash -x</code>.</li>
+<li><a href="https://docs.jade.fyi/zsh/zsh.html#The-zsh_002fzprof-Module"><code>zmodload zsh/zprof; zprof</code></a>: benchmark zsh startup</li>
+</ul>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;tools&#x2F;&amp;type=story">Hacker News</a> or
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;tools&#x2F;">Lobste.rs</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>tools i use or want to use</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>negative build dependencies</title>
+    
+    <meta name="description" content="A build system needs to know not just which files exist, but which shouldn&#x27;t exist.">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="A build system needs to know not just which files exist, but which shouldn&#x27;t exist." class="post-title" itemprop="name headline">negative build dependencies</h1>
+    <p class="post-meta">
+      <time datetime="2025-12-03" itemprop="datePublished">
+        2025-12-03
+      </time>
+      
+      
+      
+        
+        
+        
+      • <a href="https://jyn.dev/tags/build-systems/">build-systems</a>
+        
+      
+    </p>
+  </header>
+
+  
+
+	
+
+  
+    
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <p>This post is part 2/4 of <a href="/four-posts-about-build-systems/">a series about build systems</a>.
+The next post is <a href="/i-want-a-better-action-graph-serialization/">I want a better action graph serialization</a>.</p>
+<hr />
+<p>This post is about a limitation of the dependencies you can express in a build file.
+It uses Ninja just because it's simple and I'm very familiar with it, but the problem exists in most build systems.</p>
+<p>Say you have a C project with two different include paths: <code>dependency/include</code> and <code>src</code>:</p>
+<pre class="z-code"><code><span class="z-text z-plain">.
+</span><span class="z-text z-plain">├── build.ninja
+</span><span class="z-text z-plain">├── dependency
+</span><span class="z-text z-plain">│   └── include
+</span><span class="z-text z-plain">│       └── interface.h
+</span><span class="z-text z-plain">└── src
+</span><span class="z-text z-plain">    └── main.c
+</span></code></pre>
+<p>and the following build.ninja:<sup class="footnote-reference" id="fr-depfiles-1"><a href="#fn-depfiles">1</a></sup></p>
+<pre data-lang="ninja" class="language-ninja z-code"><code class="language-ninja" data-lang="ninja"><span class="z-text z-plain">rule cc
+</span><span class="z-text z-plain">  command = cc -I dependency/include -I src $in -o $out
+</span><span class="z-text z-plain">
+</span><span class="z-text z-plain">build src/main: cc src/main.c | dependency/include/interface.h
+</span></code></pre>
+<aside role=note class=note-container><div class=note-content>
+<p>In ninja, <code>| file</code> means an “implicit dependency”, i.e. it causes a rebuild but does not get bound to <code>$in</code>.</p>
+</div></aside>
+<p>and some small implementations, just so we can see that it actually works:</p>
+<pre data-lang="c" class="language-c z-code"><code class="language-c" data-lang="c"><span class="z-source z-c"><span class="z-comment z-line z-double-slash z-c"><span class="z-punctuation z-definition z-comment z-c">//</span> src/main.c
+</span></span><span class="z-source z-c"><span class="z-meta z-preprocessor z-include z-c"><span class="z-keyword z-control z-import z-include z-c">#include</span> <span class="z-string z-quoted z-other z-lt-gt z-include z-c"><span class="z-punctuation z-definition z-string z-begin z-c">&lt;</span>stdio.h<span class="z-punctuation z-definition z-string z-end z-c">&gt;</span></span>
+</span></span><span class="z-source z-c"><span class="z-meta z-preprocessor z-include z-c"><span class="z-keyword z-control z-import z-include z-c">#include</span> <span class="z-string z-quoted z-double z-include z-c"><span class="z-punctuation z-definition z-string z-begin z-c">&quot;</span>interface.h<span class="z-punctuation z-definition z-string z-end z-c">&quot;</span></span>
+</span></span><span class="z-source z-c">
+</span><span class="z-source z-c"><span class="z-storage z-type z-c">int</span> <span class="z-meta z-function z-c"><span class="z-entity z-name z-function z-c">main</span></span><span class="z-meta z-function z-parameters z-c"><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span></span></span><span class="z-meta z-function z-parameters z-c"><span class="z-meta z-group z-c"><span class="z-storage z-type z-c">void</span><span class="z-punctuation z-section z-group z-end z-c">)</span></span></span><span class="z-meta z-function z-c"> </span><span class="z-meta z-function z-c"><span class="z-meta z-block z-c"><span class="z-punctuation z-section z-block z-begin z-c">{</span></span></span><span class="z-meta z-function z-c"><span class="z-meta z-block z-c">
+</span></span></span><span class="z-source z-c"><span class="z-meta z-function z-c"><span class="z-meta z-block z-c">        <span class="z-meta z-function-call z-c"><span class="z-support z-function z-C99 z-c">printf</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c"><span class="z-string z-quoted z-double z-c"><span class="z-punctuation z-definition z-string z-begin z-c">&quot;</span><span class="z-constant z-other z-placeholder z-c">%d</span><span class="z-constant z-character z-escape z-c">\n</span><span class="z-punctuation z-definition z-string z-end z-c">&quot;</span></span><span class="z-punctuation z-separator z-c">,</span> interface_version</span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-end z-c">)</span></span></span><span class="z-punctuation z-terminator z-c">;</span>
+</span></span></span><span class="z-source z-c"><span class="z-meta z-function z-c"><span class="z-meta z-block z-c"></span></span><span class="z-meta z-function z-c"><span class="z-meta z-block z-c"><span class="z-punctuation z-section z-block z-end z-c">}</span></span></span>
+</span><span class="z-source z-c">
+</span><span class="z-source z-c"><span class="z-comment z-line z-double-slash z-c"><span class="z-punctuation z-definition z-comment z-c">//</span> dependency/include/interface.h
+</span></span><span class="z-source z-c"><span class="z-storage z-modifier z-c">const</span> <span class="z-storage z-modifier z-c">static</span> <span class="z-storage z-type z-c">short</span> interface_version <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-constant z-numeric z-integer z-decimal z-c">1</span><span class="z-punctuation z-terminator z-c">;</span>
+</span></code></pre>
+<p>This works ok on our first build, and when <code>dependency/include/interface.h</code> changes:</p>
+<pre class="z-code"><code><span class="z-text z-plain">$ ninja
+</span><span class="z-text z-plain">[1/1] cc -I dependency/include -I src src/main.c -o src/main
+</span></code></pre>
+<p>But say now that we add our own <code>src/interface.h</code> file:</p>
+<pre data-lang="console" class="language-console z-code"><code class="language-console" data-lang="console"><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cat</span></span><span class="z-meta z-function-call z-arguments z-shell"> src/interface.h</span>
+</span><span class="z-source z-shell z-console">const static char *version = &quot;1.0&quot;;
+</span><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">ninja</span></span>
+</span><span class="z-source z-shell z-console">ninja: no work to do.
+</span></code></pre>
+<p>Now we have a problem. If we remove our build artifacts, ninja <em>does</em> rerun, and shows us what that problem is:</p>
+<pre class="z-code"><code><span class="z-text z-plain">[1/1] cc -I dependency/include -I src src/main.c -o src/main
+</span><span class="z-text z-plain">FAILED: [code=1] src/main
+</span><span class="z-text z-plain">cc -I dependency/include -I src src/main.c -o src/main
+</span><span class="z-text z-plain">src/main.c: In function ‘main’:
+</span><span class="z-text z-plain">src/main.c:5:24: error: ‘interface_version’ undeclared (first use in this function)
+</span><span class="z-text z-plain">    5 |         printf(&quot;%d\n&quot;, interface_version);
+</span><span class="z-text z-plain">      |                        ^~~~~~~~~~~~~~~~~
+</span><span class="z-text z-plain">src/main.c:5:24: note: each undeclared identifier is reported only once for each function it appears in
+</span><span class="z-text z-plain">ninja: build stopped: subcommand failed.
+</span></code></pre>
+<p>We switched out what <code>interface.h</code> resolved to, but ninja didn't know about the changed dependency.</p>
+<p>What we want is a way to tell it to rebuild if the file <code>src/interface.h</code> is created. To my knowledge, ninja has no way of expressing this kind of negative dependency edge.</p>
+<aside role=note class=note-container><div class=note-content>
+<p>One possibility is to depend on the <em>whole directory</em> of <code>src</code>. The semantics of this are that <code>src</code> gets marked dirty whenever a file is added, moved, or deleted. This has two problems:</p>
+<ul>
+<li>It rebuilds too often. We only want to rerun when <code>src/interface.h</code> is added, not for any other file creation.</li>
+<li>We don’t actually have a consistent way to find all directories that need to be marked in this way. Here we just hardcoded src, but in larger builds <a href="https://jyn.dev/negative-build-dependencies/#fn-depfiles">we would use depfiles</a>, and depfiles do not contain any information about negative dependencies. This matters a lot when there are a dozen+ directories in the search path!</li>
+</ul>
+</div></aside>
+<aside role=note class=note-container><div class=note-content>
+<p>Another way to avoid needing negative dependencies is to simply have a <a href="https://jyn.dev/build-system-tradeoffs/#hermetic-builds">hermetic build</a>, so that our <code>cc src/main.c | dependency/interface.h</code> rule never even makes the <code>src/interface.h</code> file available to the command. That works, but puts us firmly out of Ninja's design space; hermetic builds come with severe tradeoffs.</p>
+</div></aside>
+<aside role=note class=note-container><div class=note-content>
+<p>Yet another idea is to introduce an early-cutoff point:</p>
+<ol>
+<li>For each <code>.c</code> file, run <code>cc -M</code> to get a list of include files. Save that to disk.</li>
+<li>Whenever a directory is changed, rerun <code>cc -M</code>. If our list has changed, rerun a full build for that file.</li>
+</ol>
+<style>var { font-family: monospace; font-style: inherit; }</style>
+<p>This has the problem that it's <var>O(n<sup>3</sup>)</var>: For each file, for each include, for each directory in the search path, the preprocessor will try to <code>stat</code> that file to see whether it exists.</p>
+<p>One possible workaround is to calculate the list of include files <em>in the build system</em>:
+Look at the order of the search paths, list each path recursively, ignore filenames that are overridden by an include earlier in the search path.
+Save that to disk.
+Next time a directory is modified, check if the list of include files has changed. If so, only then rerun <code>cc -M</code> for all files.</p>
+<p>This requires the build system to have some quite deep knowledge of how the language works, but I do think it would work today without changes to Ninja.</p>
+<p>Thanks to <a href="https://jade.fyi">Jade Lovelace</a> for this suggestion.</p>
+</div></aside>
+<p>Thanks to David Chisnall and Ben Boeckel (<strong>@mathstuf</strong>) for making me aware of this issue.</p>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-depfiles">
+<p>People familiar with ninja might say this looks odd and it should use a <code>depfile</code> with <code>cc -M</code> so dependencies are tracked automatically. That makes your files shorter and means you need to run the configure step less often, but it doesn't actually solve the problem of negative dependencies. Ninja still doesn't know when it needs to regenerate the depfile. <a href="#fr-depfiles-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+    
+    
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;negative-build-dependencies&#x2F;&amp;type=story">Hacker News</a>,
+    
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;negative-build-dependencies&#x2F;">Lobste.rs</a>,
+    
+    <a href="https:&#x2F;&#x2F;tech.lgbt&#x2F;@jyn&#x2F;115667410263622000">Mastodon</a>, or
+    <a href="https:&#x2F;&#x2F;bsky.app&#x2F;profile&#x2F;did:plc:h2okxbr76w5522tailkxmidq&#x2F;post&#x2F;3m7aotdmjos25">Bluesky</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>A build system needs to know not just which files exist, but which shouldn&#x27;t exist.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

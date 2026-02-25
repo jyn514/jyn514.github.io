@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>&amp;amp;&#x27;borrow mut dyn FnMut(BrokenLink&amp;lt;&#x27;input&amp;gt;) -&gt; CowStr&amp;lt;&#x27;input&amp;gt; and other valid rust programs</title>
+    
+    <meta name="description" content="Why HRTB are my least-favorite part of Rust">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="Why HRTB are my least-favorite part of Rust" class="post-title" itemprop="name headline"><pre><code>&amp;'borrow mut dyn FnMut(BrokenLink&lt;'input&gt;) -> CowStr&lt;'input&gt;</code></pre> and other valid rust programs</h1>
+    <p class="post-meta">
+      <time datetime="2020-12-08" itemprop="datePublished">
+        2020-12-08
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/stories/">stories</a>
+        
+      • <a href="https://jyn.dev/tags/rust/">rust</a>
+        
+      
+    </p>
+  </header>
+
+  
+
+	
+
+  
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <p>This is a story about type signatures, Higher Ranked Trait Bounds (<a href="https://doc.rust-lang.org/nomicon/hrtb.html">HRTB</a>), and the most
+confusing diagnostics bug I've seen in the Rust compiler. Along the way we'll learn how
+<a href="https://github.com/raphlinus/pulldown-cmark"><code>pulldown-cmark</code></a> has been trying to fix the same API for 3 different releases, and discover
+that some bugs only appear at the compile time of downstream crates.</p>
+<p>If you don't know what some of the words mean, there is <a href="https://jyn.dev/borrow-mut-dyn-fnmut-brokenlink-cowstring-and-other-valid-rust-programs/#appendix">an appendix</a>. Unfortunately,
+this article needs too much background knowledge to fit all of it in a blog post.</p>
+<h2 id="background">Background<a class="zola-anchor" href="#background" aria-label="Anchor link for: background"></a>
+</h2>
+<p>Our story starts with a simple change to rustdoc: It wants to <a href="https://github.com/rust-lang/rust/pull/79781">hide the <code>[]</code></a> around <a href="https://doc.rust-lang.org/rustdoc/linking-to-items-by-name.html">intra-doc links</a> in search results.
+(For context, search results have links stripped since otherwise the relative links would be broken, which means rustdoc needs to do some preprocessing of the markdown.)
+That would turn screenshots like this:</p>
+<p><img src="https://user-images.githubusercontent.com/37223377/101309556-92908680-3801-11eb-8420-0609e7af4e92.png" alt="Before" /></p>
+<p>into this:</p>
+<p><img src="https://user-images.githubusercontent.com/37223377/101309591-a0dea280-3801-11eb-85e1-620549f64bf6.png" alt="After" /></p>
+<p>Rustdoc does this in several <a href="https://github.com/rust-lang/rust/blob/d32c80467db39672fa612e1519564ad5fd473e91/src/librustdoc/html/markdown.rs#L1066">different</a> <a href="https://github.com/rust-lang/rust/blob/d32c80467db39672fa612e1519564ad5fd473e91/src/librustdoc/html/markdown.rs#L1151">places</a>, so
+naturally this should be pulled out into a single function that can be reused. This is a callback
+to pulldown's markdown <a href="https://docs.rs/pulldown-cmark/0.8.0/pulldown_cmark/struct.Parser.html"><code>Parser</code></a>.</p>
+<pre data-lang="rust" class="language-rust z-code"><code class="language-rust" data-lang="rust"><span class="z-source z-rust"><span class="z-comment z-line z-double-slash z-rust"><span class="z-punctuation z-definition z-comment z-rust">//</span> Omitted: in real life, this would only mark intra-doc links as valid, not all broken links.
+</span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-function z-rust"><span class="z-storage z-type z-function z-rust">fn</span> </span><span class="z-entity z-name z-function z-rust">summary_broken_link_callback</span></span><span class="z-meta z-generic z-rust"><span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">(</span><span class="z-variable z-parameter z-rust">link</span><span class="z-punctuation z-separator z-rust">:</span> <span class="z-meta z-generic z-rust">BrokenLink<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-end z-rust">)</span></span></span></span><span class="z-meta z-function z-rust"> <span class="z-meta z-function z-return-type z-rust"><span class="z-punctuation z-separator z-rust">-&gt;</span> <span class="z-meta z-generic z-rust"><span class="z-support z-type z-rust">Option</span><span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-meta z-generic z-rust">CowStr<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span>, <span class="z-meta z-generic z-rust">CowStr<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span><span class="z-punctuation z-section z-group z-end z-rust">)</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span></span> </span><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-support z-type z-rust">Some</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-string z-quoted z-double z-rust"><span class="z-punctuation z-definition z-string z-begin z-rust">&quot;</span>#<span class="z-punctuation z-definition z-string z-end z-rust">&quot;</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">into</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-separator z-rust">,</span> link<span class="z-punctuation z-accessor z-dot z-rust">.</span>reference<span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">to_owned</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">into</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"></span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span></span>
+</span></code></pre>
+<p>Except that doesn't work:</p>
+<pre class="z-code"><code><span class="z-text z-plain">error[E0621]: explicit lifetime required in the type of `md`
+</span><span class="z-text z-plain">    --&gt; src/librustdoc/html/markdown.rs:1065:9
+</span><span class="z-text z-plain">     |
+</span><span class="z-text z-plain">1050 | fn markdown_summary_with_limit(md: &amp;str, length_limit: usize) -&gt; (String, bool) {
+</span><span class="z-text z-plain">     |                                    ---- help: add explicit lifetime `&#39;static` to the type of `md`: `&amp;&#39;static str`
+</span><span class="z-text z-plain">...
+</span><span class="z-text z-plain">1065 |         Parser::new_with_broken_link_callback(md, summary_opts(), Some(&amp;mut summary_broken_link_callback))
+</span><span class="z-text z-plain">     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ lifetime `&#39;static` required
+</span><span class="z-text z-plain">
+</span><span class="z-text z-plain">error: higher-ranked subtype error
+</span><span class="z-text z-plain">    --&gt; src/librustdoc/html/markdown.rs:1065:72
+</span><span class="z-text z-plain">     |
+</span><span class="z-text z-plain">1065 |         Parser::new_with_broken_link_callback(md, summary_opts(), Some(&amp;mut summary_broken_link_callback))
+</span><span class="z-text z-plain">     |                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+</span><span class="z-text z-plain">
+</span><span class="z-text z-plain">error[E0716]: temporary value dropped while borrowed
+</span><span class="z-text z-plain">    --&gt; src/librustdoc/html/markdown.rs:1065:77
+</span><span class="z-text z-plain">     |
+</span><span class="z-text z-plain">1065 |         Parser::new_with_broken_link_callback(md, summary_opts(), Some(&amp;mut summary_broken_link_callback))
+</span><span class="z-text z-plain">     |         --------------------------------------------------------------------^^^^^^^^^^^^^^^^^^^^^^^^^^^^--
+</span><span class="z-text z-plain">     |         |                                                                   |                            |
+</span><span class="z-text z-plain">     |         |                                                                   |                            temporary value is freed at the end of this statement
+</span><span class="z-text z-plain">     |         |                                                                   creates a temporary which is freed while still in use
+</span><span class="z-text z-plain">     |         argument requires that borrow lasts for `&#39;static`
+</span></code></pre>
+<h2 id="lifetime-annotations-action-at-a-distance">Lifetime annotations: action at a distance<a class="zola-anchor" href="#lifetime-annotations-action-at-a-distance" aria-label="Anchor link for: lifetime-annotations-action-at-a-distance"></a>
+</h2>
+<p>What on earth is going on here? We have a simple function that takes a link and returns it, right?
+What does that have to do with "higher-ranked subtypes" and <code>'static</code>? To find out, we have to look
+at the definition of <a href="https://docs.rs/pulldown-cmark/0.8.0/pulldown_cmark/struct.Parser.html#method.new_with_broken_link_callback"><code>new_with_broken_link_callback()</code></a>.</p>
+<pre data-lang="rust" class="language-rust z-code"><code class="language-rust" data-lang="rust"><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-function z-rust"><span class="z-storage z-modifier z-rust">pub</span> <span class="z-storage z-type z-function z-rust">fn</span> </span><span class="z-entity z-name z-function z-rust">new_with_broken_link_callback</span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">(</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust">    <span class="z-variable z-parameter z-rust">text</span><span class="z-punctuation z-separator z-rust">:</span> <span class="z-keyword z-operator z-rust">&amp;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span> <span class="z-storage z-type z-rust">str</span>,
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust">    <span class="z-variable z-parameter z-rust">options</span><span class="z-punctuation z-separator z-rust">:</span> Options,
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust">    <span class="z-variable z-parameter z-rust">broken_link_callback</span><span class="z-punctuation z-separator z-rust">:</span> <span class="z-meta z-generic z-rust"><span class="z-support z-type z-rust">Option</span><span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-keyword z-operator z-rust">&amp;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span> <span class="z-storage z-modifier z-rust">mut</span> dyn <span class="z-support z-type z-rust">FnMut</span><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-meta z-generic z-rust">BrokenLink<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span>&#39;<span class="z-keyword z-operator z-rust">_</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span><span class="z-punctuation z-section z-group z-end z-rust">)</span> <span class="z-punctuation z-separator z-generic z-rust">-&gt;</span> <span class="z-meta z-generic z-rust"><span class="z-support z-type z-rust">Option</span><span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-meta z-generic z-rust">CowStr<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span>, <span class="z-meta z-generic z-rust">CowStr<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span><span class="z-punctuation z-section z-group z-end z-rust">)</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-end z-rust">)</span></span></span></span><span class="z-meta z-function z-rust"> <span class="z-meta z-function z-return-type z-rust"><span class="z-punctuation z-separator z-rust">-&gt;</span> <span class="z-meta z-generic z-rust">Parser<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span></span> </span><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span> <span class="z-comment z-block z-rust"><span class="z-punctuation z-definition z-comment z-rust">/*</span> ... <span class="z-punctuation z-definition z-comment z-rust">*/</span></span> </span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span></span>
+</span></code></pre>
+<p>Wow! There's a lot going on here, especially in <code>broken_link_callback</code>. Let's take that type apart a little:</p>
+<ul>
+<li><code>Option</code> means the callback is optional; if you pass in <code>None</code> it will just do nothing.</li>
+<li><code>&amp;'a mut</code> is a mutable reference.</li>
+<li><code>FnMut(BrokenLink&lt;'_&gt;) -&gt; Option&lt;(CowStr&lt;'a&gt;, CowStr&lt;'a&gt;)&gt;</code> is a trait for 'functions taking <code>BrokenLink</code> and returning a tuple of <code>CowStr</code>'.</li>
+<li>Because <code>FnMut</code> is a <em>trait</em> and not a type, <code>dyn</code> turns it into a type (i.e. this is <a href="https://stackoverflow.com/questions/28961957/example-of-runtime-polymorphism-in-java">runtime polymorphism</a>).</li>
+</ul>
+<p>But there's something funny here - the <em>same</em> lifetime <code>'a</code> is used for both the reference to the
+function, and the types it outputs. That's what made our function break: since
+<code>summary_broken_link_callback</code> is a function, any reference to it has a <code>'static</code> lifetime.
+Fortunately, Rust will implicitly <a href="https://doc.rust-lang.org/nomicon/lifetimes.html#the-area-covered-by-a-lifetime">reborrow</a> the reference if it lives too long. Unfortunately,
+we don't know how long it <em>should</em> live. That's why the error is mentioning <code>'static</code>; since it can't figure out the right lifetime, it falls back to the longest possible.
+By looking at the definition of <a href="https://docs.rs/pulldown-cmark/0.8.0/src/pulldown_cmark/parse.rs.html#2051-2062"><code>Parser</code></a>, we can see why that gives an error about <code>md</code>:</p>
+<pre data-lang="rust" class="language-rust z-code"><code class="language-rust" data-lang="rust"><span class="z-source z-rust"><span class="z-meta z-struct z-rust"><span class="z-storage z-modifier z-rust">pub</span> <span class="z-storage z-type z-struct z-rust">struct</span> </span><span class="z-meta z-struct z-rust"><span class="z-meta z-generic z-rust"><span class="z-entity z-name z-struct z-rust">Parser</span><span class="z-meta z-generic z-rust"><span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span></span></span><span class="z-meta z-struct z-rust"> </span><span class="z-meta z-struct z-rust"><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-struct z-rust"><span class="z-meta z-block z-rust">    <span class="z-variable z-other z-member z-rust">md</span><span class="z-punctuation z-separator z-type z-rust">:</span> <span class="z-keyword z-operator z-rust">&amp;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span> <span class="z-storage z-type z-rust">str</span>,
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-struct z-rust"><span class="z-meta z-block z-rust">    <span class="z-variable z-other z-member z-rust">broken_link_callback</span><span class="z-punctuation z-separator z-type z-rust">:</span> <span class="z-meta z-generic z-rust">BrokenLinkCallback<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span>,
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-struct z-rust"><span class="z-meta z-block z-rust">    <span class="z-comment z-line z-double-slash z-rust"><span class="z-punctuation z-definition z-comment z-rust">//</span> ... some fields omitted
+</span></span></span></span><span class="z-source z-rust"><span class="z-meta z-struct z-rust"><span class="z-meta z-block z-rust"></span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span></span>
+</span><span class="z-source z-rust">
+</span><span class="z-source z-rust"><span class="z-storage z-modifier z-rust">pub</span> <span class="z-storage z-type z-type z-rust">type</span> <span class="z-entity z-name z-type z-rust">BrokenLinkCallback</span><span class="z-keyword z-operator z-comparison z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span><span class="z-keyword z-operator z-comparison z-rust">&gt;</span> <span class="z-keyword z-operator z-assignment z-rust">=</span>
+</span><span class="z-source z-rust">    <span class="z-meta z-generic z-rust"><span class="z-support z-type z-rust">Option</span><span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-keyword z-operator z-rust">&amp;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span> <span class="z-storage z-modifier z-rust">mut</span> dyn <span class="z-support z-type z-rust">FnMut</span><span class="z-punctuation z-section z-group z-begin z-rust">(</span>BrokenLink<span class="z-punctuation z-section z-group z-end z-rust">)</span> <span class="z-punctuation z-separator z-generic z-rust">-&gt;</span> <span class="z-meta z-generic z-rust"><span class="z-support z-type z-rust">Option</span><span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-meta z-generic z-rust">CowStr<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span>, <span class="z-meta z-generic z-rust">CowStr<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span><span class="z-punctuation z-section z-group z-end z-rust">)</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></code></pre>
+<p>So there's <em>many</em> lifetimes that have been tied together here:</p>
+<ol>
+<li>The lifetime of the input, <code>md</code></li>
+<li>The lifetime of the borrow, <code>&amp;mut broken_link_callback</code></li>
+<li>The lifetime of the function <em>outputs</em>, which are unnamed here (pulldown <a href="https://docs.rs/pulldown-cmark/0.8.0/src/pulldown_cmark/parse.rs.html#2380">calls them</a> <code>url</code> and <code>title</code>).</li>
+</ol>
+<p>And that explains all the errors:</p>
+<ol>
+<li><code>md</code> is a temporary, but <code>&amp;mut broken_link_callback</code> is <code>'static</code></li>
+<li><code>&amp;mut broken_link_callback</code> can't find an appropriate lifetime for the borrow, so it gives up altogether with "higher-ranked subtype error"</li>
+<li>The arguments are temporaries, so the outputs are temporaries too (because we declared <code>broken_link_callback</code> as <code>fn summary_broken_link_callback&lt;'a&gt;(link: BrokenLink&lt;'a&gt;) -&gt; Option&lt;(CowStr&lt;'a&gt;, CowStr&lt;'a&gt;)&gt;</code>), but <code>&amp;mut broken_link_callback</code> is <code>'static</code></li>
+</ol>
+<h2 id="how-do-you-solve-a-problem-like-a-lifetime"><a href="https://www.youtube.com/watch?v=s-VRyQprlu8">How do you solve a problem like a lifetime?</a><a class="zola-anchor" href="#how-do-you-solve-a-problem-like-a-lifetime" aria-label="Anchor link for: how-do-you-solve-a-problem-like-a-lifetime"></a>
+</h2>
+<p>Notice that the bug here is <em>not</em> in <code>broken_link_callback</code> - it's in the API itself, which is
+tying the lifetimes together unnecessarily. If you write <code>broken_link_callback</code> on its own, it
+will compile and run just fine, it's only the way that it interacts with <code>Parser</code> that breaks
+things. The fix is not to tie the lifetimes together:</p>
+<pre data-lang="rust" class="language-rust z-code"><code class="language-rust" data-lang="rust"><span class="z-source z-rust"><span class="z-meta z-struct z-rust"><span class="z-storage z-modifier z-rust">pub</span> <span class="z-storage z-type z-struct z-rust">struct</span> </span><span class="z-meta z-struct z-rust"><span class="z-meta z-generic z-rust"><span class="z-entity z-name z-struct z-rust">Parser</span><span class="z-meta z-generic z-rust"><span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;input</span>, <span class="z-storage z-modifier z-lifetime z-rust">&#39;callback</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span></span></span><span class="z-meta z-struct z-rust"> </span><span class="z-meta z-struct z-rust"><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-struct z-rust"><span class="z-meta z-block z-rust">    <span class="z-variable z-other z-member z-rust">text</span><span class="z-punctuation z-separator z-type z-rust">:</span> <span class="z-keyword z-operator z-rust">&amp;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;input</span> <span class="z-storage z-type z-rust">str</span>,
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-struct z-rust"><span class="z-meta z-block z-rust">    <span class="z-variable z-other z-member z-rust">broken_link_callback</span><span class="z-punctuation z-separator z-type z-rust">:</span> <span class="z-meta z-generic z-rust">BrokenLinkCallback<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;input</span>, <span class="z-storage z-modifier z-lifetime z-rust">&#39;callback</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span>,
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-struct z-rust"><span class="z-meta z-block z-rust"></span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span></span>
+</span><span class="z-source z-rust">
+</span><span class="z-source z-rust"><span class="z-storage z-modifier z-rust">pub</span> <span class="z-storage z-type z-type z-rust">type</span> <span class="z-entity z-name z-type z-rust">BrokenLinkCallback</span><span class="z-keyword z-operator z-comparison z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;input</span><span class="z-punctuation z-separator z-rust">,</span> <span class="z-storage z-modifier z-lifetime z-rust">&#39;borrow</span><span class="z-keyword z-operator z-comparison z-rust">&gt;</span> <span class="z-keyword z-operator z-assignment z-rust">=</span>
+</span><span class="z-source z-rust">    <span class="z-meta z-generic z-rust"><span class="z-support z-type z-rust">Option</span><span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-keyword z-operator z-rust">&amp;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;borrow</span> <span class="z-storage z-modifier z-rust">mut</span> dyn <span class="z-support z-type z-rust">FnMut</span><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-meta z-generic z-rust">BrokenLink<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;input</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span><span class="z-punctuation z-section z-group z-end z-rust">)</span> <span class="z-punctuation z-separator z-generic z-rust">-&gt;</span> <span class="z-meta z-generic z-rust"><span class="z-support z-type z-rust">Option</span><span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-meta z-generic z-rust">CowStr<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;input</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span>, <span class="z-meta z-generic z-rust">CowStr<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;input</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span><span class="z-punctuation z-section z-group z-end z-rust">)</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></code></pre>
+<p>Notice that 1. and 3. are still tied together; this is because pulldown has an API that yields
+<a href="https://docs.rs/pulldown-cmark/0.8.0/pulldown_cmark/struct.Parser.html#associatedtype.Item">events with the lifetime of the input</a>. To use the output of the callback in the
+<code>Iterator</code> implementation, the outputs have to live as long as the full markdown input, not just
+the current link.</p>
+<p>An interesting note is that <code>broken_link_callback</code> had a similar issue over overspecifying lifetimes:
+if you change the type signature to</p>
+<pre data-lang="rust" class="language-rust z-code"><code class="language-rust" data-lang="rust"><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-function z-rust"><span class="z-storage z-type z-function z-rust">fn</span> </span><span class="z-entity z-name z-function z-rust">summary_broken_link_callback</span></span><span class="z-meta z-generic z-rust"><span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">(</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust">	<span class="z-variable z-parameter z-rust">link</span><span class="z-punctuation z-separator z-rust">:</span> <span class="z-meta z-generic z-rust">BrokenLink<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span>&#39;<span class="z-keyword z-operator z-rust">_</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-end z-rust">)</span></span></span></span><span class="z-meta z-function z-rust"> <span class="z-meta z-function z-return-type z-rust"><span class="z-punctuation z-separator z-rust">-&gt;</span> <span class="z-meta z-generic z-rust"><span class="z-support z-type z-rust">Option</span><span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-meta z-generic z-rust">CowStr<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span>, <span class="z-meta z-generic z-rust">CowStr<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;a</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span><span class="z-punctuation z-section z-group z-end z-rust">)</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span></span> </span><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">  <span class="z-support z-type z-rust">Some</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-string z-quoted z-double z-rust"><span class="z-punctuation z-definition z-string z-begin z-rust">&quot;</span>#<span class="z-punctuation z-definition z-string z-end z-rust">&quot;</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">into</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-separator z-rust">,</span> link<span class="z-punctuation z-accessor z-dot z-rust">.</span>reference<span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">to_owned</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">into</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"></span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span></span>
+</span></code></pre>
+<p>it will suddenly compile. In particular, the lifetime of the input is no longer tied to the lifetime of the output,
+which works because <code>link.reference</code> is copied, not borrowed.</p>
+<p>For more information about this problem, including strange and disconcerting errors that show up
+if you give lifetimes the wrong annotations, see <a href="https://github.com/raphlinus/pulldown-cmark/issues/509">the issue</a> against pulldown, as well as <a href="https://github.com/raphlinus/pulldown-cmark/pull/510">the
+PR</a> I made fixing it.</p>
+<h2 id="bonus-wait-where-s-my-diagnostics-bug-i-was-promised-a-diagnostics-bug">Bonus: Wait, where's my diagnostics bug? I was promised a diagnostics bug!<a class="zola-anchor" href="#bonus-wait-where-s-my-diagnostics-bug-i-was-promised-a-diagnostics-bug" aria-label="Anchor link for: bonus-wait-where-s-my-diagnostics-bug-i-was-promised-a-diagnostics-bug"></a>
+</h2>
+<p>For some reason, the error in a stand-alone program is different from the one when you compile <code>broken_link_callback</code> as part of rustdoc:</p>
+<pre class="z-code"><code><span class="z-text z-plain">error: implementation of `FnOnce` is not general enough
+</span><span class="z-text z-plain">   --&gt; src/lib.rs:8:80
+</span><span class="z-text z-plain">    |
+</span><span class="z-text z-plain">8   |       for _ in Parser::new_with_broken_link_callback(txt, Options::empty(), Some(&amp;mut callback)) {
+</span><span class="z-text z-plain">    |                                                                                  ^^^^^^^^^^^^^ implementation of `FnOnce` is not general enough
+</span><span class="z-text z-plain">    | 
+</span><span class="z-text z-plain">   ::: /home/jyn/.local/lib/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/function.rs:219:1
+</span><span class="z-text z-plain">    |
+</span><span class="z-text z-plain">219 | / pub trait FnOnce&lt;Args&gt; {
+</span><span class="z-text z-plain">220 | |     /// The returned type after the call operator is used.
+</span><span class="z-text z-plain">221 | |     #[lang = &quot;fn_once_output&quot;]
+</span><span class="z-text z-plain">222 | |     #[stable(feature = &quot;fn_once_output&quot;, since = &quot;1.12.0&quot;)]
+</span><span class="z-text z-plain">...   |
+</span><span class="z-text z-plain">227 | |     extern &quot;rust-call&quot; fn call_once(self, args: Args) -&gt; Self::Output;
+</span><span class="z-text z-plain">228 | | }
+</span><span class="z-text z-plain">    | |_- trait `FnOnce` defined here
+</span><span class="z-text z-plain">    |
+</span><span class="z-text z-plain">    = note: `for&lt;&#39;a&gt; fn(pulldown_cmark::BrokenLink&lt;&#39;a&gt;) -&gt; Option&lt;(pulldown_cmark::CowStr&lt;&#39;a&gt;, pulldown_cmark::CowStr&lt;&#39;a&gt;)&gt; {callback}` must implement `FnOnce&lt;(pulldown_cmark::BrokenLink&lt;&#39;_&gt;,)&gt;`
+</span><span class="z-text z-plain">    = note: ...but `FnOnce&lt;(pulldown_cmark::BrokenLink&lt;&#39;_&gt;,)&gt;` is actually implemented for the type `for&lt;&#39;a&gt; fn(pulldown_cmark::BrokenLink&lt;&#39;a&gt;) -&gt; Option&lt;(pulldown_cmark::CowStr&lt;&#39;a&gt;, pulldown_cmark::CowStr&lt;&#39;a&gt;)&gt; {callback}`
+</span></code></pre>
+<p>In particular, the <code>note:</code> makes no sense: it shows the same types above and below!
+This is a long-lived <a href="https://github.com/rust-lang/rust/issues/79643">diagnostics issue</a> with the compiler itself, going back <a href="https://github.com/rust-lang/rust/issues/41078">at least until 2017</a>.</p>
+<h2 id="appendix">Appendix<a class="zola-anchor" href="#appendix" aria-label="Anchor link for: appendix"></a>
+</h2>
+<ul>
+<li><a href="https://doc.rust-lang.org/nomicon/hrtb.html">HRTB</a></li>
+<li><a href="https://doc.rust-lang.org/rustdoc/">Rustdoc</a></li>
+<li><a href="https://doc.rust-lang.org/rustdoc/linking-to-items-by-name.html">intra-doc links</a></li>
+<li><a href="https://doc.rust-lang.org/nomicon/lifetimes.html#the-area-covered-by-a-lifetime">reborrowing</a></li>
+<li>I wrote more about <a href="https://stackoverflow.com/questions/28961957/example-of-runtime-polymorphism-in-java">runtime polymorphism</a> (which is like <code>virtual</code> in C++ or any method call in Python) in an <a href="https://acm.cse.sc.edu/assets/2020-09-09">ACM talk</a>.</li>
+</ul>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;borrow-mut-dyn-fnmut-brokenlink-cowstring-and-other-valid-rust-programs&#x2F;&amp;type=story">Hacker News</a> or
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;borrow-mut-dyn-fnmut-brokenlink-cowstring-and-other-valid-rust-programs&#x2F;">Lobste.rs</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Why HRTB are my least-favorite part of Rust</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

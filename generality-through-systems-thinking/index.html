@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>generality through systems thinking</title>
+    
+    <meta name="description" content="our programs have been stuck in a box for a long time. we can escape it.">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="our programs have been stuck in a box for a long time. we can escape it." class="post-title" itemprop="name headline">generality through systems thinking</h1>
+    <p class="post-meta">
+      <time datetime="2025-07-04" itemprop="datePublished">
+        2025-07-04
+      </time>
+      
+      
+      
+        
+        
+        
+      • <a href="https://jyn.dev/tags/ideas/">ideas</a>
+        
+      
+    </p>
+  </header>
+
+  
+  <aside class=secret><button class=close aria-label=Close title="Click here to dismiss">
+    <strong>This is a draft post. Please do not share it.</strong>
+  </button></aside>
+  
+
+	
+
+
+<div class=toc-container><div class="toc-content">
+	<details><summary>Table of contents</summary>
+	
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/generality-through-systems-thinking/#creating-coordination-mechanisms">creating coordination mechanisms</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/generality-through-systems-thinking/#reusing-coordination-mechanisms">reusing coordination mechanisms</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/generality-through-systems-thinking/#escaping-the-box">escaping the box</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/generality-through-systems-thinking/#does-this-actually-work">does this actually work?</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/generality-through-systems-thinking/#does-this-only-work-for-c-like-languages">does this only work for “C-like” languages?</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/generality-through-systems-thinking/#this-all-sounds-really-cursed">this all sounds really cursed</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/generality-through-systems-thinking/#bibliography">bibliography</a>
+		
+	</li>
+		</ol></details></div></div>
+	
+
+  
+    
+  <p>This post is part 2 of a multi-part series called <a href="/computer-of-the-future">“the computer of the next 200 years”</a>.</p>
+    
+    <p>This post is as-yet unfinished.</p>
+    
+  <hr>
+  
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <blockquote>
+<p>And always, he fought the temptation to choose a clear, safe course, warning 'That path leads ever down into stagnation—Frank Herbert</p>
+</blockquote>
+<p>in the previous post, I talked about how data is trapped inside the box that is our programs. In this post, I want to explore what we can do about it.</p>
+<h2 id="creating-coordination-mechanisms">creating coordination mechanisms<a class="zola-anchor" href="#creating-coordination-mechanisms" aria-label="Anchor link for: creating-coordination-mechanisms"></a>
+</h2>
+<p>to introduce structure to system. The first is to build coordination mechanism to establish standards so that programs can inter operate along the API boundary this works, and it works quite long! But it requires changes from every program that improves the standard. Usually, standards like this only say gradual adoption over a period of many years, and once it’s widely adopted, the protocol is very resistant to see this for example in XMPP and email, both of which are effectively frozen in the early 90s.</p>
+<h2 id="reusing-coordination-mechanisms">reusing coordination mechanisms<a class="zola-anchor" href="#reusing-coordination-mechanisms" aria-label="Anchor link for: reusing-coordination-mechanisms"></a>
+</h2>
+<p>The second is to work with the boundaries that already exist. for example, you can track and interpose behavior along system calls, function calls, network calls, and disk IO; using ptrace, LD_PRELOAD, network proxies, and FUSE respectively. what do these have in common? they have an existing defined interface boundary, where programs
+expect only a <em>behavior</em>, not an <em>implementation</em>.</p>
+<p>here are some example tools which work in this way:</p>
+<h2 id="escaping-the-box">escaping the box<a class="zola-anchor" href="#escaping-the-box" aria-label="Anchor link for: escaping-the-box"></a>
+</h2>
+<p>the approach i take in this series is to instead use runtime tracking at the lowest interfaces between the program and the outside world: syscalls, cpu instructions, and <a href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format?wprov=sfti1#Non-Unix_adoption">ELF files</a> <sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">1</a></sup>; interactions that cannot possibly be faked and are required for all programs that run anywhere on the system. this loses portability between OS’s and static analysis. but in turn it gains <strong>generality</strong>: we do not need to establish a new coordination mechanism between any two processes, and our system does not need to special-case any program, because we use the same approach for all of them.</p>
+<p>by doing so, we “escape the box”. by moving features outside the process, switching costs are greatly reduced: if we build things at the OS level, we don't have to rewrite them for each program, so the interface boundary is smaller. our systems work even for languages that have not yet been invented! in some sense, this series is an exploration of just how good we can make our tooling without first establishing a new coordination mechanism.</p>
+<p>note that this isn’t “just another tool” because programs running in this system can interact freely with programs outside it. there is no kind of vendor lock in. i call this <a href="https://en.m.wikipedia.org/wiki/Systems_thinking#Characteristics"><strong>systems thinking</strong></a> because it works at the boundaries of the systems that already exist, in full detail, rather than at the level of the abstractions that are normally built on top. systems thinking is not limited to Unix processes; you can apply it to (e.g.) distributed systems, performance tracking, and debugging.</p>
+<h2 id="does-this-actually-work">does this actually work?<a class="zola-anchor" href="#does-this-actually-work" aria-label="Anchor link for: does-this-actually-work"></a>
+</h2>
+<p>this systems-level approach is surprisingly powerful! here are some existing tools that work at this level:</p>
+<ul>
+<li>docker. this works by sandboxing all processes and interposing an <a href="https://docs.kernel.org/filesystems/overlayfs.html">overlay filesystem</a> to track their file writes. this sandbox uses linux-specific mechanisms, which is why docker runs in a linux VM on macOS and Windows.</li>
+<li>SystemD <a href="https://0pointer.de/blog/projects/socket-activation.html">socket activation</a>, which decouples the socket file descriptor from the program listening to it, allowing services to be "lazy-activated" when the other side of the socket is written to</li>
+<li>syscall tracking using <a href="https://strace.io">strace</a></li>
+<li>stack backtraces using <a href="https://dwarfstd.org">DWARF</a>.</li>
+<li>debuggers (gdb, lldb, etc). these encode quite a lot of information about the language itself, but in theory work for any language with a C-compatible callstack.</li>
+<li>time-travel debuggers, like <a href="https://rr-project.org/">rr</a>. these work by recording and replaying syscalls, so they can work no matter how many layers of FFI are going on in the program.</li>
+<li>dynamically loaded library metadata using <a href="https://man7.org/linux/man-pages/man1/ldd.1.html">ldd</a> (and in general the dynamic loader has many surprising features most people don’t know about).</li>
+</ul>
+<h2 id="does-this-only-work-for-c-like-languages">does this only work for “C-like” languages?<a class="zola-anchor" href="#does-this-only-work-for-c-like-languages" aria-label="Anchor link for: does-this-only-work-for-c-like-languages"></a>
+</h2>
+<p>note that all of the above debugging tools are hamstrung by languages with an embedded interpreter; they show information that is accurate but contains far too much info about the runtime internals to be useful to a programmer in that language. in response, people build language specific tools such as <a href="https://docs.python.org/3/library/pdb.html">PDB</a> and <a href="https://github.com/go-delve/delve">Delve</a>.</p>
+<p>this limitation is specific to <em>mapping runtime info back to the source language</em>. if you do not attempt to map back to the source language—for examples, schemes 1 and 2 in <a href="/complected-and-orthogonal-persistence/#but-why">completed and orthogonal persistence</a>—you do not need language specific tooling, and you can get systems that work in full generality for any language. for instance rr can <em>replay</em> any process even though it cannot let you debug a python process at the level you want to see.</p>
+<p>i’ll discuss how to map back to the source language in <a href="/computer-of-the-future#:~:text=composable%20compilers">composable compilers</a>. for now, we’ll stick with features that don’t require mapping runtime info back to the source.</p>
+<h2 id="this-all-sounds-really-cursed">this all sounds really cursed<a class="zola-anchor" href="#this-all-sounds-really-cursed" aria-label="Anchor link for: this-all-sounds-really-cursed"></a>
+</h2>
+<!--
+> It is not so hard as we have supposed.
+> —[_Jonathan Strange & Mr Norrell_](https://www.goodreads.com/book/show/14201.Jonathan_Strange_Mr_Norrell)
+-->
+<p><img src="/what-the-fuck-is-this.png" alt="holy shit what the fuck is this. why is this a thing. also that sounds rather interesting." />
+this is cursed! it's true! working at this level stack exposes you to a whole new axis of bugs. you may discover that your program is broken only on <a href="https://hackmd.io/sH315lO2RuicY-SEt7ynGA?view#AMD-patented-time-travel-and-dubbed-it-SpecLockMapnbspnbspnbspnbspnbspnbspnbspnbspor-how-we-accidentally-unlocked-rr-on-AMD-Zen">AMD Zen</a>, or that it breaks when using <a href="https://github.com/rr-debugger/rr/issues/1373#issuecomment-152128412">interruptible atomic accesses</a>, or that it works</p>
+<!--
+thinking at a systems level is hard. but it is [possible to learn](https://jyn.dev/technical-debt-is-different-from-technical-risk/#bad-code-misses-the-point). you just have to learn not to flinch away from things you don’t know.
+-->
+<hr />
+<h2 id="bibliography">bibliography<a class="zola-anchor" href="#bibliography" aria-label="Anchor link for: bibliography"></a>
+</h2>
+<ul>
+<li><a href="https://drmaciver.substack.com/i/145700143/you-are-in-a-box">D. R. MacIver, "This is important"</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Jamie_Zawinski">Wikipedia, "Zawinski’s Law of Software Envelopment"</a></li>
+<li><a href="https://graydon2.dreamwidth.org/263429.html">Graydon Hoare, "Rust 2019 and beyond: limits to (some) growth."</a></li>
+<li><a href="https://youtu.be/SxdOUGdseq4?si=X9OZ975hwwzZOxpo&amp;t=346">Rich Hickey, "Simple Made Easy"</a></li>
+<li><a href="https://blog.vivekpanyam.com/parsing-an-undocumented-file-format">Vivek Panyam, "Parsing an undocumented file format"</a></li>
+<li><a href="https://docs.vulkan.org/guide/latest/what_is_spirv.html">The Khronos® Group Inc, "Vulcan Documentation: What is SPIR-V"</a></li>
+<li><a href="https://faultlore.com/blah/c-isnt-a-language/">Aria Desires, "C Isn't A Language Anymore"</a></li>
+<li><a href="https://pkg.go.dev/cmd/cgo">Google LLC, "Standard library: cmd.cgo"</a></li>
+<li><a href="https://words.filippo.io/rustgo/">Filippo Valsorda, "rustgo: calling Rust from Go with near-zero overhead"</a></li>
+<li><a href="https://webassembly.org/">WebAssembly Working Group, “WebAssembly”</a></li>
+<li><a href="https://component-model.bytecodealliance.org/">The Bytecode Alliance, "The WebAssembly Component Model"</a></li>
+<li><a href="https://github.com/rust-lang/rfcs/pull/3470">Josh Triplett, "crABI v1"</a></li>
+<li><a href="https://web.archive.org/web/20210121181531/https://djrobstep.com/posts/programs-are-a-prison">Robert Lechte, “Programs are a prison: Rethinking the fundamental building blocks of computing interfaces”</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format?wprov=sfti1">Wikipedia, “Executable and Linkable Format”</a></li>
+<li><a href="https://dwarfstd.org">DWARF Debugging Information Format Committee, “DWARF Debugging Standard”</a></li>
+<li><a href="https://rr-project.org/">Robert O’Callahan et al., “RR”</a></li>
+<li><a href="https://man7.org/linux/man-pages/man1/ldd.1.html">“ldd(1)”</a></li>
+<li><a href="https://strace.io">The strace developers, “strace: linux syscall tracer</a></li>
+<li><a href="https://docs.python.org/3/library/pdb.html">Python Software Foundation, “<code>pdb</code> — The Python Debugger“</a></li>
+<li><a href="https://github.com/go-delve/delve">Derek Parker, “Delve”</a></li>
+<li><a href="https://www.goodreads.com/book/show/14201.Jonathan_Strange_Mr_Norrell">Susanna Clark, <em>Jonathan Strange &amp; Mr Norrell</em></a></li>
+</ul>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-2">
+<p>ELF is the default executable format on nearly every modern OS besides MacOS and Windows. <a href="#fr-2-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;generality-through-systems-thinking&#x2F;&amp;type=story">Hacker News</a> or
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;generality-through-systems-thinking&#x2F;">Lobste.rs</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>our programs have been stuck in a box for a long time. we can escape it.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

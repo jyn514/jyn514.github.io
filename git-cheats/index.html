@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Git cheats</title>
+    
+    <meta name="description" content="tips and tricks for dealing with git&#x27;s horrible error messages">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="tips and tricks for dealing with git&#x27;s horrible error messages" class="post-title" itemprop="name headline">Git cheats</h1>
+    <p class="post-meta">
+      <time datetime="2022-09-02" itemprop="datePublished">
+        2022-09-02
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/walkthroughs/">walkthroughs</a>
+        
+      
+    </p>
+  </header>
+
+  
+
+	
+
+  
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <p>A small note: this will be much less organized and thought out than my other blog posts because I have been unable to convince myself to write a blog in about 2 years. Instead these are some notes to myself that happen to be public for anyone who finds them useful.</p>
+<p>A small note written after spending 5 minutes on this post: holy shit this is so deranged I'm turning into Gankra lmao</p>
+<h1 id="git">Git<a class="zola-anchor" href="#git" aria-label="Anchor link for: git"></a>
+</h1>
+<p>big fan of the data model.
+not a fan of the UI.</p>
+<p>Ok so before anything else, don't panic. Your code is probably still there somewhere you just can't find it. If you <em>stop running commands</em> right now, you can probably get it back.</p>
+<h2 id="i-had-a-commit-and-then-i-checked-out-a-different-branch-and-now-i-can-t-find-the-commit-again-sob">I had a commit and then I checked out a different branch and now I can't find the commit again 😭<a class="zola-anchor" href="#i-had-a-commit-and-then-i-checked-out-a-different-branch-and-now-i-can-t-find-the-commit-again-sob" aria-label="Anchor link for: i-had-a-commit-and-then-i-checked-out-a-different-branch-and-now-i-can-t-find-the-commit-again-sob"></a>
+</h2>
+<p>Run <code>git reflog</code>, it shows you all the recent commits you were on.</p>
+<h2 id="someone-told-me-to-rebase-and-i-did-that-but-now-git-says-failed-to-push-some-refs-why-is-this-happening">someone told me to rebase and I did that but now git says "failed to push some refs"??? why is this happening<a class="zola-anchor" href="#someone-told-me-to-rebase-and-i-did-that-but-now-git-says-failed-to-push-some-refs-why-is-this-happening" aria-label="Anchor link for: someone-told-me-to-rebase-and-i-did-that-but-now-git-says-failed-to-push-some-refs-why-is-this-happening"></a>
+</h2>
+<p>The error probably looks like this:</p>
+<pre class="z-code"><code><span class="z-text z-plain">$ git push
+</span><span class="z-text z-plain">To github.com:jyn514/rust.git
+</span><span class="z-text z-plain"> ! [rejected]                simplify-storage -&gt; simplify-storage (non-fast-forward)
+</span><span class="z-text z-plain">error: failed to push some refs to &#39;git@github.com:jyn514/rust.git&#39;
+</span><span class="z-text z-plain">hint: Updates were rejected because the tip of your current branch is behind
+</span><span class="z-text z-plain">hint: its remote counterpart. Integrate the remote changes (e.g.
+</span><span class="z-text z-plain">hint: &#39;git pull ...&#39;) before pushing again.
+</span><span class="z-text z-plain">hint: See the &#39;Note about fast-forwards&#39; in &#39;git push --help&#39; for details.
+</span></code></pre>
+<p>This is totally normal. Git just gives absolutely awful error messages. Run <code>git push --force-with-lease</code> and it should work fine.</p>
+<p>Be careful using <code>--force</code>. 99% of the time it works. The other 1% someone else pushed to your branch and you just deleted their work. They will not be happy.</p>
+<h2 id="wait-but-i-ran-git-pull-before-i-looked-at-your-blog-now-what-do-i-do">wait but I ran git pull before I looked at your blog now what do I do???<a class="zola-anchor" href="#wait-but-i-ran-git-pull-before-i-looked-at-your-blog-now-what-do-i-do" aria-label="Anchor link for: wait-but-i-ran-git-pull-before-i-looked-at-your-blog-now-what-do-i-do"></a>
+</h2>
+<p>Your latest commit probably looks like this:</p>
+<pre class="z-code"><code><span class="z-text z-plain">commit 88fdea3dd2e876a92960601c019e729401e832ab (HEAD -&gt; simplify-storage)
+</span><span class="z-text z-plain">Merge: d6bd3ef8662 6b22a42e011
+</span><span class="z-text z-plain">Author: jyn &lt;github@jyn.dev&gt;
+</span><span class="z-text z-plain">Date:   Fri Sep 2 19:24:33 2022 -0500
+</span><span class="z-text z-plain">
+</span><span class="z-text z-plain">    Merge github.com:jyn514/rust into simplify-storage
+</span></code></pre>
+<p>Get rid of it. We don't want it. If you have changes since the latest commit, save them somewhere (e.g. <code>git stash</code>).
+Then run <code>git reset --hard HEAD~</code>. Now go to the step above about <code>--force-with-lease</code>.</p>
+<h2 id="i-have-a-detached-head">I have a detached HEAD<a class="zola-anchor" href="#i-have-a-detached-head" aria-label="Anchor link for: i-have-a-detached-head"></a>
+</h2>
+<h3 id="wtf-does-that-mean">WTF does that mean<a class="zola-anchor" href="#wtf-does-that-mean" aria-label="Anchor link for: wtf-does-that-mean"></a>
+</h3>
+<p>You have turned into the Nick the Headless Horseman. Have fun trying to join the Headless Hunt.</p>
+<h3 id="no-stop-i-came-here-for-help">No stop I came here for help<a class="zola-anchor" href="#no-stop-i-came-here-for-help" aria-label="Anchor link for: no-stop-i-came-here-for-help"></a>
+</h3>
+<p>Git doesn't think you're on a branch or tag.</p>
+<p>This is <em>not</em> the same as being on a commit that's not in any branch or tag. It's perfectly possible
+to be on the same commit as the latest <code>main</code> and still have a detached HEAD. It just means that
+any new commit you make in this state won't be on a branch.</p>
+<h3 id="how-does-this-help-me-i-don-t-understand">How does this help me I don't understand<a class="zola-anchor" href="#how-does-this-help-me-i-don-t-understand" aria-label="Anchor link for: how-does-this-help-me-i-don-t-understand"></a>
+</h3>
+<p>Everything is fine. All your work is still here. You just need to figure out what you want to do next.</p>
+<h4 id="i-don-t-care-about-any-of-the-work-i-ve-done-in-the-last-day-i-just-want-a-git-repo-that-works-i-will-wipe-this-directory-if-you-don-t-help">I don't care about any of the work I've done in the last day I just want a git repo that works I will wipe this directory if you don't help<a class="zola-anchor" href="#i-don-t-care-about-any-of-the-work-i-ve-done-in-the-last-day-i-just-want-a-git-repo-that-works-i-will-wipe-this-directory-if-you-don-t-help" aria-label="Anchor link for: i-don-t-care-about-any-of-the-work-i-ve-done-in-the-last-day-i-just-want-a-git-repo-that-works-i-will-wipe-this-directory-if-you-don-t-help"></a>
+</h4>
+<p><strong>DO NOT DO THIS IF YOU HAVE WORK YOU WANT TO SAVE!!!</strong></p>
+<p>Run <code>git checkout --force $(git rev-parse --abbrev-ref origin/HEAD)</code>. If that gives an error for any reason try <code>git checkout --force origin/master </code>or <code>origin/main</code> instead. If none of those work IDK what to tell you maybe wiping the repo is the best idea after all. Good luck.</p>
+<h4 id="i-have-work-i-want-to-save-please-help-me-fix-this-i-have-a-deadline-in-an-hour">I have work I want to save please help me fix this I have a deadline in an hour<a class="zola-anchor" href="#i-have-work-i-want-to-save-please-help-me-fix-this-i-have-a-deadline-in-an-hour" aria-label="Anchor link for: i-have-work-i-want-to-save-please-help-me-fix-this-i-have-a-deadline-in-an-hour"></a>
+</h4>
+<p>Ok. Pick which branch you want to put your work on. I'm going to pick <code>bark</code> because branches have bark. haha</p>
+<p>Does the commit you're on have the work you want to save?</p>
+<h5 id="yes-how-do-i-get-it-to-work">yes how do I get it to work<a class="zola-anchor" href="#yes-how-do-i-get-it-to-work" aria-label="Anchor link for: yes-how-do-i-get-it-to-work"></a>
+</h5>
+<p>Run <code>git branch --delete bark &amp;&amp; git checkout --branch bark</code>. This is the least invasive way to fix things;
+whatever untracked code is in your working directory won't be modified, and the old branch will still be in your reflog if you really need it. If you don't know what that means, that's ok, you're on the right branch now and you can push it wherever you need.</p>
+<h5 id="no-please-i-don-t-know-how-i-got-into-this-state-i-really-hate-git-right-now">no please I don't know how I got into this state I really hate git right now<a class="zola-anchor" href="#no-please-i-don-t-know-how-i-got-into-this-state-i-really-hate-git-right-now" aria-label="Anchor link for: no-please-i-don-t-know-how-i-got-into-this-state-i-really-hate-git-right-now"></a>
+</h5>
+<p>Figure out which commit has the work you want to save. Then run <code>git checkout &lt;that commit&gt;</code> and then follow the steps about branches immediately above.</p>
+<h2 id="git-tells-me-something-about-would-overwrite-untracked-files-idk-what-that-means-i-just-want-to-pull-the-latest-branch">Git tells me something about "would overwrite untracked files"? idk what that means I just want to pull the latest branch<a class="zola-anchor" href="#git-tells-me-something-about-would-overwrite-untracked-files-idk-what-that-means-i-just-want-to-pull-the-latest-branch" aria-label="Anchor link for: git-tells-me-something-about-would-overwrite-untracked-files-idk-what-that-means-i-just-want-to-pull-the-latest-branch"></a>
+</h2>
+<p>I'm going to assume the error looks something like this:</p>
+<pre class="z-code"><code><span class="z-text z-plain">error: The following untracked working tree files would be overwritten by reset:
+</span><span class="z-text z-plain">        src/tools/rls/Cargo.toml
+</span><span class="z-text z-plain">        src/tools/rls/README.md
+</span><span class="z-text z-plain">Please move or remove them before you reset.
+</span><span class="z-text z-plain">Aborting
+</span><span class="z-text z-plain">fatal: could not move back to 9ba169a73acfa9c9875b76eec09e9a91cc6246df
+</span></code></pre>
+<p>There are three things I can think of that could be going wrong here:</p>
+<ol>
+<li>
+<p>You made some changes and didn't commit them. Commit them now. Go. Do it. <code>git add src/tools/rls &amp;&amp; git commit</code>.</p>
+</li>
+<li>
+<p>This is in a submodule and git got confused. If you don't know what a submodule is, mentally replace it with "code I have never modified and will never want to modify". You can ignore this by running <code>git submodule deinit -f src/tools/rls</code> (or whichever directory the submodule starts in - you can check with <code>git submodule status</code>).</p>
+<p><strong>DO NOT DO THIS</strong> if you have made changes to that directory you want to save. Git will destroy all you hold dear. It is a sharp and powerful tool. You might call it ... a subtle knife.</p>
+</li>
+<li>
+<p>This used to be a submodule and it's no longer a submodule. You tried the <code>deinit</code> thing above and it didn't help. Try <code>rm -rf src/tools/rls</code>. This does exactly what it looks like, don't do it if you want to save your work.</p>
+</li>
+</ol>
+<p>If none of those fix it, glhf sucks to be you</p>
+<h2 id="i-m-in-rust-lang-rust-and-cargo-lock-keeps-showing-modifications-but-i-definitely-didn-t-touch-anything">I'm in rust-lang/rust and Cargo.lock keeps showing modifications but I definitely didn't touch anything ???<a class="zola-anchor" href="#i-m-in-rust-lang-rust-and-cargo-lock-keeps-showing-modifications-but-i-definitely-didn-t-touch-anything" aria-label="Anchor link for: i-m-in-rust-lang-rust-and-cargo-lock-keeps-showing-modifications-but-i-definitely-didn-t-touch-anything"></a>
+</h2>
+<p>yes this is a very specific problem. no I'm not going to take it out of the blog.</p>
+<p>This happens because your submodules are out of date. Run <code>./x.py --help</code>, which updates submodules for you.
+Under the hood this is running the equivalent of <code>git submodule update --init --recursive</code> which makes sure all the rust tool submodules are up to date.</p>
+<h3 id="that-didn-t-help">that didn't help.<a class="zola-anchor" href="#that-didn-t-help" aria-label="Anchor link for: that-didn-t-help"></a>
+</h3>
+<p>sucks to be you</p>
+<h2 id="i-made-a-commit-and-then-i-realized-i-want-to-make-more-changes-but-also-people-getting-annoyed-when-i-add-lots-of-commits-what-do-i-do">I made a commit and then I realized I want to make more changes but also people getting annoyed when I add lots of commits what do I do<a class="zola-anchor" href="#i-made-a-commit-and-then-i-realized-i-want-to-make-more-changes-but-also-people-getting-annoyed-when-i-add-lots-of-commits-what-do-i-do" aria-label="Anchor link for: i-made-a-commit-and-then-i-realized-i-want-to-make-more-changes-but-also-people-getting-annoyed-when-i-add-lots-of-commits-what-do-i-do"></a>
+</h2>
+<p>First make your changes. Then run <code>git add .</code></p>
+<p>If you want to change the latest commit you made, run <code>git commit --amend</code>.</p>
+<p>If you want to change an earlier commit, run <code>git commit --fixup &lt;earlier commit&gt; &amp;&amp; git rebase -i --autosquash &lt;earlier commit&gt;~</code>. Type the <code>~</code> literally but remove the <code>&lt;&gt;</code>.</p>
+<p>If you don't know which commit you want to change, but you know it's a commit you made since you made this branch, install
+<a href="https://github.com/tummychow/git-absorb/">https://github.com/tummychow/git-absorb/</a> then run the <code>autosquash</code> command from above. Absorb does magic to pick the right commits.</p>
+<p>If you want to change a commit that's already on master, don't. Just don't.
+If you're <em>really</em>, <em>truly</em> convinced you need to, and you're <em>sure</em> no one else minds (which in practice is probably never true), you can use <a href="https://github.com/newren/git-filter-repo">https://github.com/newren/git-filter-repo</a>.</p>
+<h2 id="i-made-a-merge-commit-but-now-someone-is-telling-me-merge-commits-aren-t-allowed-how-do-i-fix-this-please-i-already-spent-3-hours-on-this-i-don-t-want-to-spend-3-more">I made a merge commit but now someone is telling me merge commits aren't allowed how do I fix this?? please I already spent 3 hours on this I don't want to spend 3 more<a class="zola-anchor" href="#i-made-a-merge-commit-but-now-someone-is-telling-me-merge-commits-aren-t-allowed-how-do-i-fix-this-please-i-already-spent-3-hours-on-this-i-don-t-want-to-spend-3-more" aria-label="Anchor link for: i-made-a-merge-commit-but-now-someone-is-telling-me-merge-commits-aren-t-allowed-how-do-i-fix-this-please-i-already-spent-3-hours-on-this-i-don-t-want-to-spend-3-more"></a>
+</h2>
+<p>Run <code>git rebase -i $(git rev-parse --abbrev-ref origin/HEAD)</code> (or whatever your default branch is). Then go up to the bit about "failed to push some refs" above.</p>
+<p>Yes this will probably cause conflicts. No I don't know how to avoid that, probably some nonsense with <code>git reset $(git merge-base $(git rev-parse --abbrev-ref origin/HEAD)) &amp;&amp; git add . &amp;&amp; git commit</code> or whatever. Don't blame me if that doesn't work, I didn't test it. Also it throws away all the history, you keep the work but not the commit messages, you have to fish them up again with <code>git reflog</code> or <code>git for-each-ref --sort=committerdate refs/heads/ | tail -n1 | cut -d' ' -f1 | xargs git log</code>.</p>
+<h2 id="aaa">AAA<a class="zola-anchor" href="#aaa" aria-label="Anchor link for: aaa"></a>
+</h2>
+<p>yeah no that's it have fun kid</p>
+<p>ok no actually one more thing —</p>
+<p>can I talk for a second about how absolutely <em>awful</em> every error message I've quoted here is. they are so bad I don't even refer to them when explaining what went wrong.
+half the time they point you to completely the wrong solution; the other half they give no indication at all of why something went wrong.</p>
+<p>this is not how it should be. things can be better. here is an error message for the "push after rebase" that is actually useful:</p>
+<pre class="z-code"><code><span class="z-text z-plain">$ git push
+</span><span class="z-text z-plain">To git@github.com:jyn514/rust.git (simplify-storage -&gt; origin/simplify-storage)
+</span><span class="z-text z-plain">error: failed to push 1 commit to &#39;origin&#39;
+</span><span class="z-text z-plain">hint: Both your current branch and the remote branch have changed since the last time you pushed changes.
+</span><span class="z-text z-plain">hint: The commits locally and in your remote have the same descriptions, and you just finished a rebase.
+</span><span class="z-text z-plain">hint: If you want to overwrite the commits on the remote, use &#39;git push --force-with-lease&#39; to push.
+</span><span class="z-text z-plain">note: See https://git-scm.com/book/en/v2/Git-Branching-Rebasing for more information about rebasing.
+</span></code></pre>
+<p>See how that's helpful? see how you understand more after reading it than before? unlike the absolutely useless error before</p>
+<p>god ok that's it for real I'm done now</p>
+<h3 id="update-now-that-this-is-apparently-popular">update now that this is apparently popular<a class="zola-anchor" href="#update-now-that-this-is-apparently-popular" aria-label="Anchor link for: update-now-that-this-is-apparently-popular"></a>
+</h3>
+<p>go read https://rustc-dev-guide.rust-lang.org/git.html too, it's the most comprehensive document on rebase workflows that I've seen. no the official docs don't count, if you don't explain the common errors you run into it's not comprehensive. also the manpages are useless unless you already know what the command does in which case WHAT WAS THE POINT OF THE MAN PAGE</p>
+<p>also go read my twitter where you can read more nonsense like me complaining about how I can't convince myself to go to sleep <a href="https://twitter.com/jynelson514/">https://twitter.com/jynelson514/</a></p>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;git-cheats&#x2F;&amp;type=story">Hacker News</a>,
+    
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;git-cheats&#x2F;">Lobste.rs</a>, or
+    <a href="https:&#x2F;&#x2F;bsky.app&#x2F;profile&#x2F;jyn.dev&#x2F;post&#x2F;3k25xftt7mq2e">Bluesky</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>tips and tricks for dealing with git&#x27;s horrible error messages</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

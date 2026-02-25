@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>I want a better action graph serialization</title>
+    
+    <meta name="description" content="Makefiles and Ninja files have limitations, separate from the implementing tool. How can we fix them?">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="Makefiles and Ninja files have limitations, separate from the implementing tool. How can we fix them?" class="post-title" itemprop="name headline">I want a better action graph serialization</h1>
+    <p class="post-meta">
+      <time datetime="2025-12-04" itemprop="datePublished">
+        2025-12-04
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/build-systems/">build-systems</a>
+        
+      • <a href="https://jyn.dev/tags/ideas/">ideas</a>
+        
+      
+        
+    </p>
+  </header>
+
+  
+
+	
+
+
+<div class=toc-container><div class="toc-content">
+	<details><summary>Table of contents</summary>
+	
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-action-graph-serialization/#what-does-action-graph-mean">what does &quot;action graph&quot; mean?</a>
+		
+
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-action-graph-serialization/#who-uses-an-action-graph">who uses an action graph?</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-action-graph-serialization/#design-goals">design goals</a>
+		
+	</li>
+		</ol>
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-action-graph-serialization/#existing-serializations">existing serializations</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-action-graph-serialization/#dependency-edge-issues-with-ninja">dependency edge issues with ninja</a>
+		
+
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-action-graph-serialization/#negative-dependencies">negative dependencies</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-action-graph-serialization/#renamed-files">renamed files</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-action-graph-serialization/#optional-file-dependencies">optional file dependencies</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-action-graph-serialization/#environment-variables">environment variables</a>
+		
+	</li>
+		</ol>
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-action-graph-serialization/#designing-a-new-action-graph">designing a new action graph</a>
+		
+
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-action-graph-serialization/#a-first-try">a first try</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-action-graph-serialization/#did-you-just-reinvent-starlark">&quot;did you just reinvent starlark?&quot;</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-action-graph-serialization/#runners">runners</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-action-graph-serialization/#are-you-just-piling-a-bunch-of-features-on-top-of-ninja">&quot;are you just piling a bunch of features on top of ninja?&quot;</a>
+		
+	</li>
+		</ol>
+	</li>
+	<li>
+		<a href="https://jyn.dev/i-want-a-better-action-graph-serialization/#next-steps">next steps</a>
+		
+	</li>
+		</ol></details></div></div>
+	
+
+  
+    
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <p>This post is part 3/4 of <a href="/four-posts-about-build-systems/">a series about build systems</a>.
+The next post and last post is <a href="/i-want-a-better-build-executor/">I want a better build executor</a>.</p>
+<hr />
+<figure>
+<blockquote cite="https://lobste.rs/s/uwyfpy/build_system_tradeoffs#c_ymm0ad">
+<p>As someone who ends up getting the ping on "my build is weird" <em>after</em> it has gone through a round of "poke it with a stick", I would really appreciate the <em>mechanisms</em> for [correct dependency edges] rolling out sooner rather than later.</p>
+</blockquote>
+<figcaption>
+<cite class=username><a href="https://lobste.rs/s/uwyfpy/build_system_tradeoffs#c_ymm0ad">mathstuf</a></cite>
+</figcaption>
+</figure>
+<h2 id="what-does-action-graph-mean">what does "action graph" mean?<a class="zola-anchor" href="#what-does-action-graph-mean" aria-label="Anchor link for: what-does-action-graph-mean"></a>
+</h2>
+<p>In <a href="https://jyn.dev/build-system-tradeoffs/">a previous post</a>, I talked about various approaches in the design space of build systems. In this post, I want to zero in on one particular area: action graphs.</p>
+<p>First, let me define "action graph". If you've ever used CMake, you may know that there are two steps involved: A "configure" step (<code>cmake -B build-dir</code>) and a build step (<code>make</code> or <code>cmake --build</code>). What I am interested here is what <code>cmake -B</code> <em>generates</em>, the Makefiles it has created. As <a href="https://neugierig.org/software/blog/2020/05/ninja.html#:~:text=Related%20work">the creator of ninja writes</a>, this is a <em>serialization</em> of all build steps at a given moment in time, with the ability to regenerate the graph by rerunning the configure step.</p>
+<p>This post explores that design space, with the goal of sketching a format that improves on the current state while also enabling incremental adoption. When I say "design space", I mean a serialization format where files are machine-generated by a configure step, and have few enough and restricted enough features that it's possible to make a fast <a href="/i-want-a-better-build-executor/">build executor</a>.</p>
+<h3 id="who-uses-an-action-graph">who uses an action graph?<a class="zola-anchor" href="#who-uses-an-action-graph" aria-label="Anchor link for: who-uses-an-action-graph"></a>
+</h3>
+<p>Not all build systems serialize their action graph. <code>bazel</code> and <code>buck2</code> run persistent servers that store it in memory and allow querying it, but never serialize it to disk. For large graphs, this requires a lot of memory; <code>blaze</code> has actually started <a href="https://youtu.be/1A8LMZ21t6Y?si=FiQ6LGdBQ7Y-aQLY">serializing parts of its graph to reduce memory usage and startup time</a>.</p>
+<p>The nix evaluator doesn’t allow querying its graph at all; nix has a very strange model where it never rebuilds because each change to your source files is a new “<a href="https://nix.dev/manual/nix/2.32/store/derivation/index.html">input-addressed derivation</a>” and therefore requires a reconfigure. This is the main reason it’s only used to package software, not as an “inner” build system, because that reconfigure can be very slow.</p>
+<aside role=note class=note-container><div class=note-content>
+<p>I’ve talked to a couple Nix maintainers and they’ve considered caching parts of the <em>configure</em> step, without caching its outputs (because there are no outputs, other than derivation files!) in order to speed this up. This is much trickier because it requires serializing parts of the evaluator state.</p>
+</div></aside>
+<p>Tools that <em>do</em> serialize their graph include CMake, Meson, and the Chrome build system (<a href="https://gn.googlesource.com/gn/">GN</a>).</p>
+<p>Generally, serializing the graph comes in handy when:</p>
+<ul>
+<li>You don’t have a persistent server to store it in memory. When you don’t have a server, serializing makes your startup times much faster, because you don’t have to rerun the configure step each time.</li>
+<li>You don’t have a remote build cache. When you have a remote cache, the rules for <em>loading</em> that cache can be rather complicated because they involve network queries <sup class="footnote-reference" id="fr-10-1"><a href="#fn-10">1</a></sup>. When you have a local cache, loading it doesn’t require special support because it’s just opening a file.</li>
+<li>You want to support querying, process spawning, and progress updates without rewriting the logic yourself for every OS (i.e. you don't want to write your own build executor).</li>
+</ul>
+<h3 id="design-goals">design goals<a class="zola-anchor" href="#design-goals" aria-label="Anchor link for: design-goals"></a>
+</h3>
+<p>In the last post I talked about 4 things one might want from a build system:</p>
+<ol>
+<li>a "real" language in the configuration step</li>
+<li>reflection (querying the build graph)</li>
+<li>file watching</li>
+<li>support for discovering incorrect dependency edges</li>
+</ol>
+<p>For a serialization format, we have slightly different constraints.</p>
+<ul>
+<li>We care about it being simple and unambiguous to load the graph from the file, so we get fast incremental rebuild speed and graph queries. In particular, we want to touch the filesystem as little as possible while loading.</li>
+<li>We care about supporting "weird" dependency edges, like <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2018/03/build-systems.pdf">dynamic dependencies</a> and the depfiles emitted by a compiler after the first run, so that we're able to support more kinds of builds.</li>
+<li>And finally, we care about <em>minimizing reconfigurations</em>: we want to be able to express as many things as possible in the action graph so we don't have the pay the cost of rerunning the configure step. This tends to be at odds with fast graph loading; adding features at this level of the stack is very expensive!</li>
+</ul>
+<p>Throughout this post, I'll dive into detail on how these 3 overarching goals apply to the serialization format, and how well various serializations achieve that goal.</p>
+<h2 id="existing-serializations">existing serializations<a class="zola-anchor" href="#existing-serializations" aria-label="Anchor link for: existing-serializations"></a>
+</h2>
+<p>The first one we'll look at, because it's the default for CMake, is <code>make</code> and Makefiles. Make is truly in the Unix spirit: easy to implement<sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">2</a></sup>, very hard to use correctly.  Make is <a href="https://medium.com/@adi.ashour/stuff-i-learned-about-makefiles-part-2-66d87109b19b#:~:text=beware%20of%20ambiguity">ambiguous</a>, <a href="https://medium.com/@adi.ashour/stuff-i-learned-about-makefiles-part-2-66d87109b19b#:~:text==%20vs%20:=">complicated</a>, and makes it very easy to <a href="https://medium.com/@adi.ashour/stuff-i-learned-about-makefiles-part-1-9b85986d7c59#:~:text=pattern%20rules">implicitly do a bunch of file system lookups</a>. It supports running shell commands at the top-level, which makes even loading the graph very expensive. It does do pretty well on minimizing reconfigurations, since the language is quite flexible.</p>
+<p>Ninja is the other generator supported by CMake. Ninja is explicitly intended to work on a serialized action graph; it's the only tool I'm aware of that is. It <a href="https://ninja-build.org/manual.html#_comparison_to_make">solves a lot of the problems of Make</a>: it removes many of the ambiguities; it doesn't have any form of globbing; and generally it's a much simpler and smaller language. Unfortunately, Ninja's build file format still has some limitations.</p>
+<p>First, it has no support for checksums. It's possible to work around that by using <a href="https://ninja-build.org/manual.html#:~:text=re-stat%20the%20command"><code>restat = true</code></a> and having a wrapper script that doesn't overwrite files unless they've changed, but that's a lot of extra work and is annoying to make portable between operating systems.</p>
+<p>Ninja files also have trouble expressing correct dependency edges. Let's look at a few examples, one by one. In each of these cases, we either have to reconfigure more often than we wish, or we have no way at all of expressing the dependency edge.</p>
+<h2 id="dependency-edge-issues-with-ninja">dependency edge issues with ninja<a class="zola-anchor" href="#dependency-edge-issues-with-ninja" aria-label="Anchor link for: dependency-edge-issues-with-ninja"></a>
+</h2>
+<h3 id="negative-dependencies">negative dependencies<a class="zola-anchor" href="#negative-dependencies" aria-label="Anchor link for: negative-dependencies"></a>
+</h3>
+<p>See <a href="/negative-build-dependencies/">my previous post</a> about negative dependencies. The short version is that build files need to specify not just the files they expect to exist, but also the files they expect <em>not</em> to exist. There's no way to express this in a ninja file, short of reconfiguring every time a directory that might contain a negative dependency is modified, which itself has a lot of downsides.</p>
+<h3 id="renamed-files">renamed files<a class="zola-anchor" href="#renamed-files" aria-label="Anchor link for: renamed-files"></a>
+</h3>
+<p>Say that you have a C project with just a <code>main.c</code>. You rename it to <code>project.c</code> and ninja gives you an error that main.c no longer exists. Annoyed of editing ninja files by hand, you decide to write a generator<sup class="footnote-reference" id="fr-4-1"><a href="#fn-4">3</a></sup> :</p>
+<pre data-lang="python" class="language-python z-code"><code class="language-python" data-lang="python"><span class="z-source z-python"><span class="z-comment z-line z-number-sign z-python"><span class="z-punctuation z-definition z-comment z-python">#</span> build.py
+</span></span><span class="z-source z-python"><span class="z-meta z-statement z-import z-python"><span class="z-keyword z-control z-import z-python">import</span> <span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">ninja_syntax</span></span></span>
+</span><span class="z-source z-python"><span class="z-meta z-statement z-import z-python"><span class="z-keyword z-control z-import z-python">import</span> <span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">os</span></span></span>
+</span><span class="z-source z-python"><span class="z-meta z-statement z-import z-python"><span class="z-keyword z-control z-import z-python">import</span> <span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">sys</span></span></span>
+</span><span class="z-source z-python"><span class="z-meta z-statement z-import z-python"><span class="z-keyword z-control z-import z-from z-python">from</span></span><span class="z-meta z-statement z-import z-python"><span class="z-meta z-import-source z-python"> <span class="z-meta z-import-path z-python"><span class="z-meta z-import-name z-python">os</span><span class="z-punctuation z-accessor z-dot z-python">.</span><span class="z-meta z-import-name z-python">path</span></span> <span class="z-meta z-statement z-import z-python"><span class="z-keyword z-control z-import z-python">import</span></span></span></span><span class="z-meta z-statement z-import z-python"></span><span class="z-meta z-statement z-import z-python"> <span class="z-meta z-generic-name z-python">basename</span><span class="z-punctuation z-separator z-import-list z-python">,</span> <span class="z-meta z-generic-name z-python">splitext</span></span>
+</span><span class="z-source z-python">
+</span><span class="z-source z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">writer</span></span> <span class="z-keyword z-operator z-assignment z-python">=</span> <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">ninja_syntax</span></span><span class="z-meta z-qualified-name z-python"><span class="z-punctuation z-accessor z-dot z-python">.</span></span><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">Writer</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">sys</span><span class="z-punctuation z-accessor z-dot z-python">.</span><span class="z-meta z-generic-name z-python">stdout</span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span><span class="z-source z-python"><span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">writer</span></span><span class="z-meta z-qualified-name z-python"><span class="z-punctuation z-accessor z-dot z-python">.</span></span><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">rule</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">python<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-separator z-arguments z-python">,</span> <span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">python $in &gt; $out<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span><span class="z-source z-python"><span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">writer</span></span><span class="z-meta z-qualified-name z-python"><span class="z-punctuation z-accessor z-dot z-python">.</span></span><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">build</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">build.ninja<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-separator z-arguments z-python">,</span> <span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">python<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-separator z-arguments z-python">,</span> <span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">build.py<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-separator z-arguments z-python">,</span> <span class="z-variable z-parameter z-python">implicit</span><span class="z-keyword z-operator z-assignment z-python">=</span><span class="z-meta z-sequence z-list z-python"><span class="z-punctuation z-section z-sequence z-begin z-python">[</span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">.<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-section z-sequence z-end z-python">]</span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span><span class="z-source z-python">
+</span><span class="z-source z-python"><span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">writer</span></span><span class="z-meta z-qualified-name z-python"><span class="z-punctuation z-accessor z-dot z-python">.</span></span><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">rule</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">cc<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-separator z-arguments z-python">,</span> <span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">cc $in -o $out<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span><span class="z-source z-python"><span class="z-meta z-statement z-loop z-for z-python"><span class="z-keyword z-control z-loop z-for z-python">for</span> <span class="z-meta z-generic-name z-python">path</span> <span class="z-keyword z-control z-loop z-for z-in z-python">in</span></span><span class="z-meta z-statement z-loop z-for z-python"> <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">os</span></span><span class="z-meta z-qualified-name z-python"><span class="z-punctuation z-accessor z-dot z-python">.</span></span><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">listdir</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-single z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&#39;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-single z-python">.<span class="z-punctuation z-definition z-string z-end z-python">&#39;</span></span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span></span><span class="z-meta z-statement z-loop z-for z-python"><span class="z-punctuation z-section z-block z-loop z-for z-python">:</span></span>
+</span><span class="z-source z-python">    <span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">base</span></span>, <span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">ext</span></span> <span class="z-keyword z-operator z-assignment z-python">=</span> <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">splitext</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">path</span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span><span class="z-source z-python">    <span class="z-meta z-statement z-conditional z-if z-python"><span class="z-keyword z-control z-conditional z-if z-python">if</span> <span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">ext</span></span> <span class="z-keyword z-operator z-comparison z-python">==</span> <span class="z-meta z-string z-python"><span class="z-string z-quoted z-single z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&#39;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-single z-python">.c<span class="z-punctuation z-definition z-string z-end z-python">&#39;</span></span></span><span class="z-punctuation z-section z-block z-conditional z-if z-python">:</span></span>
+</span><span class="z-source z-python">        <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">writer</span></span><span class="z-meta z-qualified-name z-python"><span class="z-punctuation z-accessor z-dot z-python">.</span></span><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">build</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">base</span></span><span class="z-punctuation z-separator z-arguments z-python">,</span> <span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">cc<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-separator z-arguments z-python">,</span> <span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">path</span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span></code></pre>
+<p>Note this that this registers an implicit dependency on the current directory. This should automatically detect that you renamed your file and rebuild for you.</p>
+<pre class="z-code"><code><span class="z-text z-plain">$ ninja
+</span><span class="z-text z-plain">[1/1] python build.py &gt; build.ninja
+</span><span class="z-text z-plain">[1/2] python build.py &gt; build.ninja
+</span><span class="z-text z-plain">[1/3] python build.py &gt; build.ninja
+</span><span class="z-text z-plain">[1/4] python build.py &gt; build.ninja
+</span><span class="z-text z-plain">[1/5] python build.py &gt; build.ninja
+</span><span class="z-text z-plain">[1/6] python build.py &gt; build.ninja
+</span><span class="z-text z-plain">...
+</span><span class="z-text z-plain">[1/100] python build.py &gt; build.ninja
+</span><span class="z-text z-plain">ninja: error: manifest &#39;build.ninja&#39; still dirty after 100 tries, perhaps system time is not set
+</span></code></pre>
+<p>Oh. Right. Generating build.ninja also modifies the current directory, which creates an infinite loop.</p>
+<p>It's possible to work around this by putting your C file in a source directory:</p>
+<pre data-lang="python" class="language-python z-code"><code class="language-python" data-lang="python"><span class="z-source z-python"><span class="z-comment z-line z-number-sign z-python"><span class="z-punctuation z-definition z-comment z-python">#</span> build.py
+</span></span><span class="z-source z-python"><span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">writer</span></span><span class="z-meta z-qualified-name z-python"><span class="z-punctuation z-accessor z-dot z-python">.</span></span><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">build</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">build.ninja<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-separator z-arguments z-python">,</span> <span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">python<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-separator z-arguments z-python">,</span> <span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">build.py<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-separator z-arguments z-python">,</span> <span class="z-variable z-parameter z-python">implicit</span><span class="z-keyword z-operator z-assignment z-python">=</span><span class="z-meta z-sequence z-list z-python"><span class="z-punctuation z-section z-sequence z-begin z-python">[</span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">src<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-section z-sequence z-end z-python">]</span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span><span class="z-source z-python"><span class="z-meta z-statement z-loop z-for z-python"><span class="z-keyword z-control z-loop z-for z-python">for</span> <span class="z-meta z-generic-name z-python">path</span> <span class="z-keyword z-control z-loop z-for z-in z-python">in</span></span><span class="z-meta z-statement z-loop z-for z-python"> <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">os</span></span><span class="z-meta z-qualified-name z-python"><span class="z-punctuation z-accessor z-dot z-python">.</span></span><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">listdir</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-single z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&#39;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-single z-python">src<span class="z-punctuation z-definition z-string z-end z-python">&#39;</span></span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span></span><span class="z-meta z-statement z-loop z-for z-python"><span class="z-punctuation z-section z-block z-loop z-for z-python">:</span></span>
+</span><span class="z-source z-python">    <span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">base</span></span>, <span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">ext</span></span> <span class="z-keyword z-operator z-assignment z-python">=</span> <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">splitext</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">path</span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span><span class="z-source z-python">    <span class="z-meta z-statement z-conditional z-if z-python"><span class="z-keyword z-control z-conditional z-if z-python">if</span> <span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">ext</span></span> <span class="z-keyword z-operator z-comparison z-python">==</span> <span class="z-meta z-string z-python"><span class="z-string z-quoted z-single z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&#39;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-single z-python">.c<span class="z-punctuation z-definition z-string z-end z-python">&#39;</span></span></span><span class="z-punctuation z-section z-block z-conditional z-if z-python">:</span></span>
+</span><span class="z-source z-python">        <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">writer</span></span><span class="z-meta z-qualified-name z-python"><span class="z-punctuation z-accessor z-dot z-python">.</span></span><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">build</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-single z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&#39;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-single z-python">src/<span class="z-punctuation z-definition z-string z-end z-python">&#39;</span></span></span><span class="z-keyword z-operator z-arithmetic z-python">+</span><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">base</span></span><span class="z-punctuation z-separator z-arguments z-python">,</span> <span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">cc<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-separator z-arguments z-python">,</span> <span class="z-meta z-string z-python"><span class="z-string z-quoted z-single z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&#39;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-single z-python">src/<span class="z-punctuation z-definition z-string z-end z-python">&#39;</span></span></span><span class="z-keyword z-operator z-arithmetic z-python">+</span><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">path</span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span></code></pre>
+<pre data-lang="console" class="language-console z-code"><code class="language-console" data-lang="console"><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">tree</span></span>
+</span><span class="z-source z-shell z-console">.
+</span><span class="z-source z-shell z-console">├── build.ninja
+</span><span class="z-source z-shell z-console">├── build.py
+</span><span class="z-source z-shell z-console">├── main.c
+</span><span class="z-source z-shell z-console">├── ninja_syntax.py
+</span><span class="z-source z-shell z-console">└── src
+</span><span class="z-source z-shell z-console">    └── main.c
+</span><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">ninja</span></span>
+</span><span class="z-source z-shell z-console">[1/1] python build.py &gt; build.ninja
+</span><span class="z-source z-shell z-console">[1/2] cc src/main.c -o src/main
+</span><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">mv</span></span><span class="z-meta z-function-call z-arguments z-shell"> src/<span class="z-meta z-group z-expansion z-brace z-shell"><span class="z-punctuation z-section z-expansion z-brace z-begin z-shell">{</span>main<span class="z-punctuation z-separator z-shell">,</span>project<span class="z-punctuation z-section z-expansion z-brace z-end z-shell">}</span></span>.c</span>
+</span><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">ninja</span></span>
+</span><span class="z-source z-shell z-console">[1/1] python build.py &gt; build.ninja
+</span><span class="z-source z-shell z-console">[1/2] cc src/project.c -o src/project
+</span></code></pre>
+<p>There's still a problem here, though—did you notice it?</p>
+<pre class="z-code"><code><span class="z-text z-plain">$ ls src
+</span><span class="z-text z-plain">main  project  project.c
+</span></code></pre>
+<p>Our old <code>main</code> target is still lying around. Ninja actually has enough information recorded to fix this: <code>ninja -t cleandead</code>. But it's not run automatically.</p>
+<p>The other problem is that this approach rebuilds far too often. In this case, we wanted to support renames, so in Ninja's model we need to depend on the whole directory. But that's not what we really depended on—we only care about <code>.c</code> files. I would like to see a action graph format that has an event-based system, where it says "this file was created, make any changes to the action graph necessary", and cuts the build short if the graph wasn't changed.</p>
+<h3 id="optional-file-dependencies">optional file dependencies<a class="zola-anchor" href="#optional-file-dependencies" aria-label="Anchor link for: optional-file-dependencies"></a>
+</h3>
+<p>For <a href="https://flower.jyn.dev/overlay.html">flower</a>, I want to go further and support <em>deletions</em>: source files and targets that are optional, that should not fail the build if they aren't present, but should cause a rebuild if they are created, modified, or deleted. Ninja has no way of expressing this.</p>
+<!--
+## deleted depfiles
+Ninja has a feature called "depfiles", where dependency information is not fully known until after the first run of a build edge. It's intended for C header files, but can be used for other things. The idea is that the dependency graph might depend on which things you dynamically require inside your source file. To support this, C compilers support `-M` [^5] to emit a `make`-compatible dependency graph for that source file, which ninja will read on the next run.
+
+This can get us into a lot of trouble.
+
+Consider the following C project:
+
+-->
+<h3 id="environment-variables">environment variables<a class="zola-anchor" href="#environment-variables" aria-label="Anchor link for: environment-variables"></a>
+</h3>
+<p>Ninja has no way to express “this node becomes dirty when an environment variable changes”. The closest you can get is hacks with <code>set</code> and the checksum wrapper/restat hack, but it’s a pain to express and it gets much worse if you want to depend on multiple variables.</p>
+<h2 id="designing-a-new-action-graph">designing a new action graph<a class="zola-anchor" href="#designing-a-new-action-graph" aria-label="Anchor link for: designing-a-new-action-graph"></a>
+</h2>
+<!-- mention incremental switch, possible to mechanically translate ninja, not meant to be hand-edited -->
+<p>At this point, we have a list of constraints for our file format:</p>
+<!-- 1. Reflection on the action graph -->
+<ol>
+<li>Negative dependencies</li>
+<li>File rename dependencies</li>
+<li>Optional file dependencies</li>
+</ol>
+<!-- 4. Tracing (in both linting and hard error mode) to allow gradually transitioning to a hermetic build -->
+<ol start="4">
+<li>Optional checksums to reduce false positives</li>
+<li>Environment variable dependencies</li>
+<li>"all the features of ninja" (depfiles, <a href="https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems-final.pdf">monadic builds</a> through <code>dyndeps</code><sup class="footnote-reference" id="fr-14-1"><a href="#fn-14">4</a></sup>, a <code>generator</code> statement, order-only dependencies)</li>
+</ol>
+<!--
+I am not aware of any existing tool that meets these constraints. I'm considering building one on top of Shake. If anyone knows of prior art in this area, please [let me know](mailto:blog@jyn.dev) :)
+-->
+<p>Ideally, it would even be possible to mechanically translate existing .ninja files to this new format.</p>
+<h3 id="a-first-try">a first try<a class="zola-anchor" href="#a-first-try" aria-label="Anchor link for: a-first-try"></a>
+</h3>
+<p>This sketches out a new format that could improve over Ninja files. It could look something like this:</p>
+<ul>
+<li>A very very small clojure subset (just <code>def</code>, <code>let</code>, <a href="https://github.com/edn-format/edn">EDN</a>, and function calls) for the text itself, no need to make loading the graph harder than necessary <sup class="footnote-reference" id="fr-6-1"><a href="#fn-6">5</a></sup>. If people really want an equivalent of <code>include</code> or <code>subninja</code> I suppose this could learn support for <code>ns</code> and <code>require</code>, but it would have much simpler rules than Clojure's classpath. It would not have support for looping constructs, nor most of clojure's standard library.</li>
+<li><code>redo</code>-inspired dependency edges: <code>ifwritten</code> (for changes in file attributes), <code>ifchanged</code> (for changes in the checksum), <code>ifcreate</code> (for optional dependencies), <code>always</code>; plus our new <code>ifdeleted</code> edge.</li>
+</ul>
+<!-- - Get rid of Ninja's `rule` statement; it can be replaced with normal functions. -->
+<ul>
+<li>A <code>dyndeps</code> input function that can be used anywhere a file path can (e.g. in calls to <code>ifwritten</code>) so that the kind of edge does not depend on whether the path is known in advance or not.</li>
+<li>Runtime functions that determine whether the configure step needs to be re-run based on file watch events<sup class="footnote-reference" id="fr-7-1"><a href="#fn-7">6</a></sup>. Whether there is actually a file watcher or the build system just calculates a diff on its next invocation is an implementation detail; ideally, one that's easy to slot in and out.</li>
+<li>“phony” targets would be replaced by a <code>group</code> statement. Groups are sets of targets. Groups cannot be used to avoid “input not found” errors; that niche is filled by <code>ifcreated</code>.</li>
+</ul>
+<p>I’d call this language Magma, since it’s the simplest kind of set with closure.</p>
+<p>Here's a sample action graph in Magma:</p>
+<pre data-lang="clojure" class="language-clojure z-code"><code class="language-clojure" data-lang="clojure"><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> In Magma, rules are simple functions.
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> For each `action` that uses a rule, the function will be called with a list
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> of attributes for that action.
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> It returns a description of how to execute the build.
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Supported descriptions are:
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> - `:command` (process spawning)
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> - `:write` (writes data directly from memory to disk), and
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> - `:read` (reads data directly from disk to memory), and
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> - `:transform` (runs a clojure function on data in memory).
+</span></span><span class="z-source z-clojure"><span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-storage z-modifier z-def z-clojure">defn</span> <span class="z-entity z-name z-function z-clojure">cc</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span>vars<span class="z-punctuation z-section z-brackets z-end z-clojure">]</span>
+</span><span class="z-source z-clojure">  <span class="z-punctuation z-section z-braces z-begin z-clojure">{</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>command</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>cc<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>inputs</span> vars<span class="z-punctuation z-section z-parens z-end z-clojure">)</span>
+</span><span class="z-source z-clojure">             <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>-MD<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span> <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>-MF<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>depfile</span> vars<span class="z-punctuation z-section z-parens z-end z-clojure">)</span>
+</span><span class="z-source z-clojure">             <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>-o<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>out</span> vars<span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span><span class="z-punctuation z-section z-braces z-end z-clojure">}</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span>
+</span><span class="z-source z-clojure">
+</span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> `action`s define a build target (here, the file `main`).
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> They must have a `:rule` that states how to execute the build,
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> a set  of `:inputs` that must be built before this action is run,
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> and a list of `:outputs` that will be created by the `:rule`.
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> They may declare a dependency on `:env`ironment variables.
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Like in ninja, a `:depfile` may integrate with the compiler to lazily register
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> a dependency on header files.
+</span></span><span class="z-source z-clojure"><span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">action</span> <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>outputs</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>main<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span>
+</span><span class="z-source z-clojure">  <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>rule</span> cc
+</span><span class="z-source z-clojure">  <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Unlike in ninja, all inputs must state under which conditions the input causes a rerun.
+</span></span><span class="z-source z-clojure">  <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> `:ifwritten` means whenever the file metadata changes.
+</span></span><span class="z-source z-clojure">  <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>inputs</span> <span class="z-punctuation z-section z-braces z-begin z-clojure">{</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>ifwritten</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>main.c<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-comma z-clojure"><span class="z-comment z-punctuation z-comma z-clojure">,</span></span> <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>helper.c<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span><span class="z-punctuation z-section z-braces z-end z-clojure">}</span>
+</span><span class="z-source z-clojure">  <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Like in ninja, `:implicit` is exactly the same as `:inputs`,
+</span></span><span class="z-source z-clojure">  <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> but allows the `:rule` to distinguish which files should be passed to the command.
+</span></span><span class="z-source z-clojure">  <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>implicit</span> <span class="z-punctuation z-section z-braces z-begin z-clojure">{</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>ifwritten</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>helper.h<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span><span class="z-punctuation z-section z-braces z-end z-clojure">}</span>
+</span><span class="z-source z-clojure">  <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>env</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>LIBRARY_PATH<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-comma z-clojure"><span class="z-comment z-punctuation z-comma z-clojure">,</span></span> <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>C_INCLUDE_PATH<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span>
+</span><span class="z-source z-clojure">  <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>depfile</span> <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>main.c.d<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span>
+</span><span class="z-source z-clojure">
+</span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Actions that don&#39;t create a file on disk are allowed.
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> This is similar to a &quot;Phony&quot; target in Make, except that you can choose to not always rerun it.
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Since there&#39;s no output, we manually specify the name of the action so other actions can depend on it.
+</span></span><span class="z-source z-clojure"><span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">action</span> <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>name</span> <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>docker-image<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span>
+</span><span class="z-source z-clojure">  <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>outputs</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span>
+</span><span class="z-source z-clojure">  <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Rules don&#39;t have to be defined separately from actions.
+</span></span><span class="z-source z-clojure">  <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>rule</span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-storage z-modifier z-fn z-clojure">fn</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span>_vars<span class="z-punctuation z-section z-brackets z-end z-clojure">]</span> <span class="z-punctuation z-section z-braces z-begin z-clojure">{</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>command</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>docker<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span> <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>build<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span> <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>.<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span><span class="z-punctuation z-section z-braces z-end z-clojure">}</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span>
+</span><span class="z-source z-clojure">  <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> We choose to trust docker&#39;s own caching here.
+</span></span><span class="z-source z-clojure">  <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> We could instead use `:implicit {:ifwritten [...]}`, but we don&#39;t.
+</span></span><span class="z-source z-clojure">  <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>implicit</span> <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>always</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span>
+</span><span class="z-source z-clojure">
+</span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> A function that filters out paths ending with a trailing slash.
+</span></span><span class="z-source z-clojure"><span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-storage z-modifier z-def z-clojure">defn</span> <span class="z-entity z-name z-function z-clojure">files</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span>paths<span class="z-punctuation z-section z-brackets z-end z-clojure">]</span>
+</span><span class="z-source z-clojure">  <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">filter</span> <span class="z-keyword z-operator z-macro z-clojure">#</span><span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">not</span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">str/ends-with?</span> % <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>/<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span> paths<span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span>
+</span><span class="z-source z-clojure">
+</span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Just a normal clojure variable. We&#39;ll use this as an input later.
+</span></span><span class="z-source z-clojure"><span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-storage z-modifier z-def z-clojure">def</span> <span class="z-entity z-name z-function z-clojure">tarfile</span> <span class="z-punctuation z-section z-braces z-begin z-clojure">{</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>ifwritten</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>example.tar<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span><span class="z-punctuation z-section z-braces z-end z-clojure">}</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span>
+</span><span class="z-source z-clojure">
+</span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> This rule lists all files (excluding directories) inside of a tarfile.
+</span></span><span class="z-source z-clojure"><span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-storage z-modifier z-def z-clojure">defn</span> <span class="z-entity z-name z-function z-clojure">list-tar-files</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span>vars<span class="z-punctuation z-section z-brackets z-end z-clojure">]</span>
+</span><span class="z-source z-clojure">  <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> `:rule` can be a list to run multiple rules in a row within the same action.
+</span></span><span class="z-source z-clojure">  <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-punctuation z-section z-braces z-begin z-clojure">{</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>command</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>tar<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span> <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>-tf<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>inputs</span> vars<span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span>
+</span><span class="z-source z-clojure">    <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> This is like a shell redirect, but saves the output to a string in memory instead of to a file.
+</span></span><span class="z-source z-clojure">    <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> The string will be passed to the next rule in the list.
+</span></span><span class="z-source z-clojure">    <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>stdout</span> <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>string</span><span class="z-punctuation z-section z-braces z-end z-clojure">}</span>
+</span><span class="z-source z-clojure">   <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> This filters for files, then passes the string to the next rule.
+</span></span><span class="z-source z-clojure">   <span class="z-punctuation z-section z-braces z-begin z-clojure">{</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>transformer</span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-storage z-modifier z-fn z-clojure">fn</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span>paths<span class="z-punctuation z-section z-brackets z-end z-clojure">]</span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">str/join</span> <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span><span class="z-constant z-character z-escape z-clojure">\n</span><span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">files</span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">str/split</span> <span class="z-keyword z-operator z-macro z-clojure">#</span><span class="z-string z-regexp z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span><span class="z-constant z-character z-escape z-regexp">\n</span><span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span> paths<span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-braces z-end z-clojure">}</span>
+</span><span class="z-source z-clojure">   <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Finally, write the transformed data out to disk.
+</span></span><span class="z-source z-clojure">   <span class="z-punctuation z-section z-braces z-begin z-clojure">{</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>write</span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>outputs</span> vars<span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-braces z-end z-clojure">}</span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span>
+</span><span class="z-source z-clojure">
+</span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Generate a list of all files that will be created by extracting the tarfile.
+</span></span><span class="z-source z-clojure"><span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">action</span> <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>outputs</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>example.tar.dd<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span>
+</span><span class="z-source z-clojure">  <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>rule</span> list-tar-files
+</span><span class="z-source z-clojure">  <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>inputs</span> tarfile<span class="z-punctuation z-section z-parens z-end z-clojure">)</span>
+</span><span class="z-source z-clojure">
+</span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> `dynout` returns a future which `action` will resolve.
+</span></span><span class="z-source z-clojure"><span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-storage z-modifier z-def z-clojure">def</span> <span class="z-entity z-name z-function z-clojure">tar-outputs</span>
+</span><span class="z-source z-clojure">  <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">dynout</span>
+</span><span class="z-source z-clojure">    <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Recalculate the dependencies whenever our .dd file changes.
+</span></span><span class="z-source z-clojure">    <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Note that unlike `ifwritten`, `ifchanged` calculates a checksum, it doesn&#39;t use file metadata.
+</span></span><span class="z-source z-clojure">    <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>inputs</span> <span class="z-punctuation z-section z-braces z-begin z-clojure">{</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>ifchanged</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>example.tar.dd<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span><span class="z-punctuation z-section z-braces z-end z-clojure">}</span>
+</span><span class="z-source z-clojure">    <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>rule</span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-storage z-modifier z-fn z-clojure">fn</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span>vars<span class="z-punctuation z-section z-brackets z-end z-clojure">]</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-punctuation z-section z-braces z-begin z-clojure">{</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>read</span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>inputs</span> vars<span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-braces z-end z-clojure">}</span>
+</span><span class="z-source z-clojure">                      <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Our future resolves to a list of file paths.
+</span></span><span class="z-source z-clojure">                      <span class="z-punctuation z-section z-braces z-begin z-clojure">{</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>transformer</span> <span class="z-keyword z-operator z-macro z-clojure">#</span><span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">str/split</span> % <span class="z-keyword z-operator z-macro z-clojure">#</span><span class="z-string z-regexp z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span><span class="z-constant z-character z-escape z-regexp">\n</span><span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-braces z-end z-clojure">}</span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span>
+</span><span class="z-source z-clojure">
+</span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Dynamically add the outputs from the tarfile to the action graph.
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> This schedules the action to run only after the `dynout` future is resolved.
+</span></span><span class="z-source z-clojure"><span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">action</span> <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>outputs</span> tar-outputs
+</span><span class="z-source z-clojure">  <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>inputs</span> tarfile
+</span><span class="z-source z-clojure">  <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>rule</span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-storage z-modifier z-fn z-clojure">fn</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span>vars<span class="z-punctuation z-section z-brackets z-end z-clojure">]</span> <span class="z-punctuation z-section z-braces z-begin z-clojure">{</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>command</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>tar<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span> <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>-xf<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>inputs</span> vars<span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span><span class="z-punctuation z-section z-braces z-end z-clojure">}</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span>
+</span><span class="z-source z-clojure">
+</span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Group together many different actions.
+</span></span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> This can be called from the command line as if it were its own action.
+</span></span><span class="z-source z-clojure"><span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">group</span> <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>all<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">concat</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>main<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span> docker-image<span class="z-punctuation z-section z-brackets z-end z-clojure">]</span> tar-outputs<span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span>
+</span><span class="z-source z-clojure">
+</span><span class="z-source z-clojure"><span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Specify that the configure script shold rerun whenever a `.c` file is created or deleted.
+</span></span><span class="z-source z-clojure"><span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-storage z-modifier z-def z-clojure">defn</span> <span class="z-entity z-name z-function z-clojure">should-rerun</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span>event<span class="z-punctuation z-section z-brackets z-end z-clojure">]</span>
+</span><span class="z-source z-clojure">  <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">and</span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">ends-with?</span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>path</span> event<span class="z-punctuation z-section z-parens z-end z-clojure">)</span> <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>.c<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span>
+</span><span class="z-source z-clojure">       <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">not=</span> <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>modified</span> <span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>kind</span> event<span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span>
+</span><span class="z-source z-clojure">
+</span><span class="z-source z-clojure"><span class="z-punctuation z-section z-parens z-begin z-clojure">(</span><span class="z-variable z-function z-clojure">action</span> <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>outputs</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>build.magma<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span>
+</span><span class="z-source z-clojure">  <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>rule</span> <span class="z-punctuation z-section z-braces z-begin z-clojure">{</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>command</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>python<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span> <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>configure.py<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span><span class="z-punctuation z-section z-braces z-end z-clojure">}</span>
+</span><span class="z-source z-clojure">  <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Indicate that these outputs shouldn&#39;t be deleted by `clean` rules.
+</span></span><span class="z-source z-clojure">  <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>generator</span> <span class="z-constant z-language z-clojure">true</span>
+</span><span class="z-source z-clojure">  <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>env</span> <span class="z-punctuation z-section z-brackets z-begin z-clojure">[</span><span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>CFLAGS<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-comma z-clojure"><span class="z-comment z-punctuation z-comma z-clojure">,</span></span> <span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>LDFLAGS<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span><span class="z-punctuation z-section z-brackets z-end z-clojure">]</span>
+</span><span class="z-source z-clojure">  <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> Register a function that will run on each change to the current directory
+</span></span><span class="z-source z-clojure">  <span class="z-comment z-line z-clojure"><span class="z-punctuation z-definition z-comment">;</span> and instruct whether or not the input should cause a rebuild.
+</span></span><span class="z-source z-clojure">  <span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>inputs</span> <span class="z-punctuation z-section z-braces z-begin z-clojure">{</span><span class="z-constant z-other z-keyword z-clojure"><span class="z-punctuation z-definition z-keyword z-clojure">:</span>watch</span> <span class="z-punctuation z-section z-braces z-begin z-clojure">{</span><span class="z-string z-quoted z-double z-clojure"><span class="z-punctuation z-definition z-string z-begin z-clojure">&quot;</span>.<span class="z-punctuation z-definition z-string z-end z-clojure">&quot;</span></span> should-rerun<span class="z-punctuation z-section z-braces z-end z-clojure">}</span><span class="z-punctuation z-section z-braces z-end z-clojure">}</span><span class="z-punctuation z-section z-parens z-end z-clojure">)</span>
+</span></code></pre>
+<p>Note some things about Magma:</p>
+<ul>
+<li>Command spawning is specified as an array <sup class="footnote-reference" id="fr-12-1"><a href="#fn-12">7</a></sup>. No more dependency on shell quoting rules. If people want shell scripts they can put that in their configure script.</li>
+<li>Redirecting stdout no longer requires bash syntax, it's supported natively with the <code>:stdout</code> parameter of <code>:rule</code>.</li>
+<li>Build parameters can be referred to in rules through the <code>vars</code> argument.</li>
+<li><code>dynout</code> is a <a href="https://wiki.haskell.org/Thunk">thunk</a>; it only registers an intent to add edges in the future, it does not eagerly require <code>example.tar.dd</code> to exist.</li>
+<li>Our <code>watch</code> input edge is generalized and can apply to any rule, not just to the configure step. It executes when a file is modified (or if the tool doesn’t support file watching, on each file in the calculated diff in the next tool invocation).</li>
+<li>Our <code>watch</code> edge provides the file event type, but not the file contents. This allows ronin to automatically map <code>true</code> results to one of the three edge kinds: <code>:ifwritten</code>, <code>:ifcreated</code>, <code>:ifdeleted</code>. <code>:always</code> and <code>:ifchanged</code> are not available through this API.</li>
+<li>We naturally distinguish between “phony targets” and files because the former are <code>group</code>s and the latter are <code>action</code>s. No more accidentally failing to build if an <code>all</code> file is created. <sup class="footnote-reference" id="fr-13-1"><a href="#fn-13">8</a></sup></li>
+<li>We naturally distinguish between “groups of targets” and “commands that always need to be rerun”; the latter just uses <code>:inputs :always</code>.</li>
+<li>Data can be transformed in memory using clojure functions without needing a separate process invocation. No more need to use <code>sed</code> in your build system.</li>
+</ul>
+<!--
+- Our `group` cannot actually be used in a `:inputs` parameter because it doesn’t specify the kind of edge (created/modified/deleted). Our mini-clojure provides other abstractions, like variables; arrays; and `map`, that render this unnecessary.
+-->
+<h3 id="did-you-just-reinvent-starlark">"did you just reinvent <a href="https://starlark-lang.org/">starlark</a>?"<a class="zola-anchor" href="#did-you-just-reinvent-starlark" aria-label="Anchor link for: did-you-just-reinvent-starlark"></a>
+</h3>
+<p>Kinda. Magma itself has a lot in common with Starlark: it's deterministic, hermetic, immutable, and can be evaluated in parallel.</p>
+<p>The main difference between the languages themselves is that Clojure has <code>:keywords</code> (equivalent to sympy symbolic variables) and Python doesn't. Some of these could be rewritten to keyword arguments, and others could be rewritten to structs, or string keys for a hashmap, or enums; but I'm not sure how much benefit there is to literally using Starlark when these files are being generated by a configure step in any case. Probably it's possible to make a 1-1 mapping between the two in any case.</p>
+<h3 id="runners">runners<a class="zola-anchor" href="#runners" aria-label="Anchor link for: runners"></a>
+</h3>
+<p>Buck2 has support for <a href="https://buck2.build/docs/api/build/RunInfo/"><code>RunInfo</code></a> metadata that describes how to execute a built artifact. I think this is really interesting; <code>cargo run --bin xyz -- args</code> is a much nicer interface than <code>make ARGS='args' xyz</code>, partly because of shell quoting and word splitting issues, and partly just because it's more discoverable.</p>
+<p>I don't have a clean idea for how to fit this into a serialization layer. "Don't put it there and use a <code>Justfile</code> instead" <em>works</em>, but makes it hard to do things like allow the build graph to say that an artifact needs <code>LD_LIBRARY_PATH</code> set or something like that, you end up duplicating the info in both files. Perhaps one option could be to attach a <code>:run</code> key/value pair to <code>action</code>s.</p>
+<h3 id="are-you-just-piling-a-bunch-of-features-on-top-of-ninja">"are you just piling a bunch of features on top of ninja?"<a class="zola-anchor" href="#are-you-just-piling-a-bunch-of-features-on-top-of-ninja" aria-label="Anchor link for: are-you-just-piling-a-bunch-of-features-on-top-of-ninja"></a>
+</h3>
+<p>Well, yes and no. Yes, in that this has basically all the features of ninja and then some.
+But no, because the rules here are all carefully constrained to avoid needing to do expensive file I/O to load the build graph.
+The most expensive new feature is <code>watch</code>, and it's intended to avoid an even more expensive step (rerunning the configuration step).
+It's also limited to changed files; it can't do arbitrary globbing on the contents of the directory the way that Make pattern rules can.</p>
+<p>Note that this also removes some features in ninja: shell commands are gone, process spawning is much less ambiguous, <code>dyndep</code> files are no longer parsed automatically.
+And because this embeds a clojure interpreter, many things that were hard-coded in ninja can instead be library functions: <code>rule</code>, response files, <code>msvc_deps_prefix</code>, <code>in_newline</code>.</p>
+<h2 id="next-steps">next steps<a class="zola-anchor" href="#next-steps" aria-label="Anchor link for: next-steps"></a>
+</h2>
+<p>In this post, we have learned some downsides of Make and Ninja's build file formats, sketched out how they could possibly be fixed, and designed a language called Magma that has those characteristics. In the next post, I'll describe the features and design of a tool that evaluates and queries this language.</p>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-10">
+<p>see e.g. <a href="https://github.com/facebook/buck2/issues/976#issuecomment-3007201092">this description</a> of how it works in buck2 <a href="#fr-10-1">↩</a></p>
+</li>
+<li id="fn-2">
+<p>at least a basic version—although several of the features of GNU Make get rather complicated. <a href="#fr-2-1">↩</a></p>
+</li>
+<li id="fn-4">
+<p><code>ninja_syntax.py</code> is <a href="https://github.com/ninja-build/ninja/blob/231db65ccf5427b16ff85b3a390a663f3c8a479f/misc/ninja_syntax.py">https://github.com/ninja-build/ninja/blob/231db65ccf5427b16ff85b3a390a663f3c8a479f/misc/ninja_syntax.py</a>. <a href="#fr-4-1">↩</a></p>
+</li>
+<li id="fn-14">
+<p>technically these aren't true monadic builds because they're constrained a lot more than e.g. Shake rules, they can't fabricate new rules from whole cloth. but they still allow you to add more outputs to the graph at runtime. <a href="#fr-14-1">↩</a></p>
+</li>
+<li id="fn-6">
+<p>This goes all the way around <a href="https://mikehadlow.blogspot.com/2012/05/configuration-complexity-clock.html">the configuration complexity clock</a> and skips the "DSL" phase to simply give you a real language. <a href="#fr-6-1">↩</a></p>
+</li>
+<li id="fn-7">
+<p>This is totally based and not at all a terrible idea. <a href="#fr-7-1">↩</a></p>
+</li>
+<li id="fn-12">
+<p>This has a whole bunch of problems on Windows, where arguments are passed as a single string instead of an array, and each command has to reimplement its own parsing. But it will work “most” of the time, and at least avoids having to deal with Powershell or CMD quoting. <a href="#fr-12-1">↩</a></p>
+</li>
+<li id="fn-13">
+<p>To make it possible to distinguish the two on the command line, <code>:all</code> could unambiguously refer to the group, like in Bazel. <a href="#fr-13-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+    
+    
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;i-want-a-better-action-graph-serialization&#x2F;&amp;type=story">Hacker News</a>,
+    
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;i-want-a-better-action-graph-serialization&#x2F;">Lobste.rs</a>,
+    
+    <a href="https:&#x2F;&#x2F;tech.lgbt&#x2F;@jyn&#x2F;115667410263622000">Mastodon</a>, or
+    <a href="https:&#x2F;&#x2F;bsky.app&#x2F;profile&#x2F;did:plc:h2okxbr76w5522tailkxmidq&#x2F;post&#x2F;3m7aotdmjos25">Bluesky</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Makefiles and Ninja files have limitations, separate from the implementing tool. How can we fix them?</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

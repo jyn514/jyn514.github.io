@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>remotely unlocking an encrypted hard disk</title>
+    
+    <meta name="description" content="what&#x27;s a few systemd services in initramfs between friends?">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="what&#x27;s a few systemd services in initramfs between friends?" class="post-title" itemprop="name headline">remotely unlocking an encrypted hard disk</h1>
+    <p class="post-meta">
+      <time datetime="2026-01-22" itemprop="datePublished">
+        2026-01-22
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/stories/">stories</a>
+        
+      • <a href="https://jyn.dev/tags/terminal/">terminal</a>
+        
+      • <a href="https://jyn.dev/tags/walkthroughs/">walkthroughs</a>
+        
+      
+    </p>
+  </header>
+
+  
+
+	
+
+  
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Your mission, should you choose to accept it, is to sneak into the earliest parts of the boot process, swap the startup config without breaking anything, and leave without a trace.</p>
+<p>Are you ready? Let's begin.</p>
+<h2 id="the-setup">the setup<a class="zola-anchor" href="#the-setup" aria-label="Anchor link for: the-setup"></a>
+</h2>
+<p><em>In which our heroes are introduced, and the scene is set.</em></p>
+<p>For a very long time I had a beat-up old ThinkPad that couldn’t hold a charge for the life of it, especially when running Windows. It tended to die a lot when I was traveling, and I travel a lot. To save battery when I’m away from home, I often ssh back into my home desktop, both so I have persistent state even if my laptop battery dies, and so I get much faster builds that don’t kill the battery.</p>
+<p>This has two small problems:</p>
+<ol>
+<li>Sometimes my home loses power and the desktop shuts off.</li>
+<li>Sometimes when the power comes back on it has a new public IP.</li>
+</ol>
+<p>For a long time I solved 1. by enabling “Power On" after "Restore AC Power Loss” in the BIOS and 2. with <a href="https://tailscale.com/kb/1151/what-is-tailscale">tailscale</a>. However, I recently installed Arch with an encrypted boot partition, which means that boot doesn’t finish until I type in the encryption password.</p>
+<p>Well. Well. What if I Simply put tailscale in initramfs?</p>
+<h2 id="the-plan">the plan<a class="zola-anchor" href="#the-plan" aria-label="Anchor link for: the-plan"></a>
+</h2>
+<p><em>In which our intrepid heroes chart the challenges to come.</em></p>
+<h3 id="initramfs">initramfs<a class="zola-anchor" href="#initramfs" aria-label="Anchor link for: initramfs"></a>
+</h3>
+<p>Oh, right. If you weren’t aware, early boot in a Linux operating system<sup class="footnote-reference" id="fr-3-1"><a href="#fn-3">1</a></sup>  is just running a full second operating system that happens to be very small, lol. That’s loaded from a compressed archive file in /boot<sup class="footnote-reference" id="fr-4-1"><a href="#fn-4">2</a></sup> and run from memory, with no access to persistent storage. This OS running from memory is called <strong>initramfs</strong> (initial RAM filesystem).</p>
+<p>So when you see a screen like this:
+<img src="/assets/Pasted%20image%2020260121044155.png" alt="" />
+That’s actually a whole-ass OS, with an <code>init</code> PID and service management and everything. This is how, for example, <code>systemd-analyze</code> can show you stats about early boot — there’s another copy of systemd running in initramfs, and it passes its state off to the one in the main OS.</p>
+<p>Well. That implies we can install things on it ^^.</p>
+<h3 id="constraints">constraints<a class="zola-anchor" href="#constraints" aria-label="Anchor link for: constraints"></a>
+</h3>
+<p>There’s three parts to this:</p>
+<ol>
+<li>Networking in initramfs</li>
+<li>Tailscale in initramfs</li>
+<li>SSH in initramfs</li>
+</ol>
+<p>We also want to make this as secure as possible, so there’s some more things to consider:</p>
+<ul>
+<li>Putting tailscale in initramfs means that it has unencrypted keys lying around.</li>
+<li>Tailscale keys expire (by default) after 90 days. At that point this will all break.</li>
+<li>You really really don’t want people to get SSH access to your early boot environment.</li>
+</ul>
+<p>We can solve this in a few ways:</p>
+<ul>
+<li>Use Tailscale ACLs to only allow incoming connections to initramfs, not outgoing connections.</li>
+<li>Set the key to never expire.</li>
+<li>Set the SSH server to disallow all shells except the actual unlock command (<code>systemd-tty-ask-password-agent</code>).</li>
+</ul>
+<h3 id="tailscale-acls">tailscale ACLs<a class="zola-anchor" href="#tailscale-acls" aria-label="Anchor link for: tailscale-acls"></a>
+</h3>
+<p>Some background about Tailscale’s ACLs (“access control lists”). Tailscale’s users are tied to their specific login method: you can, for example, add a passkey, but that passkey counts as a fully separate user than your original account. Tailscale also has “groups” of users, which are what they sound like, “<a href="https://tailscale.com/kb/1396/targets#autogroups">auto groups</a>”, which again are what they sound like, “hosts”, which are a machine connected to the network, and “tags”.</p>
+<p>Tags are odd, I haven't seen anything like them before. They group hosts, not users, and when you add a tag to a host, that <em>counts as its login method</em>, rather than the host being tied to a user account.</p>
+<p>A consequence of this is that the group <a href="https://tailscale.com/kb/1396/targets#autogrouprole"><code>autogroup:member</code></a> does <em>not</em> include tagged machines, because tagged machines aren’t tied to a user account. (A second consequence is that you can’t remove all tags from a machine without logging out and logging back in to associate it with your user account.)</p>
+<p>So we can write a policy like this:</p>
+<pre data-lang="json" class="language-json z-code"><code class="language-json" data-lang="json"><span class="z-source z-json"><span class="z-meta z-mapping z-json"><span class="z-punctuation z-section z-mapping z-begin z-json">{</span>
+</span></span><span class="z-source z-json"><span class="z-meta z-mapping z-json">  <span class="z-comment z-line z-double-slash z-js"><span class="z-punctuation z-definition z-comment z-json">//</span> Define the tags which can be applied to devices and by which users.
+</span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-json">  </span><span class="z-meta z-mapping z-key z-json"><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>tagOwners<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span></span><span class="z-meta z-mapping z-json"><span class="z-punctuation z-separator z-mapping z-key-value z-json">:</span> </span><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-mapping z-json"><span class="z-punctuation z-section z-mapping z-begin z-json">{</span>
+</span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-mapping z-json">    </span><span class="z-meta z-mapping z-key z-json"><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>tag:initrd<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span></span><span class="z-meta z-mapping z-json"><span class="z-punctuation z-separator z-mapping z-key-value z-json">:</span> </span><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json"><span class="z-punctuation z-section z-sequence z-begin z-json">[</span><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>autogroup:admin<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span><span class="z-punctuation z-section z-sequence z-end z-json">]</span></span><span class="z-punctuation z-separator z-mapping z-pair z-json">,</span>
+</span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-mapping z-value z-json">  <span class="z-punctuation z-section z-mapping z-end z-json">}</span></span><span class="z-punctuation z-separator z-mapping z-pair z-json">,</span>
+</span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json">
+</span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json">  <span class="z-comment z-line z-double-slash z-js"><span class="z-punctuation z-definition z-comment z-json">//</span> Define access control lists for users, groups, autogroups, tags,
+</span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json">  <span class="z-comment z-line z-double-slash z-js"><span class="z-punctuation z-definition z-comment z-json">//</span> Tailscale IP addresses, and subnet ranges.
+</span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json">  </span><span class="z-meta z-mapping z-key z-json"><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>acls<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span></span><span class="z-meta z-mapping z-value z-json"><span class="z-punctuation z-separator z-mapping z-key-value z-json">:</span> </span><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json"><span class="z-punctuation z-section z-sequence z-begin z-json">[</span>
+</span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json">    <span class="z-meta z-mapping z-json"><span class="z-punctuation z-section z-mapping z-begin z-json">{</span></span><span class="z-meta z-mapping z-key z-json"><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>action<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span></span><span class="z-meta z-mapping z-json"><span class="z-punctuation z-separator z-mapping z-key-value z-json">:</span> </span><span class="z-meta z-mapping z-value z-json"><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>accept<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span><span class="z-punctuation z-separator z-mapping z-pair z-json">,</span> </span><span class="z-meta z-mapping z-key z-json"><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>src<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span></span><span class="z-meta z-mapping z-value z-json"><span class="z-punctuation z-separator z-mapping z-key-value z-json">:</span> </span><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json"><span class="z-punctuation z-section z-sequence z-begin z-json">[</span><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>autogroup:member<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span><span class="z-punctuation z-section z-sequence z-end z-json">]</span></span><span class="z-punctuation z-separator z-mapping z-pair z-json">,</span> </span><span class="z-meta z-mapping z-key z-json"><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>dst<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span></span><span class="z-meta z-mapping z-value z-json"><span class="z-punctuation z-separator z-mapping z-key-value z-json">:</span> </span><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json"><span class="z-punctuation z-section z-sequence z-begin z-json">[</span><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>*:*<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span><span class="z-punctuation z-section z-sequence z-end z-json">]</span></span><span class="z-punctuation z-section z-mapping z-end z-json">}</span></span><span class="z-punctuation z-separator z-sequence z-json">,</span>
+</span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json">  <span class="z-punctuation z-section z-sequence z-end z-json">]</span></span><span class="z-punctuation z-separator z-mapping z-pair z-json">,</span>
+</span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json">
+</span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json">  <span class="z-comment z-line z-double-slash z-js"><span class="z-punctuation z-definition z-comment z-json">//</span> Test access rules every time they&#39;re saved.
+</span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json">  </span><span class="z-meta z-mapping z-key z-json"><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>tests<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span></span><span class="z-meta z-mapping z-value z-json"><span class="z-punctuation z-separator z-mapping z-key-value z-json">:</span> </span><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json"><span class="z-punctuation z-section z-sequence z-begin z-json">[</span>
+</span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json">    <span class="z-meta z-mapping z-json"><span class="z-punctuation z-section z-mapping z-begin z-json">{</span>
+</span></span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json"><span class="z-meta z-mapping z-json">      </span><span class="z-meta z-mapping z-key z-json"><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>src<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span></span><span class="z-meta z-mapping z-json"><span class="z-punctuation z-separator z-mapping z-key-value z-json">:</span>    </span><span class="z-meta z-mapping z-value z-json"><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>100.76.34.8<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span><span class="z-punctuation z-separator z-mapping z-pair z-json">,</span> <span class="z-comment z-line z-double-slash z-js"><span class="z-punctuation z-definition z-comment z-json">//</span> outrageous-fortune
+</span></span></span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json"><span class="z-meta z-mapping z-value z-json">      </span><span class="z-meta z-mapping z-key z-json"><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>accept<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span></span><span class="z-meta z-mapping z-value z-json"><span class="z-punctuation z-separator z-mapping z-key-value z-json">:</span> </span><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json"><span class="z-punctuation z-section z-sequence z-begin z-json">[</span><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>100.102.101.127:22<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span><span class="z-punctuation z-separator z-sequence z-json">,</span> <span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>100.101.55.73:10078<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span><span class="z-punctuation z-section z-sequence z-end z-json">]</span></span><span class="z-punctuation z-separator z-mapping z-pair z-json">,</span> <span class="z-comment z-line z-double-slash z-js"><span class="z-punctuation z-definition z-comment z-json">//</span> selene-initrd
+</span></span></span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json"><span class="z-meta z-mapping z-value z-json">    <span class="z-punctuation z-section z-mapping z-end z-json">}</span></span><span class="z-punctuation z-separator z-sequence z-json">,</span>
+</span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json">    <span class="z-meta z-mapping z-json"><span class="z-punctuation z-section z-mapping z-begin z-json">{</span>
+</span></span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json"><span class="z-meta z-mapping z-json">      </span><span class="z-meta z-mapping z-key z-json"><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>src<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span></span><span class="z-meta z-mapping z-json"><span class="z-punctuation z-separator z-mapping z-key-value z-json">:</span>  </span><span class="z-meta z-mapping z-value z-json"><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>100.102.101.127<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span><span class="z-punctuation z-separator z-mapping z-pair z-json">,</span> <span class="z-comment z-line z-double-slash z-js"><span class="z-punctuation z-definition z-comment z-json">//</span> selene-initrd
+</span></span></span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json"><span class="z-meta z-mapping z-value z-json">      </span><span class="z-meta z-mapping z-key z-json"><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>deny<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span></span><span class="z-meta z-mapping z-value z-json"><span class="z-punctuation z-separator z-mapping z-key-value z-json">:</span> </span><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json"><span class="z-punctuation z-section z-sequence z-begin z-json">[</span><span class="z-string z-quoted z-double z-json"><span class="z-punctuation z-definition z-string z-begin z-json">&quot;</span>100.101.55.73:10078<span class="z-punctuation z-definition z-string z-end z-json">&quot;</span></span><span class="z-punctuation z-section z-sequence z-end z-json">]</span></span><span class="z-punctuation z-separator z-mapping z-pair z-json">,</span> <span class="z-comment z-line z-double-slash z-js"><span class="z-punctuation z-definition z-comment z-json">//</span> selene
+</span></span></span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json"><span class="z-meta z-mapping z-value z-json">    <span class="z-punctuation z-section z-mapping z-end z-json">}</span></span><span class="z-punctuation z-separator z-sequence z-json">,</span>
+</span></span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json"><span class="z-meta z-sequence z-json">  <span class="z-punctuation z-section z-sequence z-end z-json">]</span></span><span class="z-punctuation z-separator z-mapping z-pair z-json">,</span>
+</span></span><span class="z-source z-json"><span class="z-meta z-mapping z-value z-json"><span class="z-punctuation z-section z-mapping z-end z-json">}</span></span>
+</span></code></pre>
+<p>This says “allow devices tied to a user account to access any other device, and allow no permissions at all for devices tied to a tag”.</p>
+<p><code>selene</code> here is my desktop, and <code>selene-initrd</code> is its initramfs.  <sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">3</a></sup></p>
+<h3 id="systemd-before-boot">systemd before boot<a class="zola-anchor" href="#systemd-before-boot" aria-label="Anchor link for: systemd-before-boot"></a>
+</h3>
+<p>Because initramfs is just a (mostly) normal Linux system, that means it has its own <code>init</code>
+PID 1. On Arch, that PID is in fact just systemd. That means that we can add systemd
+services to initramfs! There's a whole collection of them in
+<a href="https://github.com/wolegis/mkinitcpio-systemd-extras"><code>mkinitcpio-systemd-extras</code></a>
+(<code>mkinitcpio</code> is the tool Arch uses to regenerate initramfs).</p>
+<p>We need two services: an SSH server (I went with
+<a href="https://github.com/wolegis/mkinitcpio-systemd-extras/wiki/Dropbear-SSH-server"><code>dropbear</code></a>)
+and something to turn on networking, which this collection names <code>sd-network</code>.</p>
+<aside role=note class=note-container><div class=note-content>
+<p>It's possible to run <code>tailscale ssh</code> directly, rather than having a separate SSH server, but
+I didn't find any way to configure tailscale's SSH command, and I don't want to let anyone
+have a shell in my initramfs.</p>
+</div></aside>
+<h2 id="the-heist">the heist<a class="zola-anchor" href="#the-heist" aria-label="Anchor link for: the-heist"></a>
+</h2>
+<p><em>In which our heroes execute their plan flawlessly, sneaking in without a sound.</em></p>
+<p>If you follow these steps on an Arch system, you should end up with roughly the same setup
+as I have. Most of these commands assume you are running as root.</p>
+<ul>
+<li>
+<p>Install the dropbear SSH server:</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">pacman</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>S</span> dropbear</span>
+</span></code></pre>
+</li>
+<li>
+<p>Install the systemd packages:</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">yay</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>S</span> mkinitcpio-systemd-extras mkinitcpio-tailscale</span>
+</span></code></pre>
+</li>
+<li>
+<p>Add networking (<code>sd-network</code>), tailscale (<code>tailscale</code>), and dropbear (<code>sd-dropbear</code>) to
+<code>/etc/mkinitcpio.conf</code>:</p>
+<pre data-lang="diff" class="language-diff z-code"><code class="language-diff" data-lang="diff"><span class="z-source z-diff"><span class="z-meta z-diff z-range z-normal"><span class="z-meta z-range z-normal z-diff">1c1
+</span></span></span><span class="z-source z-diff"><span class="z-markup z-deleted z-diff"><span class="z-punctuation z-definition z-deleted z-diff">&lt;</span> HOOKS=(base systemd autodetect microcode kms modconf block keyboard sd-vconsole plymouth sd-encrypt filesystems)
+</span></span><span class="z-source z-diff"><span class="z-meta z-separator z-diff"><span class="z-punctuation z-definition z-separator z-diff">---</span>
+</span></span><span class="z-source z-diff"><span class="z-markup z-inserted z-diff"><span class="z-punctuation z-definition z-inserted z-diff">&gt;</span> HOOKS=(base systemd autodetect microcode kms modconf block keyboard sd-vconsole plymouth sd-network tailscale sd-dropbear sd-encrypt filesystems)
+</span></span></code></pre>
+</li>
+<li>
+<p>Set up the keys for your new tailscale device:</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">setup-initcpio-tailscale</span></span>
+</span></code></pre>
+</li>
+<li>
+<p>In <a href="https://login.tailscale.com/admin/machines">the tailscale web console</a>, mark your new
+device with <code>tag:initrd</code>, and disable key expiry. It should look something like this:</p>
+<p><img src="/assets/Pasted%20image%2020260121213235.png" alt="" /></p>
+</li>
+<li>
+<p>In <code>/etc/mkinitcpio.conf</code>, configure dropbear to only allow running the unlock command and nothing else:</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-variable z-other z-readwrite z-assignment z-shell">SD_DROPBEAR_COMMAND</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell"><span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span>systemd-tty-ask-password-agent<span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span>
+</span></code></pre>
+</li>
+<li>
+<p>Tell systemd to wait forever for a decryption password. I use <code>systemd-boot</code>, so I edited
+<code>/boot/loader/entries/linux-cachyos</code>. Under <code>options</code>, I extended the existing
+<code>rootflags=subvol=/@</code> to <code>rootflags=subvol=/@,x-systemd.device-timeout=0</code>. <sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">4</a></sup></p>
+</li>
+<li>
+<p>Copy your public keys into <code>/root/.ssh/authorized_keys</code> so they get picked up by the
+dropbear hook:</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cp</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-meta z-group z-expansion z-tilde"><span class="z-variable z-language z-tilde z-shell">~</span></span>/.ssh/authorized_keys /root/.ssh/</span>
+</span></code></pre>
+</li>
+<li>
+<p>Generate a new public/private keypair for use by the dropbear server.</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">dropbearkey</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>t</span> ed25519<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>f</span> /etc/dropbear/dropbear_ed25519_host_key</span>
+</span></code></pre>
+</li>
+</ul>
+<aside role=note class=note-container><div class=note-content>
+<p>Without this, the dropbear hook will try to load keys from openssh, which means they'll be shared between early boot and your normal server. In particular that would mean your SSH server private keys would be stored unencrypted in initramfs.</p>
+</div></aside>
+<ul>
+<li>
+<p>Setup early networking.
+(Note: these instructions are only for Ethernet connections. If you want WiFi in early
+boot, good luck and godspeed.)</p>
+<ol>
+<li>Add the following config in <code>/etc/systemd/network-initramfs/10-wired.network</code>:</li>
+</ol>
+<pre data-lang="ini" class="language-ini z-code"><code class="language-ini" data-lang="ini"><span class="z-source z-genconfig"><span class="z-storage z-type z-genconfig">[Match]
+</span></span><span class="z-source z-genconfig"><span class="z-meta z-param z-genconfig"><span class="z-variable z-parameter z-genconfig">Type</span><span class="z-keyword z-operator z-genconfig">=</span></span>ether
+</span><span class="z-source z-genconfig">
+</span><span class="z-source z-genconfig"><span class="z-storage z-type z-genconfig">[Network]
+</span></span><span class="z-source z-genconfig"><span class="z-support z-constant z-genconfig">DHCP</span><span class="z-keyword z-operator z-genconfig">=</span><span class="z-constant z-language z-genconfig">yes</span>
+</span></code></pre>
+<ol start="2">
+<li>Register it in <code>/etc/mkinitcpio.conf</code> so it gets picked up by the <code>sd-network</code> hook:</li>
+</ol>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-variable z-other z-readwrite z-assignment z-shell">SD_NETWORK_CONFIG</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell">/etc/systemd/network-initramfs</span>
+</span></code></pre>
+<p>All this rigamarole is necessary because the OS doesn't set the network interfaces to
+predictable names until late boot, so it needs some way to know which interface to use.</p>
+</li>
+<li>
+<p>Last but not least, rebuild your initramfs: <code>mkinitcpio -P</code>.</p>
+</li>
+</ul>
+<p>Next time you reboot, you should be able to ssh into <code>$(hostname)-initrd</code> and get a prompt
+that looks like this:</p>
+<p><img src="/assets/Screenshot_20260121_222102.png" alt="" /></p>
+<h2 id="the-getaway">the getaway<a class="zola-anchor" href="#the-getaway" aria-label="Anchor link for: the-getaway"></a>
+</h2>
+<p><em>In which a moral is imparted, and our scene concluded.</em></p>
+<p>The takeaway here is the same as in all my other posts: if you think something isn't
+possible to do with a computer, have you considered applying more violence?</p>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-3">
+<p>and I believe in Windows, although I’m less sure about that <a href="#fr-3-1">↩</a></p>
+</li>
+<li id="fn-4">
+<p>sometimes /boot/EFI <a href="#fr-4-1">↩</a></p>
+</li>
+<li id="fn-1">
+<p>Here “initrd” stands for “initramdisk”, which is another word for our initramfs system. <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="fn-2">
+<p>See <a href="https://github.com/wolegis/mkinitcpio-systemd-extras/wiki/Dropbear-SSH-server#:~:text=systemd%2Edevice%2Dtimeout">the <code>sd-dropbear</code>
+docs</a> for more information about this. <a href="#fr-2-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+    
+    
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;remotely-unlocking-an-encrypted-hard-disk&#x2F;&amp;type=story">Hacker News</a>,
+    
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;remotely-unlocking-an-encrypted-hard-disk&#x2F;">Lobste.rs</a>,
+    
+    <a href="https:&#x2F;&#x2F;tech.lgbt&#x2F;@jyn&#x2F;115939595372361611">Mastodon</a>, or
+    <a href="https:&#x2F;&#x2F;bsky.app&#x2F;profile&#x2F;jyn.dev&#x2F;post&#x2F;3mczl3u4v7s2o">Bluesky</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>what&#x27;s a few systemd services in initramfs between friends?</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

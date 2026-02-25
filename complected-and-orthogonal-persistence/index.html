@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>complected and orthogonal persistence</title>
+    
+    <meta name="description" content="how hard is it to save and restore program state?">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="how hard is it to save and restore program state?" class="post-title" itemprop="name headline">complected and orthogonal persistence</h1>
+    <p class="post-meta">
+      <time datetime="2025-06-30" itemprop="datePublished">
+        2025-06-30
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/ideas/">ideas</a>
+        
+      
+        
+    </p>
+  </header>
+
+  
+
+	
+
+  
+    
+    
+  <p>This post is part 4 of a multi-part series called <a href="/computer-of-the-future">“the computer of the next 200 years”</a>.</p>
+    
+  <hr>
+  
+
+  <div class="post-content" itemprop="articleBody">
+    <blockquote>
+<p><em><strong>Everything Not Saved Will Be Lost</strong></em>—Ancient Nintendo Proverb</p>
+</blockquote>
+<h2 id="persistence-is-hard">persistence is hard<a class="zola-anchor" href="#persistence-is-hard" aria-label="Anchor link for: persistence-is-hard"></a>
+</h2>
+<p>say that you are writing an editor. you don't want to lose people's work so you implement an "autobackup" feature, so that people can restore their unsaved changes if the program or whole computer crashes.</p>
+<p><a href="https://danluu.com/file-consistency/">implementing this is hard</a>! the way i would do it is to serialize the data structures using something like <a href="https://docs.rs/bincode/latest/bincode/">bincode</a> and then write them to an SQLite database so that i get crash-consistency. there are other approaches with different tradeoffs.</p>
+<h2 id="languages-with-persistence">languages with persistence<a class="zola-anchor" href="#languages-with-persistence" aria-label="Anchor link for: languages-with-persistence"></a>
+</h2>
+<p>this <a href="https://archive.cs.st-andrews.ac.uk/papers/download/ABC+83b.pdf">1983 paper</a> asks: why are we spending so much time rewriting this in applications, instead of doing it once in the runtime? it then introduces a language called "PS-algol", which supports exactly this through a library. note that arbitrary data types in the language are supported without the need for writing user code.</p>
+<p>it turns out that this idea is already being used in production. not in that form—people don’t use Algol anymore—but the idea is the same. M (better known as <a href="https://en.wikipedia.org/wiki/MUMPS">MUMPS</a>), <a href="https://calpaterson.com/bank-python.html">Bank Python</a>, and the <a href="https://www.devever.net/~hl/f/as400guide.pdf">IBM i</a><sup class="footnote-reference" id="fr-4-1"><a href="#fn-4">1</a></sup> are still used in healthcare, financial, and insurance systems, and they work exactly like this<sup class="footnote-reference" id="fr-5-1"><a href="#fn-5">2</a></sup>. here is a snippet of M that persists some data to a database:</p>
+<pre data-lang="mumps" class="language-mumps z-code"><code class="language-mumps" data-lang="mumps"><span class="z-source z-mumps"> <span class="z-keyword">SET</span> ^table(<span class="z-string z-quoted z-double z-mumps"><span class="z-punctuation z-definition z-string z-begin z-mumps">&quot;</span>column<span class="z-punctuation z-definition z-string z-end z-mumps">&quot;</span></span>,<span class="z-string z-quoted z-double z-mumps"><span class="z-punctuation z-definition z-string z-begin z-mumps">&quot;</span>primary key<span class="z-punctuation z-definition z-string z-end z-mumps">&quot;</span></span>)=<span class="z-string z-quoted z-double z-mumps"><span class="z-punctuation z-definition z-string z-begin z-mumps">&quot;</span>value<span class="z-punctuation z-definition z-string z-end z-mumps">&quot;</span></span><span class="z-source z-mumps">
+</span></span></code></pre>
+<p>and here is some Bank Python that does the same:</p>
+<pre data-lang="python" class="language-python z-code"><code class="language-python" data-lang="python"><span class="z-source z-python"><span class="z-meta z-item-access z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">db</span></span></span><span class="z-meta z-item-access z-python"><span class="z-punctuation z-section z-brackets z-begin z-python">[</span></span><span class="z-meta z-item-access z-arguments z-python"><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">/my_table<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span></span><span class="z-meta z-item-access z-python"><span class="z-punctuation z-section z-brackets z-end z-python">]</span></span> <span class="z-keyword z-operator z-assignment z-python">=</span> <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">Table</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span>
+</span></span><span class="z-source z-python"><span class="z-meta z-function-call z-arguments z-python">  <span class="z-meta z-sequence z-list z-python"><span class="z-punctuation z-section z-sequence z-begin z-python">[</span><span class="z-meta z-sequence z-tuple z-python"><span class="z-punctuation z-section z-sequence z-begin z-python">(</span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">etf<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-separator z-sequence z-python">,</span> <span class="z-meta z-qualified-name z-python"><span class="z-support z-type z-python">str</span></span><span class="z-punctuation z-section z-sequence z-end z-python">)</span></span><span class="z-punctuation z-separator z-sequence z-python">,</span> <span class="z-meta z-sequence z-tuple z-python"><span class="z-punctuation z-section z-sequence z-begin z-python">(</span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">shares<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-separator z-sequence z-python">,</span> <span class="z-meta z-qualified-name z-python"><span class="z-support z-type z-python">float</span></span><span class="z-punctuation z-section z-sequence z-end z-python">)</span></span><span class="z-punctuation z-section z-sequence z-end z-python">]</span></span><span class="z-punctuation z-separator z-arguments z-python">,</span>
+</span></span><span class="z-source z-python"><span class="z-meta z-function-call z-arguments z-python">  <span class="z-meta z-sequence z-list z-python"><span class="z-punctuation z-section z-sequence z-begin z-python">[</span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">SPY<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-separator z-sequence z-python">,</span> <span class="z-constant z-numeric z-float z-decimal z-python">1200<span class="z-punctuation z-separator z-decimal z-python">.</span>0</span><span class="z-punctuation z-section z-sequence z-end z-python">]</span></span>
+</span></span><span class="z-source z-python"><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span></code></pre>
+<p>and finally some COBOL: <sup class="footnote-reference" id="fr-3-1"><a href="#fn-3">3</a></sup></p>
+<pre data-lang="COBOL" class="language-COBOL z-code"><code class="language-COBOL" data-lang="COBOL"><span class="z-source z-cobol"><span class="z-keyword z-identifiers z-cobol">IDENTIFICATION DIVISION</span>.
+</span><span class="z-source z-cobol"><span class="z-keyword z-verb z-cobol">PROGRAM-ID</span>. <span class="z-meta z-symbol z-cobol">FILES</span>.
+</span><span class="z-source z-cobol"><span class="z-keyword z-identifiers z-cobol">ENVIRONMENT DIVISION</span>.
+</span><span class="z-source z-cobol">  <span class="z-keyword z-identifiers z-cobol">INPUT-OUTPUT SECTION</span>.
+</span><span class="z-source z-cobol">	<span class="z-keyword z-identifiers z-cobol">FILE-CONTROL</span>.
+</span><span class="z-source z-cobol">	  <span class="z-keyword z-identifiers z-cobol">SELECT</span> <span class="z-meta z-symbol z-cobol">TRANSACTIONS</span> <span class="z-keyword z-identifers z-cobol">ASSIGN</span> <span class="z-keyword z-identifers z-cobol">TO</span> <span class="z-string z-quoted z-single z-cobol"><span class="z-punctuation z-definition z-string z-begin z-cobol">&#39;</span>transactions.txt<span class="z-punctuation z-definition z-string z-end z-cobol">&#39;</span></span>
+</span><span class="z-source z-cobol">	  <span class="z-keyword z-identifers z-cobol">ORGANIZATION</span> <span class="z-keyword z-identifers z-cobol">IS</span> <span class="z-keyword z-identifers z-cobol">SEQUENTIAL</span>.
+</span><span class="z-source z-cobol"><span class="z-keyword z-identifiers z-cobol">DATA DIVISION</span>.
+</span><span class="z-source z-cobol">  <span class="z-keyword z-identifiers z-cobol">FILE SECTION</span>.
+</span><span class="z-source z-cobol">	<span class="z-keyword z-identifiers z-cobol">FD</span> <span class="z-meta z-symbol z-cobol">TRANSACTIONS</span>.
+</span><span class="z-source z-cobol">	<span class="z-constant z-numeric z-cobol">01</span> <span class="z-meta z-symbol z-cobol">TRANSACTION-STRUCT</span>.
+</span><span class="z-source z-cobol">	  <span class="z-constant z-numeric z-cobol">02</span> <span class="z-meta z-symbol z-cobol">UID</span> <span class="z-storage z-type z-picture z-cobol">PIC 9(5).</span>
+</span><span class="z-source z-cobol">	  <span class="z-constant z-numeric z-cobol">02</span> <span class="z-meta z-symbol z-cobol">DESC</span> <span class="z-storage z-type z-picture z-cobol">PIC X(25).</span>
+</span><span class="z-source z-cobol"><span class="z-keyword z-identifiers z-cobol">WORKING-STORAGE SECTION</span>.
+</span><span class="z-source z-cobol">	<span class="z-constant z-numeric z-cobol">01</span> <span class="z-meta z-symbol z-cobol">TRANSACTION-RECORD</span>.
+</span><span class="z-source z-cobol">	  <span class="z-constant z-numeric z-cobol">02</span> <span class="z-meta z-symbol z-cobol">UID</span> <span class="z-storage z-type z-picture z-cobol">PIC 9(5)</span> <span class="z-keyword z-identifers z-cobol">VALUE</span> <span class="z-constant z-numeric z-cobol">12345</span>.
+</span><span class="z-source z-cobol">	  <span class="z-constant z-numeric z-cobol">02</span> <span class="z-meta z-symbol z-cobol">DESC</span> <span class="z-storage z-type z-picture z-cobol">PIC X(25)</span> <span class="z-keyword z-identifers z-cobol">VALUE</span> <span class="z-string z-quoted z-single z-cobol"><span class="z-punctuation z-definition z-string z-begin z-cobol">&#39;</span>TEST TRANSACTION<span class="z-punctuation z-definition z-string z-end z-cobol">&#39;</span></span>.
+</span><span class="z-source z-cobol"><span class="z-keyword z-identifiers z-cobol">PROCEDURE DIVISION</span>.
+</span><span class="z-source z-cobol">  <span class="z-keyword z-verbs z-cobol">OPEN</span> <span class="z-keyword z-identifers z-cobol">OUTPUT</span> <span class="z-meta z-symbol z-cobol">TRANSACTIONS</span>
+</span><span class="z-source z-cobol">	<span class="z-keyword z-verbs z-cobol">WRITE</span> <span class="z-meta z-symbol z-cobol">TRANSACTION-STRUCT</span> <span class="z-keyword z-identifers z-cobol">FROM</span> <span class="z-meta z-symbol z-cobol">TRANSACTION-RECORD</span>
+</span><span class="z-source z-cobol">  <span class="z-keyword z-verbs z-cobol">CLOSE</span> <span class="z-meta z-symbol z-cobol">TRANSACTIONS</span>
+</span><span class="z-source z-cobol">  <span class="z-keyword z-identifiers z-cobol">STOP RUN</span>.
+</span></code></pre>
+<p>note how in all of these, the syntax for persisting the data to disk is essentially the same as persisting it to memory (in MUMPS, persisting to memory is exactly the same, except you would write <code>SET table</code> instead of <code>SET ^table</code>).</p>
+<p>if you don't require the runtime to support all datatypes, there are frameworks for doing this as a library. <a href="https://protobuf.dev/">protobuf</a> and <a href="https://flatbuffers.dev/">flatbuffer</a> both autogenerate the code for a restricted set of data types, so that you only have to write the code invoking it.</p>
+<h2 id="orthogonal-persistence">orthogonal persistence<a class="zola-anchor" href="#orthogonal-persistence" aria-label="Anchor link for: orthogonal-persistence"></a>
+</h2>
+<p>the thing these languages and frameworks have in common is that the persistence is part of the program source code; either you have to choose a language that already has this support, or you have to do extensive modifications to the source code to persist the data at the right points. i will call this kind of persistence <em>complected persistence</em> because they tie together the business logic and persistence logic (see <a href="https://www.infoq.com/presentations/Simple-Made-Easy/">Simple Made Easy</a> by Rich Hickey for the history of the word "complect").</p>
+<p>there is also <em>orthogonal persistence</em>. <a href="https://en.wikipedia.org/wiki/Persistence_(computer_science)#Orthogonal_or_transparent_persistence">"orthogonal persistence"</a> means your program's state is saved automatically without special work from you the programmer. in particular, the serialization is managed by the OS, database, or language runtime. as a result, you don't have to care about persistence, only about implementing business logic; the two concerns are <a href="https://en.wikipedia.org/wiki/Orthogonality#Computer_science">orthogonal</a>.</p>
+<p>orthogonal persistence is more common than you might think. some examples:</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Hibernation_(computing)">hibernation</a> (suspend to disk). first invented in 1992 for the Compaq <a href="https://en.wikipedia.org/wiki/Compaq_LTE#LTE_Lite">LTE Lite</a>. Windows has this on by default since Windows 8 (2012). MacOS has had it on by default since OS X 10.4 (2005).</li>
+<li>virtualized hibernation in hypervisors like VirtualBox and VMWare (usually labeled "Save the machine state" or something similar)</li>
+</ul>
+<h2 id="how-far-can-we-take-this">how far can we take this?<a class="zola-anchor" href="#how-far-can-we-take-this" aria-label="Anchor link for: how-far-can-we-take-this"></a>
+</h2>
+<p>these forms of orthogonal persistence work on the whole OS state. you could imagine a version that works on individual processes: swap the process to disk, restore it later. the kernel kinda already does this when it does scheduling. you can replicate it in userspace with <a href="https://thume.ca/2020/04/18/telefork-forking-a-process-onto-a-different-computer/">telefork</a>, which even lets you spawn a process onto another machine.</p>
+<p>but the rest of the OS moves on while the process is suspended: the files it accesses may have changed, the processes it was talking to over a socket may have exited. what we want is to snapshot the process state: whatever files on disk stay on disk, whatever processes it was talking to continue running. this allows you to rewind and replay the process, as if the whole thing were running in a database transaction.</p>
+<p>what do we need in order to do that?</p>
+<ul>
+<li>a filesystem that supports atomic accesses, snapshots, and transaction restarts, such as <a href="https://en.wikipedia.org/wiki/ZFS#Snapshots_and_clones">ZFS</a>.</li>
+<li>a runtime that supports detailed tracking and replay of syscalls, such as <a href="https://rr-project.org/">rr</a>. this works by intercepting syscalls with <a href="https://man7.org/linux/man-pages/man2/ptrace.2.html">ptrace()</a>, among other mechanisms, and does not require any modifications to the program executable or source code.</li>
+<li>a sandbox that prevents talking to processes that weren’t running when the target process was spawned (unless those processes are also in the sandbox and tracked with this mechanism), such as <a href="https://github.com/containers/bubblewrap">bubblewrap</a>.</li>
+</ul>
+<p>effectively, we are turning syscalls into <a href="http://habitatchronicles.com/2017/05/what-are-capabilities/">capabilities</a>, where the capabilities we give out are “exactly the syscalls the process made last time it spawned”.</p>
+<p>note how this is possible to do today, with existing technology and kernel APIs! this doesn’t require building an OS from scratch, nor rewriting all code to be in a language with tracked effects or a capability system. instead, by working at the syscall interface<sup class="footnote-reference" id="fr-6-1"><a href="#fn-6">4</a></sup> between the program and the kernel, we can build a highly general system that applies to all the programs you already use.</p>
+<h2 id="but-why">“but why?”<a class="zola-anchor" href="#but-why" aria-label="Anchor link for: but-why"></a>
+</h2>
+<p>note that this involves 3 different levels of tracking, which we can think of in terms of progressive enhancement:</p>
+<ol>
+<li>features you can get just by recording and replaying the whole process ("tracking between processes")</li>
+<li>features you can get by replaying from a specific point in the process ("tracking within a process")</li>
+<li>features you can only get with source code changes, by allowing the process to choose where it should be restored to ("tracking that needs source code changes")</li>
+</ol>
+<p>the editor example i gave at the beginning refers to 3; but you can get really quite a lot of things just with 1 (tracked record/replay and transactional semantics). for example, here are some tools that would be easy to build on top:</p>
+<h3 id="needs-tracking-between-processes">needs tracking between processes<a class="zola-anchor" href="#needs-tracking-between-processes" aria-label="Anchor link for: needs-tracking-between-processes"></a>
+</h3>
+<ul>
+<li>collaborative terminals, where you can “split” your terminal and hand a sandboxed environment of <em>your personal computer</em> to a colleague so they can help you debug an issue. this is more general than OCI containers because you don't need to spend time creating a dockerfile that reproduces the problem. this is more general than <a href="https://robert.ocallahan.org/2017/09/rr-trace-portability.html"><code>rr pack</code></a> because you can edit the program source to add printfs, or change the input you pass to it at runtime.</li>
+<li>“save/undo for your terminal”, where you don’t need to add a <a href="https://www.gnu.org/software/coreutils/manual/html_node/Treating-_002f-specially.html"><code>--no-preserve-root</code></a> flag to <code>rm</code>, because the underlying filesystem can just restore a snapshot. this generalizes to any command—for example, you can build an arbitrary <code>git undo</code> command that works even if installed after the data is lost, which is <a href="https://blog.waleedkhan.name/git-undo/">not possible today</a>. note that this can undo by-process, not just by point-in-time, so it is strictly more general than FS snapshots.</li>
+<li>query which files on disk were modified the last time you ran a command. for example you could ask “where did this <code>curl | sh</code> command install its files?”. the closest we have to this today is <a href="https://man7.org/linux/man-pages/man1/dpkg.1.html#:~:text=listfiles"><code>dpkg --listfiles</code></a>, which only works for changes done by the package manager.</li>
+</ul>
+<h3 id="needs-tracking-within-a-process">needs tracking within a process<a class="zola-anchor" href="#needs-tracking-within-a-process" aria-label="Anchor link for: needs-tracking-within-a-process"></a>
+</h3>
+<ul>
+<li><a href="https://asciinema.org/">asciinema</a>, but you actually run the process instead of building your own terminal emulator. this also lets you edit the recording live instead of having to re-record from scratch.</li>
+<li>the <a href="https://jade.fyi/blog/the-postmodern-build-system/#limits-of-execve-memoization">“post-modern build system”</a> (also needs a <a href="https://salsa-rs.netlify.app/">salsa</a>-like <a href="https://rustc-dev-guide.rust-lang.org/queries/incremental-compilation-in-detail.html#improving-accuracy-the-red-green-algorithm">red-green system</a>)</li>
+</ul>
+<h3 id="needs-source-code-changes">needs source code changes<a class="zola-anchor" href="#needs-source-code-changes" aria-label="Anchor link for: needs-source-code-changes"></a>
+</h3>
+<ul>
+<li>“save/undo for your program”, where editors and games can take advantage of cheap snapshots to use the operating system's restore mechanism instead of building their own.</li>
+</ul>
+<p>this is not an exhaustive list, just the first things on the top of my head after a couple days of thinking about it. what makes this orthogonal persistence system so useful is that all these tools are near-trivial to build on top: most of them could be done in shell scripts or a short python script, instead of needing a team of developers and a year.</p>
+<h2 id="isn-t-this-horribly-slow">isn’t this horribly slow?<a class="zola-anchor" href="#isn-t-this-horribly-slow" aria-label="Anchor link for: isn-t-this-horribly-slow"></a>
+</h2>
+<p>not inherently. “turning your file system into a database“ is only as slow as submitting the query is<sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">5</a></sup>—and that can be quite fast when the database runs locally instead of over the network; see <a href="https://github.com/spacejam/sled?tab=readme-ov-file#performance">sled</a> for an example of such a DB that has had performance tuning. rr boasts <a href="https://rr-project.org/#:~:text=slowdown">less than a 20% slowdown</a>. bubblewrap uses the kernel’s native namespacing and to my knowledge imposes no overhead.</p>
+<p>now, the final system needs to be designed with performance in mind and then carefully optimized but, you know. that's doable.</p>
+<h2 id="does-this-work-across-versions-of-my-program">does this work across versions of my program?<a class="zola-anchor" href="#does-this-work-across-versions-of-my-program" aria-label="Anchor link for: does-this-work-across-versions-of-my-program"></a>
+</h2>
+<p>kinda. there are two possible ways to implement intra-process persistence (i.e. "everything other than disk writes").</p>
+<ol>
+<li>take a snapshot of the memory, registers, and kernel state (e.g. file descriptors). this is how <a href="https://thume.ca/2020/04/18/telefork-forking-a-process-onto-a-different-computer/">telefork</a> works. this only works with a single version of the executable; any change, even LTO without changing source code, will break it.</li>
+<li>replay all syscalls done by the process. this will work across versions, as long as the program makes the same syscalls in the same order.</li>
+</ol>
+<p>1 is cheap if you don't have much memory usage compared to CPU time.
+2 is cheap if you don't have much CPU time compared to memory usage.
+only 2 allows you to modify the binary between saving and restoring.
+it's possible to do both for the same process, just expensive.</p>
+<h2 id="summary">summary<a class="zola-anchor" href="#summary" aria-label="Anchor link for: summary"></a>
+</h2>
+<ul>
+<li>persisting program state is hard and basically requires implementing a database</li>
+<li>persistence that does not require action from the program is called “orthogonal persistence”</li>
+<li>it is possible to build orthogonal persistence for individual processes with tools that exist today, with only moderate slowdowns depending on how granular you want to be</li>
+<li>there are multiple possible ways to implement this system, with different perf/generality tradeoffs</li>
+<li>such a system unlocks many kinds of tools by making them orders of magnitude easier to build</li>
+</ul>
+<p>many of the ideas in this post were developed in collaboration with edef. if you want to see them built, consider <a href="https://github.com/sponsors/edef1c">sponsoring her</a> so she has time to work on them.</p>
+<hr />
+<h2 id="bibliography">bibliography<a class="zola-anchor" href="#bibliography" aria-label="Anchor link for: bibliography"></a>
+</h2>
+<ul>
+<li><a href="https://danluu.com/file-consistency/">Dan Luu, "Files are hard"</a></li>
+<li><a href="https://docs.rs/bincode/latest/bincode/">Ty Overby, Zoey Riordan, Victor Koenders, <em>bincode</em></a></li>
+<li><a href="https://archive.cs.st-andrews.ac.uk/papers/download/ABC+83b.pdf">Atkinson, M.P., Bailey, P.J., Chisholm, K.J., Cockshott, W.P. &amp; Morrison, R. “PS-algol: A
+Language for Persistent Programming”. In Proc. 10th Australian National Computer
+Conference, Melbourne, Australia (1983) pp 70-79.</a></li>
+<li><a href="https://calpaterson.com/bank-python.html">Cal Paterson, "An oral history of Bank Python"</a></li>
+<li><a href="https://www.devever.net/~hl/f/as400guide.pdf">Hugo Landau, "IBM i: An Unofficial Introduction"</a></li>
+<li><a href="https://protobuf.dev/">Google LLC, "Protocol Buffers"</a></li>
+<li><a href="https://flatbuffers.dev/">Google LLC, "FlatBuffers Docs"</a></li>
+<li><a href="https://www.infoq.com/presentations/Simple-Made-Easy/">Rich Hickey, "Simple Made Easy"</a></li>
+<li><a href="https://thume.ca/2020/04/18/telefork-forking-a-process-onto-a-different-computer/">Tristan Hume, "Teleforking a process onto a different computer!"</a></li>
+<li><a href="https://rr-project.org/">Robert O’Callahan et al., "RR"</a></li>
+<li><a href="https://github.com/containers/bubblewrap">Simon McVittie et al., "bubblewrap"</a></li>
+<li><a href="http://habitatchronicles.com/2017/05/what-are-capabilities/">Chip Morningstar and F. Randall Farmer, "What Are Capabilities?"</a></li>
+<li><a href="https://robert.ocallahan.org/2017/09/rr-trace-portability.html">Robert O'Callahan, "rr Trace Portability"</a></li>
+<li><a href="https://www.gnu.org/software/coreutils/manual/html_node/Treating-_002f-specially.html">Free Software Foundation, Inc., "GNU Coreutils"</a></li>
+<li><a href="https://blog.waleedkhan.name/git-undo/">Waleed Khan, "git undo: We can do better"</a></li>
+<li><a href="https://asciinema.org/">Marcin Kulik, "Record and share your terminal sessions, the simple way."</a></li>
+<li><a href="https://jade.fyi/blog/the-postmodern-build-system/#limits-of-execve-memoization">Jade Lovelace, "The postmodern build system"</a></li>
+<li><a href="https://salsa-rs.netlify.app/">Salsa developrs, "About salsa"</a></li>
+<li><a href="https://rustc-dev-guide.rust-lang.org/queries/incremental-compilation-in-detail.html#improving-accuracy-the-red-green-algorithm">The Rust Project contributors, "Incremental compilation in detail"</a></li>
+<li><a href="https://github.com/spacejam/sled?tab=readme-ov-file#performance">Tyler Neely, "sled - it's all downhill from here!!!"</a></li>
+<li><a href="https://github.com/sponsors/edef1c">edef</a></li>
+<li><a href="https://www.postgresql.org/docs/current/wal-intro.html#WAL-INTRO">The PostgreSQL Global Development Group, "Reliability and the Write-Ahead Log: Write-Ahead Logging (WAL)"</a></li>
+<li><a href="https://medium.com/@yvanscher/7-cobol-examples-with-explanations-ae1784b4d576">Yvan Scher, "7 cobol examples with explanations."</a></li>
+<li><a href="https://www.cl.cam.ac.uk/research/security/ctsrd/">Robert N. M. Watson et al., "CTSRD – Rethinking the hardware-software interface for security"</a></li>
+<li><a href="https://webassembly.org/">WebAssembly Working Group, "WebAssembly"</a></li>
+<li><a href="https://doc.cat-v.org/bell_labs/utah2000/utah2000.html">Rob Pike, "Systems Software Research is Irrelevant"</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/ptrace.2.html">System Calls Manual, "ptrace(2)"</a></li>
+<li><a href="https://man7.org/linux/man-pages/man1/dpkg.1.html#:~:text=listfiles">dpkg suite, "dpkg(1)"</a></li>
+<li><a href="https://en.wikipedia.org/wiki/MUMPS">Wikipedia, "MUMPS"</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Persistence_(computer_science)#Orthogonal_or_transparent_persistence">Wikipedia, "orthogonal persistence"</a></li>
+<li><a href="https://en.wikipedia.org/wiki/IBM_i#Technology_Independent_Machine_Interface_(TIMI)">Wikipedia, "IBM i"</a></li>
+<li><a href="https://en.wikipedia.org/wiki/ZFS#Snapshots_and_clones">Wikipedia, "ZFS"</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Orthogonality#Computer_science">Wikipedia, "Orthogonality"</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hibernation_(computing)">Wikipedia, "Hibernation (computing)"</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Compaq_LTE#LTE_Lite">Wikipedia, "Compaq LTE Lite"</a></li>
+</ul>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-4">
+<p>the IBM i will be coming up many times in this series, particularly block terminals and the object capability model. i will glaze over parts of the system that cannot be intercepted at a syscall boundary; but that said i want to point out that <a href="https://www.devever.net/~hl/f/as400guide.pdf#page=13">IBM POWER extensions</a> and <a href="https://en.wikipedia.org/wiki/IBM_i#Technology_Independent_Machine_Interface_(TIMI)">TIMI</a> correspond roughly to the modern ideas of the <a href="https://www.cl.cam.ac.uk/research/security/ctsrd/">CHERI</a> and <a href="https://webassembly.org/">WASM</a> projects. <a href="#fr-4-1">↩</a></p>
+</li>
+<li id="fn-5">
+<p>jyn, you might ask, why are all these systems so old! why legacy systems? isn't there any new code with these ideas? and the answer is no. <a href="https://doc.cat-v.org/bell_labs/utah2000/utah2000.html">systems research is irrelevant</a> and its new ideas, such as they are, do not make it into industry. <a href="#fr-5-1">↩</a></p>
+</li>
+<li id="fn-3">
+<p>credit <a href="https://medium.com/@yvanscher/7-cobol-examples-with-explanations-ae1784b4d576">@yvanscher</a> <a href="#fr-3-1">↩</a></p>
+</li>
+<li id="fn-6">
+<p>on all OSes i know other than Linux, the syscall ABI is not stable and programs are expected to use libc bindings. you can do something similar by using LD_PRELOAD to intercept libc calls. <a href="#fr-6-1">↩</a></p>
+</li>
+<li id="fn-1">
+<p>one might think that you have to flush each write to disk before returning from write() in order to preserve ACID semantics. not so; this is exactly the problem that a <a href="https://www.postgresql.org/docs/current/wal-intro.html#WAL-INTRO">write-ahead-log</a> fixes. <a href="#fr-1-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;complected-and-orthogonal-persistence&#x2F;&amp;type=story">Hacker News</a>,
+    
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;complected-and-orthogonal-persistence&#x2F;">Lobste.rs</a>, or
+    <a href="https:&#x2F;&#x2F;tech.lgbt&#x2F;@jyn&#x2F;114791295627692027">Mastodon</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>how hard is it to save and restore program state?</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

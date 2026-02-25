@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Why is Rust&#x27;s build system uniquely hard to use?</title>
+    
+    <meta name="description" content="Goals for improving Rust&#x27;s build system and making it easier to understand">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="Goals for improving Rust&#x27;s build system and making it easier to understand" class="post-title" itemprop="name headline">Why is Rust's build system uniquely hard to use?</h1>
+    <p class="post-meta">
+      <time datetime="2023-01-12" itemprop="datePublished">
+        2023-01-12
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/ideas/">ideas</a>
+        
+      • <a href="https://jyn.dev/tags/rust/">rust</a>
+        
+      • <a href="https://jyn.dev/tags/build-systems/">build-systems</a>
+        
+      
+    </p>
+  </header>
+
+  
+
+	
+
+  
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <p><em>This post will assume you have watched <a href="https://www.youtube.com/watch?v=oUIjG-y4zaA">https://www.youtube.com/watch?v=oUIjG-y4zaA</a>.
+You may also find it helpful to read <a href="https://rustc-dev-guide.rust-lang.org/building/bootstrapping/what-bootstrapping-does.html#stages-of-bootstrapping">https://rustc-dev-guide.rust-lang.org/building/bootstrapping/what-bootstrapping-does.html#stages-of-bootstrapping</a>, but I won't assume prior knowledge of the information there.</em></p>
+<!-- This is a post about how I would like Rust's bootstrapping system to work in an ideal world. -->
+<!-- I am not sure all these changes are feasible - they certainly can be done at a technical -->
+<!-- blah blah coordination is hard -->
+<h2 id="why-is-bootstrap-confusing">Why is bootstrap confusing?<a class="zola-anchor" href="#why-is-bootstrap-confusing" aria-label="Anchor link for: why-is-bootstrap-confusing"></a>
+</h2>
+<p>People get confused by Rust's build system a lot. I have been trying for a while to figure out what
+makes Rust uniquely hard here, as a lot of the people who are confused are experienced compiler
+engineers who have used staged compilers in the past. Here are some theories I have.</p>
+<h3 id="is-stage-0-is-uniquely-confusing">Is "stage 0" is uniquely confusing?<a class="zola-anchor" href="#is-stage-0-is-uniquely-confusing" aria-label="Anchor link for: is-stage-0-is-uniquely-confusing"></a>
+</h3>
+<h4 id="what-do-other-compilers-call-stage-0">What do other compilers call "stage 0"?<a class="zola-anchor" href="#what-do-other-compilers-call-stage-0" aria-label="Anchor link for: what-do-other-compilers-call-stage-0"></a>
+</h4>
+<p><a href="https://gcc.gnu.org/install/build.html">https://gcc.gnu.org/install/build.html</a> refers to a "3-stage" build, and names the stages "stage1", "stage2", "stage3".
+It also references a "native compiler". As far as I can tell, "native compiler" corresponds to what Rust calls "stage 0", and stage 1/2/3 are all exactly equivalent, i.e:</p>
+<ul>
+<li>stage0 is a pre-existing compiler, which is assumed to already exist (or in rust's case, a downloaded beta compiler).</li>
+<li>stage1 is the sources from latest master, built by stage0, and has a different ABI from stage2 and stage3.</li>
+<li>stage2 is the same sources, built by stage1.</li>
+<li>stage3 is byte-for-byte identical with stage2, only useful for verifying reproducible builds.</li>
+</ul>
+<p><a href="https://llvm.org/docs/AdvancedBuilds.html#bootstrap-builds">https://llvm.org/docs/AdvancedBuilds.html#bootstrap-builds</a> says "In a simple two-stage bootstrap build, we build clang using the system compiler, then use that just-built clang to build clang again." which again seems to match GCC and Rust.</p>
+<p><a href="https://gitlab.haskell.org/ghc/ghc/blob/master/hadrian/README.md#staged-compilation">https://gitlab.haskell.org/ghc/ghc/blob/master/hadrian/README.md#staged-compilation</a> seems to match GCC, Clang, and Rust.</p>
+<!-- TOOD: mention that there are other self-hosted compilers that don't use stages? would make it clear that having "too close" a model to other compilers is confusing -->
+<h4 id="why-would-stage-0-be-confusing">Why would "stage 0" be confusing?<a class="zola-anchor" href="#why-would-stage-0-be-confusing" aria-label="Anchor link for: why-would-stage-0-be-confusing"></a>
+</h4>
+<p>Maybe treating this as "just" another stage, rather than naming it "native compiler" or "system compiler", is confusing.
+That alone seems unlikely though; "0" at least to me seems like a good indication that it's not being built from source.
+So renaming stage 0 to "bootstrap compiler" or "pre-compiled compiler", while helpful, seems unlikely to clear up the confusion.</p>
+<h3 id="is-building-the-standard-library-confusing">Is building the standard library confusing?<a class="zola-anchor" href="#is-building-the-standard-library-confusing" aria-label="Anchor link for: is-building-the-standard-library-confusing"></a>
+</h3>
+<h4 id="what-do-other-compilers-do">What do other compilers do?<a class="zola-anchor" href="#what-do-other-compilers-do" aria-label="Anchor link for: what-do-other-compilers-do"></a>
+</h4>
+<p>GCC and Clang do not build their standard libraries from source. Instead, they use the same dynamically linked system standard library for all stages, including the "stage 0" or "system compiler" stage.</p>
+<p>(As an aside, that's <em>horrifying</em>, C doesn't have a standardized ABI and so this can cause miscompilations even if there are no bugs in the standard library or gcc itself: <a href="https://faultlore.com/blah/c-isnt-a-language/#c-doesnt-actually-have-an-abi">https://faultlore.com/blah/c-isnt-a-language/#c-doesnt-actually-have-an-abi</a>)</p>
+<p>GHC <em>does</em> build its standard library from source. It has two parts to its standard library:</p>
+<ol>
+<li><code>GHC.Base</code>, which can only be compiled by exactly one version of GHC. This is a runtime, analogous to <code>crt0.o</code> or <a href="https://stdrs.dev/nightly/x86_64-unknown-linux-gnu/std/rt/index.html"><code>std::rt</code></a>.</li>
+<li>Everything else in the <code>GHC.*</code> namespace. This can be compiled by any version of GHC.</li>
+</ol>
+<h4 id="what-does-rust-do">What does Rust do?<a class="zola-anchor" href="#what-does-rust-do" aria-label="Anchor link for: what-does-rust-do"></a>
+</h4>
+<p>Rust also builds its standard library from source. It has three parts:</p>
+<ol>
+<li><code>core</code></li>
+<li><code>alloc</code></li>
+<li><code>std</code></li>
+</ol>
+<p>All three can be built by exactly <em>two</em> versions of <code>rustc</code>:</p>
+<ol>
+<li>The previous beta compiler.</li>
+<li>The in-tree sources, versioned in the same git repo.</li>
+</ol>
+<p>As discussed in my RustConf talk, they distinguish the two with <code>cfg(bootstrap)</code>; when set, we're using beta, when unset, we're using the in-tree sources.</p>
+<h4 id="why-would-this-be-confusing">Why would this be confusing?<a class="zola-anchor" href="#why-would-this-be-confusing" aria-label="Anchor link for: why-would-this-be-confusing"></a>
+</h4>
+<p>Having to support two versions of the compiler seems to be unique to Rust's standard library. C bypasses the question altogether by not having language intrinsics in the standard library and supporting any compiler version; Haskell only requires one version of the compiler to be supported.</p>
+<p>Having to support two versions is in fact the original motivation for this post, since it causes
+lots of pain for changes that modify both the compiler and standard library; see
+<a href="https://github.com/rust-lang/rust/pull/84863">https://github.com/rust-lang/rust/pull/84863</a> for an example that modifies both in the same PR and
+<a href="https://github.com/rust-lang/rust/pull/99917">https://github.com/rust-lang/rust/pull/99917</a> for an example that depends on changes to the
+compiler that haven't yet landed on beta.</p>
+<h3 id="what-can-we-do-about-it">What can we do about it?<a class="zola-anchor" href="#what-can-we-do-about-it" aria-label="Anchor link for: what-can-we-do-about-it"></a>
+</h3>
+<p>Supporting two versions is not an intrinsic requirement. We do it for two reasons:</p>
+<ol>
+<li>It allows testing changes to the standard library without having to first build the compiler.
+<a href="https://github.com/rust-lang/rust/issues/65031">Building the compiler is painfully slow</a>.</li>
+<li>It allows <a href="https://rustc-dev-guide.rust-lang.org/building/bootstrapping/what-bootstrapping-does.html#complications-of-bootstrapping">using nightly standard library features</a> in the compiler before they land on beta.</li>
+</ol>
+<p>1 is "just" implementation work to fix: if there are no changes to the compiler, we can download CI artifacts for that commit and use those instead. There are <a href="https://github.com/rust-lang/rust/issues/81930">a few bugs to fix</a> but they're surmountable.</p>
+<p>2 is harder. Either we add <code>cfg(bootstrap)</code> to the compiler to use a different implementation when building with stage0 than stage1, or we stop using nightly standard library features until they reach beta. See <a href="https://rust-lang.zulipchat.com/#narrow/stream/131828-t-compiler/topic/Building.20rustc.20with.20beta.20libstd/near/209899890">https://rust-lang.zulipchat.com/#narrow/stream/131828-t-compiler/topic/Building.20rustc.20with.20beta.20libstd/near/209899890</a> for a very (very) long discussion of the tradeoffs here.</p>
+<p>There are some more benefits to supporting a single version not discussed there:</p>
+<ul>
+<li>Rebasing over master recompiles much less code. Modifying a single line in <code>core</code> no longer requires rebuilding the world; only changes to the compiler require the compiler to be rebuilt.</li>
+<li>Modifying the standard library locally don't require rebuilding the compiler. This is especially relevant to people who are changing how the standard library interacts with the compiler; we would be able to remove <code>--keep-stage-std 0</code> and all associated footguns as a workflow altogether.</li>
+<li>Creating a new Rust release requires touching <em>drastically</em> less <code>cfg(bootstrap)</code> since lang items no longer need to be modified, only small parts of the compiler.</li>
+</ul>
+<p>I've put together some data on how often using those features before they hit beta happens in
+practice, and - at least from 1.61.0 onwards - it appears it <em>never</em> happens. See
+<a href="https://github.com/jyn514/rust/tree/versions-used">https://github.com/jyn514/rust/tree/versions-used</a> for how that data was gathered (run
+<code>./collect_new_versions.sh</code>). What's more common is renaming a method before it's stable; see
+<a href="https://github.com/rust-lang/rust/pull/79805/files">https://github.com/rust-lang/rust/pull/79805/files</a> for an example. The <code>cfg(bootstrap)</code> code to
+handle this in the compiler should be pretty simple.</p>
+<p>I've talked to people on both T-libs and T-compiler and they say that removing <code>cfg(bootstrap)</code> would be an <em>enormous</em> help. Some testimonials:</p>
+<blockquote>
+<p><a href="https://github.com/thomcc">@thomcc</a>: Yes please. It's a huge headache. It also frequently comes up as a reason not to let the const-eval team experiment with stuff, since we know <code>~const</code> is likely going away and don't want to deal with the "lol we <code>cfg(bootstrap)</code>ed off all of core::iter".</p>
+</blockquote>
+<blockquote>
+<p><a href="https://github.com/fee1-dead">@fee1-dead</a>: Working on const traits makes the bootstrap issue very apparent because almost all bugs would be found from attempting to use the feature in the standard library. Fixes for those bugs would need to wait six weeks before finally released as the beta compiler, which slows down development and evolution of the feature.</p>
+</blockquote>
+<blockquote>
+<p><a href="https://github.com/m-ou-se">@m-ou-se</a>: Sometimes it gets super messy with all the <code>cfg(bootstrap)</code> stuff for things relying on built-in macros or new lang items. Please fix cfg bootstrap hell :D</p>
+</blockquote>
+<blockquote>
+<p><a href="https://github.com/workingjubilee">@workingjubilee</a>: Using beta stdlib would make it much easier to experiment outside the compiler/stdlib proper.</p>
+</blockquote>
+<blockquote>
+<p><a href="https://github.com/nilstrieb">@Nilstrieb</a>: I'd rather have a few cfgs in the compiler when necessary instead of cfgs in std all the time.</p>
+</blockquote>
+<h4 id="but-that-just-moves-the-cfg-bootstrap-to-the-compiler">"But that just moves the cfg(bootstrap) to the compiler!"<a class="zola-anchor" href="#but-that-just-moves-the-cfg-bootstrap-to-the-compiler" aria-label="Anchor link for: but-that-just-moves-the-cfg-bootstrap-to-the-compiler"></a>
+</h4>
+<p>A common (incorrect) objection is that, after this change, adding new language items would require adding <code>cfg(bootstrap)</code> to the compiler.
+This is false. The compiler <em>also</em> only has to support building one version of <code>std</code> after this change. The only time the bootstrap standard library is involved is when <em>building the compiler</em>. Unlike how <code>std</code> is intrinsically tied to the compiler due to lang items, the compiler doesn't intrinsically depend on implementation details of the standard library; it only uses them for dogfooding.</p>
+<p>(I don't want to hear about how <code>lang</code> items are ideologically impure. I don't care. It's not changing.)</p>
+<p>Here is a graph of what the build would like before:</p>
+<table><thead><tr><th>component</th><th>built-by</th><th>building</th></tr></thead><tbody>
+<tr><td>compiler</td><td>1 std</td><td>1 std</td></tr>
+<tr><td>std</td><td>2 compilers</td><td>NA</td></tr>
+</tbody></table>
+<p>and after:</p>
+<table><thead><tr><th>component</th><th>built-by</th><th>building</th></tr></thead><tbody>
+<tr><td>compiler</td><td>2 std</td><td>1 std</td></tr>
+<tr><td>std</td><td>1 compiler</td><td>NA</td></tr>
+</tbody></table>
+<h3 id="is-the-stage-terminology-itself-confusing">Is the "stage" terminology itself confusing?<a class="zola-anchor" href="#is-the-stage-terminology-itself-confusing" aria-label="Anchor link for: is-the-stage-terminology-itself-confusing"></a>
+</h3>
+<h4 id="what-do-other-compilers-do-1">What do other compilers do?<a class="zola-anchor" href="#what-do-other-compilers-do-1" aria-label="Anchor link for: what-do-other-compilers-do-1"></a>
+</h4>
+<p>For GHC, <code>build stage1:exe:ghc-bin</code> builds stage1 GHC with the stage0 compiler.</p>
+ <!-- https://discourse.llvm.org/t/how-to-run-individual-phases-of-a-2-or-3-stage-build/2596/2 -->
+<p>For Clang, <code>ninja stage2</code> builds the stage2 clang with the stage1 compiler and <code>ninja clang-bootstrap-deps</code> builds the stage1 clang with the stage0 compiler.</p>
+<!-- https://github.com/ocaml/ocaml/blob/64ef2d0ce1eb7d5f09ac6cde1a78f74b62804cc6/Makefile#L698-L702 -->
+<!-- https://github.com/ocaml/ocaml/blob/64ef2d0ce1eb7d5f09ac6cde1a78f74b62804cc6/Makefile#L833-L841 -->
+<p>OCaml uses <code>make coreall</code> to build the stage1 OCaml with the bootstrap compiler and <code>make bootstrap</code> to build a full bootstrap compiler.</p>
+<!-- zig is a pain in the ass to build on windows because it needs llvm installed -->
+<!-- pypy doesn't have stages -->
+<!-- swift isn't self-hosted https://github.com/apple/swift/blob/2c7b0b22831159396fe0e98e5944e64a483c356e/www/FAQ.rst -->
+<!-- http://www.sbcl.org/porting.html is unclear and I don't feel like building it -->
+<h4 id="what-does-rust-do-1">What does Rust do?<a class="zola-anchor" href="#what-does-rust-do-1" aria-label="Anchor link for: what-does-rust-do-1"></a>
+</h4>
+<p><code>x build --stage 0 rustc</code> builds stage1 rustc with the stage0 compiler.
+<code>x build --stage 1 rustc</code> builds stage2 rustc with the stage1 compiler.</p>
+<p>This is off-by-one from how <em>every other modern compiler</em> counts stages.</p>
+<p><a href="https://rustc-dev-guide.rust-lang.org/building/bootstrapping/what-bootstrapping-does.html#understanding-stages-of-bootstrap">https://rustc-dev-guide.rust-lang.org/building/bootstrapping/what-bootstrapping-does.html#understanding-stages-of-bootstrap</a>
+spends several paragraphs talking about how <code>build --stage N</code> means "build with stage N", not "create the
+compiler that lives in the stage N sysroot".  All the people I've talked to who say this
+meaning of <code>--stage N</code> is intuitive have been using <code>x.py</code> for several years and are experts in the
+system. Nearly all the people I've talked to who find it confusing are either new to the compiler,
+or contribute regularly but aren't experts in Rust's build system - even those who are experienced
+in bootstrapping compilers for other languages!</p>
+<p>In the words of <a href="https://github.com/nilstrieb">@Nilstrieb</a>:</p>
+<blockquote>
+<p>You build a <em>target</em>. The focus is always <em>what</em> you build.</p>
+</blockquote>
+<!-- TODO: talk with manish about how to make this less combative -->
+<p>We are not meeting that intuition today with x.py.  It seems unfortunate to have a system that only
+makes sense if you've used it for a long time and are accustomed to it. If you're using it for
+several years, you have time to relearn the system.</p>
+<h4 id="what-can-we-do-instead">What can we do instead?<a class="zola-anchor" href="#what-can-we-do-instead" aria-label="Anchor link for: what-can-we-do-instead"></a>
+</h4>
+<p>I would like to introduce four new flags:</p>
+<ul>
+<li><code>--bootstrap-sysroot</code></li>
+<li><code>--dev-sysroot</code></li>
+<li><code>--dist-sysroot</code></li>
+<li><code>--reproducible-sysroot</code></li>
+</ul>
+<p>This correspond closely, but not exactly, to <code>--stage 0/1/2/3</code> (respectively).
+Here is a conversion guide between the two: <img src="/assets/bootstrap-sysroot-conversion.png" alt="conversion guide (see /assets/bootstrapping.tex for source)" /></p>
+<p>I propose <em>not</em> putting this in the dev-guide, but creating an inside-rust post which we link to in bootstrap's changelog.
+The idea is for people who've already been using x.py to see the guide, but not people learning the tool for the first time.
+We would keep <code>--stage</code> for a time, but eventually deprecate it.</p>
+<p>I want to call out a few interesting properties of these flags:</p>
+<ul>
+<li><code>build --bootstrap-sysroot std</code> makes it more clear how <em>strange</em> it is that <code>std</code> is built before rustc. This isn't something people will need to think about if we change <code>std</code> to only need to support one compiler.</li>
+<li>The names are self-describing. People don't have to wonder whether <code>--stage 1</code> is the flag they want or not; <code>--dev-sysroot</code> makes it clear it is.</li>
+<li>The only times <code>--bootstrap-sysroot</code> will be used is for
+<ul>
+<li><code>doc</code> / <code>clippy</code> (to use the beta tools instead of recompiling, although <code>--dev-sysroot</code> will still be supported). Given that <code>download-rustc</code> will be a blessed workflow, we may want to drop support for this in the future.</li>
+<li><code>build expand-yaml-anchors</code> (or other bootstrap tools); <em>not</em> the standard library or compiler.</li>
+</ul>
+</li>
+<li><code>check</code> will only ever support one stage (<code>--dev-sysroot</code> for the compiler and std; <code>--bootstrap-sysroot</code> for bootstrap tools)</li>
+<li><code>test --dev-sysroot ui</code> now matches the sysroot of <code>build compiler</code> (!). I am planning to make <code>test rustc_data_structures --dev-sysroot</code> compile <code>rustc_data_strucutres</code> (like <code>--stage 0</code> today) for consistency, and so that we are always testing the compiler <em>that will end up</em> in the given sysroot.</li>
+<li><code>build --dev-sysroot rustdoc</code> now matches the sysroot of <code>build --dev-sysroot compiler</code> (!). Hopefully we can also do this for clippy and miri.</li>
+</ul>
+<p>To make the new flags easier to learn, we can name the sysroots directories after the flags: <code>build/host/{bootstrap,dev,dist}-sysroot</code>.
+I have not yet decided if we should introduce a <code>reproducible-sysroot</code> or not; see <a href="https://github.com/rust-lang/rust/issues/90244#issuecomment-1120649548">https://github.com/rust-lang/rust/issues/90244#issuecomment-1120649548</a> for some of the difficulties involved.</p>
+<h2 id="misc-breaking-changes">"Misc breaking changes"<a class="zola-anchor" href="#misc-breaking-changes" aria-label="Anchor link for: misc-breaking-changes"></a>
+</h2>
+<p>Skimmed over in the previous sections is how to get people to use <code>download-rustc</code>.
+If we enable it unconditionally for everyone, distros will get very upset.
+If we don't enable it, people working on the standard library will have horrifically long compile times.</p>
+<p>To avoid this, we could <em>require</em> people to set a profile for <code>config.toml</code>. To avoid making distros
+hate us too much, <code>./configure</code> would set the <code>user</code> profile; running <code>./x.py build</code> without
+creating a profile would give a hard error pointing you to <code>x.py setup</code>. We would still treat an
+empty config.toml as opting-in to no profile.</p>
+<h2 id="summary-of-future-work">Summary of future work<a class="zola-anchor" href="#summary-of-future-work" aria-label="Anchor link for: summary-of-future-work"></a>
+</h2>
+<p>Here are all the proposed changes in this post, gathered in one place:</p>
+<ul>
+<li>Change <code>./configure</code> to set <code>profile = "user"</code>.</li>
+<li>Make <code>profile</code> required in config.toml.</li>
+<li>Fix the existing bugs in <code>download-rustc</code>.</li>
+<li>Enable <code>download-rustc = "if-unchanged"</code> by default for the <code>library</code> profile.</li>
+<li>Get rid of <code>build --stage 0 std</code>. The compiler will be unconditionally built with beta std, not nightly std.
+<ul>
+<li>Get rid of <code>stage0-sysroot</code>.</li>
+<li>Make sure <code>download-rustc</code> doesn't build the compiler from source if there are only library changes; this needs to be careful to still rebuild stage 2 rustc if there are library changes.</li>
+</ul>
+</li>
+<li>Rename <code>build/host/stage{0,1,2}</code> to <code>build/host/{bootstrap,dev,dist}-sysroot</code>.</li>
+<li>Add <code>--{bootstrap,dev,dist}-sysroot</code> flags.
+<ul>
+<li>When doing this, clippy and miri will start using the same flags as rustdoc. See <a href="https://rust-lang.zulipchat.com/#narrow/stream/326414-t-infra.2Fbootstrap/topic/Stage.20numbering.20for.20tools/near/298189698">https://rust-lang.zulipchat.com/#narrow/stream/326414-t-infra.2Fbootstrap/topic/Stage.20numbering.20for.20tools/near/298189698</a> for how tool flags are numbered today; after this change, both <code>build --dev-sysroot rustdoc</code> and <code>build --dev-sysroot clippy</code> will build rustc once, as a library.</li>
+</ul>
+</li>
+</ul>
+<p>That's a lot of breaking changes and a lot of work, for things we are not sure will make the user
+experience easier.  To avoid multiple breaking changes in short succession, I propose making all the
+changes at once, and inviting people to try out the changes from a branch before merging them. If we
+have trouble getting user feedback, I could create a standalone binary which uses the new
+<code>*-sysroot</code> flags even on the master branch. Note that this will not be possible for the changes
+removing <code>cfg(bootstrap)</code> from std, since that requires changes outside of bootstrap.</p>
+<h2 id="questions-concerns-hate-mail">Questions? Concerns? Hate mail?<a class="zola-anchor" href="#questions-concerns-hate-mail" aria-label="Anchor link for: questions-concerns-hate-mail"></a>
+</h2>
+<p>Feel free to contact me (<code>@jyn</code>) in <a href="https://rust-lang.zulipchat.com/#narrow/stream/326414-t-infra.2Fbootstrap">https://rust-lang.zulipchat.com/#narrow/stream/326414-t-infra.2Fbootstrap</a>.</p>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;bootstrapping-rust-in-2023&#x2F;&amp;type=story">Hacker News</a> or
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;bootstrapping-rust-in-2023&#x2F;">Lobste.rs</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Goals for improving Rust&#x27;s build system and making it easier to understand</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

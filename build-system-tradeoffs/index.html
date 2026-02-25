@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>build system tradeoffs</title>
+    
+    <meta name="description" content="an overview of what builds for complicated projects have to think about">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="an overview of what builds for complicated projects have to think about" class="post-title" itemprop="name headline">build system tradeoffs</h1>
+    <p class="post-meta">
+      <time datetime="2025-11-02" itemprop="datePublished">
+        2025-11-02
+      </time>
+      
+      
+      
+        
+        
+        
+      • <a href="https://jyn.dev/tags/build-systems/">build-systems</a>
+        
+      
+    </p>
+  </header>
+
+  
+
+	
+
+
+<div class=toc-container><div class="toc-content">
+	<details><summary>Table of contents</summary>
+	
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#build-concerns">build concerns</a>
+		
+
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#running-generated-binaries">running generated binaries</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#correct-dependency-tracking">correct dependency tracking</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#cross-compiling">cross-compiling</a>
+		
+
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#libc">libc</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#dynamic-linking-and-platform-maintainers">dynamic linking and platform maintainers</a>
+		
+	</li>
+		</ol>
+	</li>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#toolchains">toolchains</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#environments">environments</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#reproducible-builds">reproducible builds</a>
+		
+	</li>
+		</ol>
+	</li>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#tradeoffs">tradeoffs</a>
+		
+
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#configuration-language">configuration language</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#reflection">reflection</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#file-watching">file watching</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#dependency-tracking">dependency tracking</a>
+		
+
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#not-my-problem-lol">&quot;not my problem, lol&quot;</a>
+		
+
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#compiler-support">compiler support</a>
+		
+	</li>
+		</ol>
+	</li>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#ephemeral-state">ephemeral state</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#hermetic-builds">hermetic builds</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#tracing">tracing</a>
+		
+	</li>
+		</ol>
+	</li>
+		</ol>
+	</li>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#future-work">future work</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#takeaways">takeaways</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/build-system-tradeoffs/#bibliography">bibliography</a>
+		
+	</li>
+		</ol></details></div></div>
+	
+
+  
+    
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <p>This post is part 1/4 of <a href="/four-posts-about-build-systems/">a series about build systems</a>.
+The next post is <a href="/negative-build-dependencies/">negative build dependencies</a>.</p>
+<hr />
+<figure>
+<blockquote cite="https://chaos.social/@Qyriad/111349762684384063">
+<p>If I am even TEMPTED to use <code>sed</code>, in my goddamn build system, you have lost.</p>
+</blockquote>
+<figcaption>
+<cite class=username><a href="https://chaos.social/@Qyriad/111349762684384063">Qyriad</a></cite>
+</figcaption>
+</figure>
+<p>I am currently employed to work on <a href="https://rustc-dev-guide.rust-lang.org/building/bootstrapping/intro.html">the build system for the Rust compiler</a> (often called <code>x.py</code> or <code>bootstrap</code>). As a result, I think about a lot of build system weirdness that most people don't have to. This post aims to give an overview of what builds for complicated projects have to think about, as well as vaguely gesture in the direction of build system ideas that I like.</p>
+<p>This post is generally designed to be accessible to the working programmer, but I have a lot of expert blindness in this area, and sometimes assume that <a href="https://xkcd.com/2501/">"of <em>course</em> people know what a feldspar is!"</a>. Apologies in advance if it's hard to follow.</p>
+<h2 id="build-concerns">build concerns<a class="zola-anchor" href="#build-concerns" aria-label="Anchor link for: build-concerns"></a>
+</h2>
+<p>What makes a project’s build complicated?</p>
+<h3 id="running-generated-binaries">running generated binaries<a class="zola-anchor" href="#running-generated-binaries" aria-label="Anchor link for: running-generated-binaries"></a>
+</h3>
+<p>The first semi-complicated thing people usually want to do in their build is write an integration test. Here's a rust program which does so:</p>
+<pre data-lang="rust" class="language-rust z-code"><code class="language-rust" data-lang="rust"><span class="z-source z-rust"><span class="z-comment z-line z-double-slash z-rust"><span class="z-punctuation z-definition z-comment z-rust">//</span> tests/integration.rs
+</span></span><span class="z-source z-rust"><span class="z-keyword z-other z-rust">use</span> <span class="z-meta z-path z-rust">std<span class="z-punctuation z-accessor z-rust">::</span></span><span class="z-meta z-path z-rust">process<span class="z-punctuation z-accessor z-rust">::</span></span>Command<span class="z-punctuation z-terminator z-rust">;</span>
+</span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-function z-rust"><span class="z-storage z-type z-function z-rust">fn</span> </span><span class="z-entity z-name z-function z-rust">assert_success</span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">(</span><span class="z-variable z-parameter z-rust">cmd</span><span class="z-punctuation z-separator z-rust">:</span> Command</span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-end z-rust">)</span></span></span></span><span class="z-meta z-function z-rust"> </span><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-support z-macro z-rust">assert!</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span>cmd<span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">status</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">unwrap</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">success</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"></span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span></span>
+</span><span class="z-source z-rust"><span class="z-meta z-annotation z-rust"><span class="z-punctuation z-definition z-annotation z-rust">#</span><span class="z-punctuation z-section z-group z-begin z-rust">[</span><span class="z-variable z-annotation z-rust">test</span><span class="z-punctuation z-section z-group z-end z-rust">]</span></span>
+</span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-function z-rust"><span class="z-storage z-type z-function z-rust">fn</span> </span><span class="z-entity z-name z-function z-rust">test_my_program</span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">(</span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-end z-rust">)</span></span></span></span><span class="z-meta z-function z-rust"> </span><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-support z-function z-rust">assert_success</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-meta z-path z-rust">Command<span class="z-punctuation z-accessor z-rust">::</span></span>new<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-string z-quoted z-double z-rust"><span class="z-punctuation z-definition z-string z-begin z-rust">&quot;</span>cargo<span class="z-punctuation z-definition z-string z-end z-rust">&quot;</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">arg</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-string z-quoted z-double z-rust"><span class="z-punctuation z-definition z-string z-begin z-rust">&quot;</span>build<span class="z-punctuation z-definition z-string z-end z-rust">&quot;</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-support z-function z-rust">assert_success</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-meta z-path z-rust">Command<span class="z-punctuation z-accessor z-rust">::</span></span>new<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-string z-quoted z-double z-rust"><span class="z-punctuation z-definition z-string z-begin z-rust">&quot;</span>target/debug/my-program<span class="z-punctuation z-definition z-string z-end z-rust">&quot;</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span>
+</span></span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-group z-rust">      <span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">arg</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-string z-quoted z-double z-rust"><span class="z-punctuation z-definition z-string z-begin z-rust">&quot;</span>assets/test-input.txt<span class="z-punctuation z-definition z-string z-end z-rust">&quot;</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"></span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span></span>
+</span></code></pre>
+<p>This instructs <a href="https://doc.rust-lang.org/cargo/">cargo</a> to, when you run <code>cargo test</code>, compile <code>tests/integration.rs</code> as a standalone program and run it, with <code>test_my_program</code> as the entrypoint.</p>
+<p>We'll come back to this program several times in this post. For now, notice that we are invoking <code>cargo build</code> inside of <code>cargo test</code>. <!-- This isn't something cargo-specific—there's extensive literature about it under the name ["recursive make"](https://accu.org/journals/overload/14/71/miller_2004/).--></p>
+<h3 id="correct-dependency-tracking">correct dependency tracking<a class="zola-anchor" href="#correct-dependency-tracking" aria-label="Anchor link for: correct-dependency-tracking"></a>
+</h3>
+<p>I actually forgot this one in the first draft because Cargo solves this so well in the common case <sup class="footnote-reference" id="fr-14-1"><a href="#fn-14">1</a></sup>. In many hand-written builds (<em>cough</em> <code>make</code> <em>cough</em>), specifying dependencies by hand is very broken, <code>-j</code> for parallelism simply doesn't work, and running <code>make clean</code> on errors is common. Needless to say, this is a bad experience.</p>
+<h3 id="cross-compiling">cross-compiling<a class="zola-anchor" href="#cross-compiling" aria-label="Anchor link for: cross-compiling"></a>
+</h3>
+<p>The next step up in complexity is to cross-compile code. At this point, we already start to get some idea of how involved things get:</p>
+<pre class="z-code"><code><span class="z-text z-plain">$ cargo test --target aarch64-unknown-linux-gnu
+</span><span class="z-text z-plain">   Compiling my-program v0.1.0 (/home/jyn/src/build-system-overview)
+</span><span class="z-text z-plain">error[E0463]: can&#39;t find crate for `std`
+</span><span class="z-text z-plain">  |
+</span><span class="z-text z-plain">  = note: the `aarch64-unknown-linux-gnu` target may not be installed
+</span><span class="z-text z-plain">  = help: consider downloading the target with `rustup target add aarch64-unknown-linux-gnu`
+</span><span class="z-text z-plain">  = help: consider building the standard library from source with `cargo build -Zbuild-std`
+</span></code></pre>
+<p>How hard it is to cross-compile code depends greatly on not just the build system, but the language you're using and the exact platform you're targeting. The particular thing I want to point out is <em>your standard library has to come from somewhere</em>. In Rust, it's usually downloaded from the same place as the compiler. In bytecode and interpreted languages, like Java, JavaScript, and Python, there's no concept of cross-compilation because there is only one possible target. In C, you usually don't install the library itself, but only the headers that record the API <sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">2</a></sup>. That brings us to our next topic:</p>
+<h4 id="libc">libc<a class="zola-anchor" href="#libc" aria-label="Anchor link for: libc"></a>
+</h4>
+<p>Generally, people refer to one of two things when they say "libc". Either they mean the C standard library, <code>libc.so</code>, or the C runtime, <code>crt1.o</code>.</p>
+<p>Libc matters a lot for two reasons. Firstly, <a href="https://faultlore.com/blah/c-isnt-a-language/">C is no longer a language</a>, so generally the first step to porting <em>any</em> language to a new platform is to make sure you have a C <a href="https://stackoverflow.com/a/69006179">toolchain</a> <sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">3</a></sup>. Secondly, because libc is effectively the interface to a platform, <a href="https://j00ru.vexillium.org/syscalls/nt/64/">Windows</a>, <a href="https://developer.apple.com/library/archive/qa/qa1118/_index.html">macOS</a>, and <a href="https://marc.info/?l=openbsd-tech&amp;m=169841790407370&amp;w=2">OpenBSD</a> have no stable syscall boundary—you are only allowed to talk to the kernel through their stable libraries (libc, and in the case of Windows several others too).</p>
+<p>To talk about <em>why</em> they've done this, we have to talk about:</p>
+<h4 id="dynamic-linking-and-platform-maintainers">dynamic linking and platform maintainers<a class="zola-anchor" href="#dynamic-linking-and-platform-maintainers" aria-label="Anchor link for: dynamic-linking-and-platform-maintainers"></a>
+</h4>
+<p><a href="https://clojure.org/reference/vars">Many</a> <a href="https://en.wikipedia.org/wiki/Dynamic_dispatch">languages</a> have a concept of "<a href="https://en.wikipedia.org/wiki/Name_binding">early binding</a>", where all variable and function references are resolved at compile time, and "<a href="https://en.wikipedia.org/wiki/Late_binding">late binding</a>", where they are resolved at runtime. C has this concept too, but it calls it "linking" instead of "binding". "late binding" is called "dynamic linking"<sup class="footnote-reference" id="fr-3-1"><a href="#fn-3">4</a></sup>. References to late-bound variables are resolved by the <a href="https://linux.die.net/man/8/ld.so">"dynamic loader"</a> at program startup. Further binding can be done at runtime using <a href="https://man7.org/linux/man-pages/man3/dlopen.3.html"><code>dlopen</code></a> and friends.</p>
+<p><a href="https://wiki.debian.org/SoftwarePackaging#External_libraries">Platform maintainers</a> <a href="https://wiki.debian.org/StaticLinking#Downsides">really like dynamic linking</a>, for the same reason <a href="https://blogs.gentoo.org/mgorny/2021/02/19/the-modern-packagers-security-nightmare/">they dislike vendoring</a>: late-binding allows them to update a library for all applications on a system at once. This matters a lot for security disclosures, where there is a very short timeline between when a vulnerability is patched and announced and when attackers start exploiting it in the wild.</p>
+<p>Application developers <a href="https://vagabond.github.io/rants/2013/06/21/z_packagers-dont-know-best">dislike dynamic linking</a> for basically the same reason: it requires them to trust the platform maintainers to do a good job packaging all their dependencies, and it results in their application being deployed in scenarios that <a href="https://blog.yossarian.net/2021/02/28/Weird-architectures-werent-supported-to-begin-with">they haven't considered or tested</a>. For example, installing openssl on Windows is really quite hard. Actually, while I was writing this, a friend overheard me say "dynamically linking openssl" and said "oh god you're giving me nightmares".</p>
+<p>Perhaps a good way to think about dynamically linking as commonly used is <em>a mechanism for devendoring libraries in a compiled program</em>. Dynamic linking has other use cases, but they are comparatively rare.</p>
+<p>Whether a build system (or language) makes it easy or hard to dynamically link a program is one of the major things that distinguishes it. More about that later.</p>
+<h3 id="toolchains">toolchains<a class="zola-anchor" href="#toolchains" aria-label="Anchor link for: toolchains"></a>
+</h3>
+<p>Ok. So. Back to cross-compiling.</p>
+<p>To cross-compile a program, you need:</p>
+<ul>
+<li>A compiler for that target. If you're using clang or Rust, this is as simple as passing <code>--target</code>. If you're using gcc, you need a <a href="https://gcc.gnu.org/onlinedocs/gcc-15.2.0/gcc.pdf#Invoking%20GCC">whole-ass extra compiler installed</a>.</li>
+<li>A standard library for that target. This is very language-specific, but at a minimum requires a working C toolchain <sup class="footnote-reference" id="fr-4-1"><a href="#fn-4">5</a></sup>.</li>
+<li>A linker for that target. This is usually shipped with the compiler, but I mention it specifically because it's usually the most platform specific part. For example, "not having the macOS linker" is <em>the</em> reason that <a href="https://github.com/tpoechtrager/osxcross?tab=readme-ov-file#how-it-works">cross-compiling to macOS is hard</a>.</li>
+</ul>
+<p>Where does your toolchain come from? ...<br />
+...<br />
+...<br />
+... It turns out <a href="https://rustc-dev-guide.rust-lang.org/building/bootstrapping/what-bootstrapping-does.html#stages-of-bootstrapping">this is a hard problem</a>. Most build systems sidestep it by "not worrying about it"; basically any Makefile you find is horribly broken if you update your compiler without running <code>make clean</code> afterwards. Cargo is a lot smarter—it caches output in <code>target/.rustc_info.json</code>, and rebuilds if <code>rustc --version --verbose</code> changes. "How do you deal with toolchain invalidations" is another important things that distinguishes a build system, as we'll see later.</p>
+<h3 id="environments">environments<a class="zola-anchor" href="#environments" aria-label="Anchor link for: environments"></a>
+</h3>
+<p>toolchains are a special case of a more general problem: your build depends on your <em>whole build environment</em>, not just the files passed as inputs to your compiler. That means, for instance, that people can—and often do—download things off the internet, <a href="https://rustc-dev-guide.rust-lang.org/rustdoc.html#multiple-runs-same-output-directory">embed previous build artifacts in later ones</a>, and <a href="https://docs.rs/openssl/latest/openssl/#vendored">run entire nested compiler invocations</a>.</p>
+<h3 id="reproducible-builds">reproducible builds<a class="zola-anchor" href="#reproducible-builds" aria-label="Anchor link for: reproducible-builds"></a>
+</h3>
+<p>Once we get towards these higher levels of complexity, people want to start doing quite complicated things with caching. In order for caching to be sound, we need the same invocation of the compiler to emit the same output every time, which is called a <strong>reproducible build</strong>. This is much harder than it sounds! There are many things programs do that cause non-determinism that programmers often don’t think about (for example, iterating a hashmap or a directory listing).</p>
+<p>At the very highest end, people want to conduct builds across multiple machines, and combine those artifacts. At this point, we can’t even allow reading absolute paths, since those will be different between machines. The common tool for this is a compiler flag called <code>--remap-path-prefix</code>, and allows the build system to map an absolute path to a relative one. <code>--remap-path-prefix</code> is also how rustc is able to print the sources of the standard library when emitting diagnostics, even when running on a different machine than where it was built.</p>
+<h2 id="tradeoffs">tradeoffs<a class="zola-anchor" href="#tradeoffs" aria-label="Anchor link for: tradeoffs"></a>
+</h2>
+<p>At this point, we have enough information to start talking about the space of tradeoffs for a build system.</p>
+<h3 id="configuration-language">configuration language<a class="zola-anchor" href="#configuration-language" aria-label="Anchor link for: configuration-language"></a>
+</h3>
+<blockquote>
+<p>Putting your config in a YAML file does not make it declarative! Limiting yourself to a Turing-incomplete language does not automatically make your code easier to read!
+—<a href="https://tech.lgbt/@jyn/112617315565817787">jyn</a></p>
+</blockquote>
+<p>The most common unforced error I see build systems making is forcing the build configuration to be written in a custom language<sup class="footnote-reference" id="fr-6-1"><a href="#fn-6">6</a></sup>. There are basically two reasons they do this:</p>
+<ul>
+<li>Programmers aren't used to treating build system code as code. This is a culture issue that's hard to change, but it's worthwhile to try anyway.</li>
+<li>There is some idea of making builds "declarative". (In fact, observant readers may observe that this corresponds to the idea of <a href="https://jyn.dev/constrained-languages-are-easier-to-optimize/">"constrained languages"</a> I talk about in an earlier post.) This is not by itself a bad idea! The problem is it doesn't give them the properties you might want. For example, one property you might want is "another tool can reimplement the build algorithm". Unfortunately this quickly becomes <a href="https://docs.jade.fyi/gnu/make.html#Features-of-GNU-make">infeasible for complicated algorithms</a>. Another you might want is "what will rebuild next time a build occurs?". You can't get this from the configuration without—again—reimplementing the algorithm.</li>
+</ul>
+<p>Right. So, given that making a build "declarative" is a lie, you may as well give programmers a real language. Some common choices are:</p>
+<ul>
+<li><a href="https://starlark-lang.org/">Starlark</a> <sup class="footnote-reference" id="fr-7-1"><a href="#fn-7">7</a></sup></li>
+<li><a href="https://groovy-lang.org/">Groovy</a></li>
+<li>“the same language that the build system was written in” (examples: <a href="https://boot-clj.github.io/">Clojure</a>, <a href="https://ziglang.org/learn/build-system/">Zig</a>, <a href="https://gruntjs.com/sample-gruntfile">JavaScript</a>)</li>
+</ul>
+<h3 id="reflection">reflection<a class="zola-anchor" href="#reflection" aria-label="Anchor link for: reflection"></a>
+</h3>
+<p>"But wait, jyn!", you may say. "Surely you aren't suggesting a build system where you have to run a whole program every time you figure out what to rebuild??"</p>
+<p>I mean ... people are doing it. But just because they're doing it doesn't mean it's a good idea, so let's look at the alternative, which is to <em>serialize your build graph</em>. This is easier to see than explain, so let's look at an example using the <a href="https://ninja-build.org/">Ninja build system</a> <sup class="footnote-reference" id="fr-8-1"><a href="#fn-8">8</a></sup>:</p>
+<pre data-lang="ninja" class="language-ninja z-code"><code class="language-ninja" data-lang="ninja"><span class="z-text z-plain">rule svg2pdf
+</span><span class="z-text z-plain">  command = inkscape $in --export-text-to-path --export-pdf=$out
+</span><span class="z-text z-plain">  description = svg2pdf $in $out
+</span><span class="z-text z-plain">  
+</span><span class="z-text z-plain">build pdfs/variables.pdf: svg2pdf variables.svg
+</span></code></pre>
+<p>Ninjafiles give you the absolute bare minimum necessary to express your build dependencies: You get "rules", which explain <em>how</em> to build an output; "build edges", which state <em>when</em> to build; and "variables", which say <em>what</em> to build<sup class="footnote-reference" id="fr-12-1"><a href="#fn-12">9</a></sup>. That's basically it. There's some subtleties about "depfiles" which can be used to dynamically add build edges while running the build rule.</p>
+<p>Because the features are so minimal, the files are intended to be generated, using a configure script written in one of the languages we talked about earlier. The most common generators are CMake and <a href="https://gn.googlesource.com/gn/#gn">GN</a>, but you can use any language you like because the format is so simple.</p>
+<p>What's really cool about this is that it's trivial to parse, which means that it's very easy to write your own implementation of ninja if you want. It also means that you <em>can</em> get a lot of the properties we discussed before, i.e.:</p>
+<ul>
+<li>"Show me all commands that are run on a full build" (<code>ninja -t commands</code>)</li>
+<li>"Show me all commands that will be run the next time an incremental build is run" (<code>ninja -n -d explain</code>)</li>
+<li>"If this <em>particular</em> source file is changed, what will need to be rebuilt?" (<code>ninja -t query variables.svg</code>)</li>
+</ul>
+<p>It turns out these properties are very useful.</p>
+<aside role=note class=note-container><div class=note-content>
+<p>"jyn, you're taking too long to get to the point!" look I’m getting there, I promise.</p>
+</div></aside>
+<p>The main downsides to this approach is that it has to be <em>possible</em> to serialize your build graph. In one sense, I see this as good, actually, because you have to think through everything your build does ahead of time. But on the other hand, if you have things like nested ninja invocations, or like our <code>cargo test</code> -&gt; <code>cargo build</code> example <a href="https://jyn.dev/build-system-tradeoffs/#running-generated-binaries">from earlier</a> <sup class="footnote-reference" id="fr-9-1"><a href="#fn-9">10</a></sup>, all the tools to query the build graph don't include the information you expect.</p>
+<h3 id="file-watching">file watching<a class="zola-anchor" href="#file-watching" aria-label="Anchor link for: file-watching"></a>
+</h3>
+<p>Re-stat'ing all files in a source directory is expensive. It would be much nicer if we could have a pull model instead of a push model, where the build tool gets notified of file changes and rebuilds exactly the necessary files. There are some tools with native integration for this, like <a href="https://gittup.org/tup/manual.html#:~:text=monitor">Tup</a>, <a href="https://github.com/capnproto/ekam/">Ekam</a>, <a href="https://jj-vcs.github.io/jj/latest/config/#filesystem-monitor">jj</a>, and <a href="https://engineering.fb.com/2023/04/06/open-source/buck2-open-source-large-scale-build-system/#:~:text=integrate%20with%20virtual%20file">Buck2</a>, but generally it's pretty rare.</p>
+<p>That's ok if we have reflection, though! We can write our own file monitoring tool, ask the build system which files need to rebuilt for the changed inputs, and then tell it to rebuild only those files. That prevents it from having to recursively stat all files in the graph.</p>
+<p>See <a href="https://gittup.org/tup/build_system_rules_and_algorithms.pdf">Tup's paper</a> for more information about the big idea here.</p>
+<h3 id="dependency-tracking">dependency tracking<a class="zola-anchor" href="#dependency-tracking" aria-label="Anchor link for: dependency-tracking"></a>
+</h3>
+<p>Ok, let's assume we have some build system that uses some programming language to generate a build graph, and it rebuilds exactly the necessary outputs on changes to our inputs. What exactly are our inputs?</p>
+<p>There are basically four major approaches to dependency tracking in the build space.</p>
+<h4 id="not-my-problem-lol">"not my problem, lol"<a class="zola-anchor" href="#not-my-problem-lol" aria-label="Anchor link for: not-my-problem-lol"></a>
+</h4>
+<p>This kind of build system externalizes all concerns out to you, the programmer. When I say "externalizes all concerns", I mean that you are required to write in all your dependencies by hand, and the tool doesn't help you get them right. Some examples:</p>
+<ul>
+<li><code>make</code></li>
+<li>Github Actions <a href="https://github.com/actions/cache">cache actions</a> (and in general, most CI caching I'm aware of requires you to manually write out the files your cache depends on)</li>
+<li>Ansible playbooks</li>
+<li>Basically most build systems, this is extremely common</li>
+</ul>
+<p>A common problem with this category of build system is that people forget to mark <em>the build rule itself</em> as an input to the graph, resulting in dead artifacts left laying around, and as a result, <a href="https://jacko.io/safety_and_soundness.html">unsound</a> builds.</p>
+<p>In my humble opinion, this kind of tool is only useful as a serialization layer for a build graph, or if you have no other choice. Here's a nickel, kid, <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/03/hadrian.pdf">get yourself a better build system</a>.</p>
+<h5 id="compiler-support">compiler support<a class="zola-anchor" href="#compiler-support" aria-label="Anchor link for: compiler-support"></a>
+</h5>
+<p>Sometimes build systems (CMake, Cargo, maybe others I don't know) do a little better and use the compiler's built-in support for dependency tracking (e.g. <a href="https://gcc.gnu.org/onlinedocs/gcc/Preprocessor-Options.html#index-M"><code>gcc -M</code></a> or <a href="https://doc.rust-lang.org/rustc/command-line-arguments.html#--emit-specifies-the-types-of-output-files-to-generate"><code>rustc --emit=dep-info</code></a>), and automatically add dependencies on the build rules themselves. This is a lot better than nothing, and much more reliable than tracking dependencies by hand. But it still fundamentally trusts the compiler to be correct, and doesn't track environment dependencies.</p>
+<h4 id="ephemeral-state">ephemeral state<a class="zola-anchor" href="#ephemeral-state" aria-label="Anchor link for: ephemeral-state"></a>
+</h4>
+<p>This kind of build system always does a full build, and lets you modify the environment in arbitrary ways as you do so. This is simple, always correct, and expensive. Some examples:</p>
+<ul>
+<li><code>make clean &amp;&amp; make</code> (kinda—assuming that <code>make clean</code> is reliable, which it often isn't.)</li>
+<li>Github Actions (<code>step:</code> rules)</li>
+<li>Docker containers (time between startup and shutdown)</li>
+<li>Initramfs (time between initial load and chroot into the full system)</li>
+<li>Systemd service startup rules</li>
+<li>Most compiler invocations (e.g. <code>cc file.c -o file</code>)</li>
+</ul>
+<p>These are ok if you can afford them. But they are expensive! Most people using Github Actions are only doing so because GHA is a hyperscaler giving away free CI time like there's no tomorrow. I suspect we would see far less wasted CPU-hours if people had to consider the actual costs of using them.</p>
+<h4 id="hermetic-builds">hermetic builds<a class="zola-anchor" href="#hermetic-builds" aria-label="Anchor link for: hermetic-builds"></a>
+</h4>
+<p>This is the kind of phrase that's well-known to people who work on build systems and basically unheard of outside it, alongside "monadic builds". "hermetic" means that <em>the only things in your environment are those you have explicitly put there</em>. This sometimes called "sandboxing", although that has unfortunate connotations about security that don't always apply here. Some examples of this:</p>
+<ul>
+<li>Dockerfiles (more generally, OCI images)</li>
+<li>nix</li>
+<li>Bazel / Buck2</li>
+<li><a href="https://github.com/bazelbuild/remote-apis">"Bazel Remote Execution Protocol"</a> (not actually tied to Bazel), which lets you run an arbitrary set of build commands on a remote worker</li>
+</ul>
+<p>This has a lot of benefits! It statically guarantees that you <em>cannot</em> forget any of your inputs; it is 100% reliable, assuming no issues with the network or with the implementing tool 🙃; and it gives you very very granular insight into what your dependencies actually are. Some things you can <em>do</em> with a hermetic build system:</p>
+<ul>
+<li>On a change to some source code, rerun only the affected tests. You know statically which those are, because the build tool forced you to write out the dependency edges.</li>
+<li>Remote caching. If you have the same environment everywhere, you can upload your cache to the cloud, and download and reuse it again on another machine. You can do this in CI—but you can also do it locally! The time for a """full build""" can be almost instantaneous because when a new engineer gets onboarded they can immediately reuse everyone else's build cache.</li>
+</ul>
+<p>The main downside is that you have to actually specify all those dependencies (if you don't, you get a hard error instead of an unsound build graph, which is the main difference between hermetic systems and "not my problem"). Bazel and Buck2 give you starlark, so you have a ~real<sup class="footnote-reference" id="fr-10-1"><a href="#fn-10">11</a></sup> language in which to do it, but it's still a ton of work. Both have an enormous "prelude" module that just defines where you get a compiler toolchain from<sup class="footnote-reference" id="fr-13-1"><a href="#fn-13">12</a></sup>.</p>
+<p>Nix can be thought of as taking this "prelude" idea all the way, by expanding the "prelude" (nixpkgs) to "everything that's ever been packaged for NixOS". When you write <code>import &lt;nixpkgs&gt;</code>, your nix build is logically in the same build graph as the nixpkgs monorepo; it just happens to have an enormous remote cache already pre-built.</p>
+<aside role=note class=note-container><div class=note-content>
+<p>Bazel and Buck2 don’t have anything like nixpkgs, which is the main reason that using them requires a full time dedicated build engineer: that engineer has to keep writing build rules from scratch any time you add an external dependency. They also have to package any language toolchains that aren’t in the prelude.</p>
+</div></aside>
+<p>Nix has one more interesting property, which is that all its packages compose. You can install two different versions of the same package and that's fine because they use different <a href="https://nix.dev/manual/nix/2.24/store/">store</a> paths. They fit together like lesbians' fingers interlock.</p>
+<p>Compare this to docker, which does <em>not</em> compose<sup class="footnote-reference" id="fr-11-1"><a href="#fn-11">13</a></sup>. In docker, there is no way to say "Inherit the build environment from multiple different source images". The closest you can get is a "multi-stage build", where you explicitly copy over individual files from an earlier image to a later image. It can't blindly copy over all the files because some of them might want to end up at the same path, and touching fingers would be gay.</p>
+<h4 id="tracing">tracing<a class="zola-anchor" href="#tracing" aria-label="Anchor link for: tracing"></a>
+</h4>
+<p>The last kind I'm aware of, and the rarest I've seen, is <em>tracing</em> build systems. These have the same goal as hermetic build systems: they still want 100% of your dependencies to be specified. But they go about it in a different way. Rather than sandboxing your code and only allowing access to the dependencies you specify, they <em>instrument</em> your code, tracing its file accesses, and record the dependencies of each build step. Some examples:</p>
+<ul>
+<li><a href="https://gittup.org/tup/ex_a_first_tupfile.html#:~:text=a%20program%20grows">Tup</a></li>
+<li><a href="https://github.com/rizsotto/Bear">Bear</a></li>
+<li><a href="https://github.com/curtsinger-lab/riker">Riker</a></li>
+<li><a href="https://github.com/capnproto/ekam/">Ekam</a></li>
+<li><a href="https://rustc-dev-guide.rust-lang.org/query.html">The rust compiler, actually</a></li>
+<li>"A build system with orthogonal persistence" (<a href="https://jyn.dev/complected-and-orthogonal-persistence/#how-far-can-we-take-this">previously</a>; <a href="https://jade.fyi/blog/the-postmodern-build-system/#make-an-existing-architecture-and-os-deterministic">previously</a>; <a href="https://nlnet.nl/project/Ripple/">previously</a>)</li>
+</ul>
+<p>The advantage of these is that you get all the benefits of a hermetic build system without any of the cost of having to write out your dependencies.</p>
+<p>The first main disadvantage is that they require the kernel to support syscall tracing, which essentially means they only work on Linux. I have Ideas™ for how to get this working on macOS without disabling SIP, but they're still incomplete and not fully general; I may write a follow-up post about that. I don't yet have ideas for how this could work on Windows, but <a href="https://stackoverflow.com/questions/864839/monitoring-certain-system-calls-done-by-a-process-in-windows">it seems possible</a>.</p>
+<p>The second main disadvantage is that not knowing the graph up front causes many issues for the build system. In particular:</p>
+<ul>
+<li>If you change the graph, it doesn't find out until the next time it reruns a build. This can lead to degenerate cases where the same rule has to be run multiple times until it doesn't access any new inputs.</li>
+<li>If you don't cache the graph, you have that problem on <em>every edge in the graph</em>. <a href="https://github.com/capnproto/ekam/issues/63">This is the problem Ekam has</a>, and makes it very slow to run full builds. Its solution is to run in "watch" mode, where it caches the graph in-memory instead of on-disk.</li>
+<li>If you do cache the graph, you can only do so for so long before it becomes prohibitively expensive to do that for all possible executions. For "normal" codebases this isn't a problem, but if you're Google or Facebook, this is actually a practical concern. I think it is still possible to do this with a tracing build system (by having your cache points look a lot more like many Bazel BUILD files than a single top-level Ninja file), but no one has ever tried it at that scale.</li>
+<li>If the same file can come from many possible places, due to multiple search paths (e.g. a <code>&lt;system&gt;</code> include header in C, or any import really in a JVM language), then you have a very rough time specifying what your dependencies actually are. The best ninja can do is say “depend on the whole directory containing that file”, which sucks because it rebuilds <em>whenever</em> that directory changes, not just when your new file is added. It’s possible to work around this with a (theoretical) serialization format other than Ninja, but regardless, you’re adding lots of file <code>stat()</code>s to your hot path.</li>
+<li>The build system does not know which dependencies are direct (specified by you, the owner of the module being compiled) and which are transient (specified by the modules you depend on). This makes error reporting worse, and generally lets you do fewer kinds of queries on the graph.</li>
+<li>My friend Alexis Hunt, a build system expert, says "there are deeper pathologies down that route of madness". So. That's concerning.</li>
+</ul>
+<p>I have been convinced that tracing is useful as a tool to <em>generate</em> your build graph, but not as a tool actually used when executing it. Compare also <a href="https://github.com/bazel-contrib/bazel-gazelle">gazelle</a>, which is something like that for Bazel, but based on parsing source files rather than tracking syscalls.</p>
+<p>Combining paradigms in this way also make it possible to verify your hermetic builds in ways that are hard to do with mere sandboxing. For example, a tracing build system can catch missing dependencies:</p>
+<ul>
+<li>emitting untracked <em>outputs</em></li>
+<li>overwriting source files (!),</li>
+<li>using an input file that was registered for a different rule</li>
+</ul>
+<p>and it can also detect non-reproducible builds:</p>
+<ul>
+<li>reading the current time, or absolute path to the current directory</li>
+<li>iterating all files in a directory (this is non-deterministic)</li>
+<li>machine and kernel-level sources of randomness.</li>
+</ul>
+<h2 id="future-work">future work<a class="zola-anchor" href="#future-work" aria-label="Anchor link for: future-work"></a>
+</h2>
+<p>There's more to talk about here—how build systems affect the dynamics between upstream maintainers and distro packagers; how .a files are <a href="https://medium.com/@eyal.itkin/the-a-file-is-a-relic-why-static-archives-were-a-bad-idea-all-along-8cd1cf6310c5">bad file formats</a>; how <a href="https://apenwarr.ca/log/20181113">mtime comparisons are generally bad</a>; how configuration options make the tradeoffs much more complicated; how FUSE can let a build system integrate with a VCS to avoid downloading unnecessary files into a shallow checkout; but this post is quite long enough already.</p>
+<h2 id="takeaways">takeaways<a class="zola-anchor" href="#takeaways" aria-label="Anchor link for: takeaways"></a>
+</h2>
+<ul>
+<li>Most build systems do not prioritize correctness.</li>
+<li>Prioritizing correctness comes with severe, hard to avoid tradeoffs.</li>
+<li>Tracing build systems show the potential to avoid some of those tradeoffs, but are highly platform specific and come with tradeoffs of their own at large enough scale. Combining a tracing build system with a hermetic build system seems like the best of both worlds.</li>
+<li>Writing build rules in a "normal" (but constrained) programming language, then serializing them to a build graph, has surprisingly few tradeoffs. I'm not sure why more build systems don't do this.</li>
+</ul>
+<hr />
+<h2 id="bibliography">bibliography<a class="zola-anchor" href="#bibliography" aria-label="Anchor link for: bibliography"></a>
+</h2>
+<ul>
+<li><a href="https://boot-clj.github.io/">Alan Dipert, Micha Niskin, Joshua Smith, “Boot: build tooling for Clojure”</a></li>
+<li><a href="https://github.com/bazelbuild/remote-apis">Alexis Hunt, Ola Rozenfield, and Adrian Ludwin, “bazelbuild/remote-apis: An API for caching and execution of actions on a remote system.”</a></li>
+<li><a href="https://andrewkelley.me/post/zig-cc-powerful-drop-in-replacement-gcc-clang.html">Andrew Kelley, “zig cc: a Powerful Drop-In Replacement for GCC/Clang”</a></li>
+<li><a href="https://vagabond.github.io/rants/2013/06/21/z_packagers-dont-know-best">Andrew Thompson, “Packagers don’t know best”</a></li>
+<li><a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/03/hadrian.pdf">Andrey Mokhov et. al., “Non-recursive Make Considered Harmful”</a></li>
+<li><a href="https://apenwarr.ca/log/20181113">apenwarr, “mtime comparison considered harmful”</a></li>
+<li><a href="https://developer.apple.com/library/archive/qa/qa1118/_index.html">Apple Inc., “Statically linked binaries on Mac OS X”</a></li>
+<li><a href="https://faultlore.com/blah/c-isnt-a-language/">Aria Desires, “C Isn’t A Language Anymore”</a></li>
+<li><a href="https://github.com/curtsinger-lab/riker">Charlie Curtsinger and Daniel W. Barowy, “curtsinger-lab/riker: Always-Correct and Fast Incremental Builds from Simple Specifications”</a></li>
+<li><a href="https://engineering.fb.com/2023/04/06/open-source/buck2-open-source-large-scale-build-system/">Chris Hopman and Neil Mitchell, “Build faster with Buck2: Our open source build system”</a></li>
+<li><a href="https://wiki.debian.org/SoftwarePackaging">Debian, “Software Packaging”</a></li>
+<li><a href="https://wiki.debian.org/StaticLinking">Debian, “Static Linking”</a></li>
+<li><a href="https://nix.dev/manual/nix/2.24/store/">Dolstra, E., &amp; The CppNix contributors., “Nix Store”</a></li>
+<li><a href="https://medium.com/@eyal.itkin/the-a-file-is-a-relic-why-static-archives-were-a-bad-idea-all-along-8cd1cf6310c5">Eyal Itkin, “The .a File is a Relic: Why Static Archives Were a Bad Idea All Along”</a></li>
+<li><a href="https://blog.rust-lang.org/2021/05/10/Rust-1.52.1/">Felix Klock and Mark Rousskov on behalf of the Rust compiler team, “Announcing Rust 1.52.1”</a></li>
+<li><a href="https://docs.jade.fyi/gnu/make.html">Free Software Foundation, Inc., “GNU make”</a></li>
+<li><a href="https://github.com/actions/cache">GitHub, Inc., “actions/cache: Cache dependencies and build outputs in GitHub Actions”</a></li>
+<li><a href="https://github.com/bazel-contrib/bazel-gazelle">Google Inc., “bazel-contrib/bazel-gazelle: a Bazel build file generator for Bazel projects”</a></li>
+<li><a href="https://jj-vcs.github.io/jj/latest/config/">Google LLC, “Jujutsu docs”</a></li>
+<li><a href="https://docs.rs/openssl/latest/openssl/">Jack Lloyd and Steven Fackler, “rust-openssl”</a></li>
+<li><a href="https://jacko.io/safety_and_soundness.html">Jack O’Connor, “Safety and Soundness in Rust”</a></li>
+<li><a href="https://jade.fyi/blog/the-postmodern-build-system/">Jade Lovelace, “The postmodern build system”</a></li>
+<li><a href="https://jvns.ca/blog/2020/10/26/ninja--a-simple-way-to-do-builds/">Julia Evans, “ninja: a simple way to do builds”</a></li>
+<li><a href="https://jyn.dev/complected-and-orthogonal-persistence/">jyn, “Complected and Orthogonal Persistence”</a></li>
+<li><a href="https://jyn.dev/constrained-languages-are-easier-to-optimize/">jyn, “Constrained Languages are Easier to Optimize”</a></li>
+<li><a href="https://tech.lgbt/@jyn/112617315565817787">jyn, “i think i have identified what i dislike about ansible”</a></li>
+<li><a href="https://github.com/capnproto/ekam/">Kenton Varda, “Ekam Build System”</a></li>
+<li><a href="https://github.com/rizsotto/Bear">László Nagy, “rizsotto/Bear: a tool that generates a compilation database for clang tooling”</a></li>
+<li><a href="https://starlark-lang.org/">Laurent Le Brun, “Starlark Programming Language”</a></li>
+<li><a href="https://j00ru.vexillium.org/syscalls/nt/64/">Mateusz “j00ru” Jurczyk, “Windows X86-64 System Call Table (XP/2003/Vista/7/8/10/11 and Server)”</a></li>
+<li><a href="https://blogs.gentoo.org/mgorny/2021/02/19/the-modern-packagers-security-nightmare/">Michał Górny, “The modern packager’s security nightmare”</a></li>
+<li><a href="https://gittup.org/tup/ex_a_first_tupfile.html">Mike Shal, “A First Tupfile”</a></li>
+<li><a href="https://gittup.org/tup/build_system_rules_and_algorithms.pdf">Mike Shal, “Build System Rules and Algorithms”</a></li>
+<li><a href="https://gittup.org/tup/manual.html">Mike Shal, “tup”</a></li>
+<li><a href="https://ninja-build.org/">Nico Weber, “Ninja, a small build system with a focus on speed”</a></li>
+<li><a href="https://nlnet.nl/project/Ripple/">NLnet, “Ripple”</a></li>
+<li><a href="https://gruntjs.com/sample-gruntfile">OpenJS Foundation, “Grunt: The JavaScript Task Runner”</a></li>
+<li><a href="https://gcc.gnu.org/onlinedocs/gcc/Preprocessor-Options.html">“Preprocessor Options (Using the GNU Compiler Collection (GCC))”</a></li>
+<li><a href="https://xkcd.com/2501/">Randall Munroe, “xkcd: Average Familiarity”</a></li>
+<li><a href="https://gcc.gnu.org/onlinedocs/gcc-15.2.0/gcc.pdf">Richard M. Stallman and the GCC Developer Community, “Invoking GCC”</a></li>
+<li><a href="https://clojure.org/reference/vars">Rich Hickey, “Clojure - Vars and the Global Environment”</a></li>
+<li><a href="https://langdev.stackexchange.com/questions/153/what-are-the-advantages-of-requiring-forward-declaration-of-methods-fields-like/">Stack Exchange, “What are the advantages of requiring forward declaration of methods/fields like C/C++ does?”</a></li>
+<li><a href="https://stackoverflow.com/questions/864839/monitoring-certain-system-calls-done-by-a-process-in-windows">Stack Overflow, “Monitoring certain system calls done by a process in Windows”</a></li>
+<li><a href="https://man7.org/linux/man-pages/man3/dlopen.3.html">System Calls Manual, “dlopen(3)”</a></li>
+<li><a href="https://linux.die.net/man/8/ld.so">System Manager’s Manual, “ld.so(8)”</a></li>
+<li><a href="https://groovy-lang.org/">The Apache Groovy project, “The Apache Groovy™ programming language”</a></li>
+<li><a href="https://gn.googlesource.com/gn/">The Chromium Authors, “gn”</a></li>
+<li><a href="https://marc.info/?l=openbsd-tech&amp;m=169841790407370&amp;w=2">Theo de Raadt, “Removing syscall(2) from libc and kernel”</a></li>
+<li><a href="https://rustc-dev-guide.rust-lang.org/building/bootstrapping/intro.html">The Rust Project Contributors, “Bootstrapping the compiler”</a></li>
+<li><a href="https://github.com/rust-lang/rust/issues/11937">The Rust Project Contributors, “Link using the linker directly”</a></li>
+<li><a href="https://rustc-dev-guide.rust-lang.org/rustdoc.html">The Rust Project Contributors, “Rustdoc overview - Multiple runs, same output directory”</a></li>
+<li><a href="https://doc.rust-lang.org/cargo/">The Rust Project Contributors, “The Cargo Book”</a></li>
+<li><a href="https://doc.rust-lang.org/rustc/command-line-arguments.html">The Rust Project Contributors, “Command-line Arguments - The rustc book”</a></li>
+<li><a href="https://rustc-dev-guide.rust-lang.org/query.html">The Rust Project Contributors, “Queries: demand-driven compilation”</a></li>
+<li><a href="https://rustc-dev-guide.rust-lang.org/building/bootstrapping/what-bootstrapping-does.html">The Rust Project Contributors, “What Bootstrapping does”</a></li>
+<li><a href="https://github.com/tpoechtrager/osxcross?tab=readme-ov-file">Thomas Pöchtrager, “MacOS Cross-Toolchain for Linux and *BSD”</a></li>
+<li><a href="https://stackoverflow.com/a/69006179">“What is a compiler toolchain? - Stack Overflow”</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Dynamic_dispatch">Wikipedia, “Dynamic dispatch”</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Late_binding">Wikipedia, “Late binding”</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Name_binding">Wikipedia, “Name binding”</a></li>
+<li><a href="https://blog.yossarian.net/2021/02/28/Weird-architectures-werent-supported-to-begin-with">william woodruff, “Weird architectures weren’t supported to begin with”</a></li>
+<li><a href="https://ziglang.org/learn/build-system/">Zig contributors, “Zig Build System“</a></li>
+</ul>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-14">
+<p>the uncommon case mostly looks like <a href="https://blog.rust-lang.org/2021/05/10/Rust-1.52.1/">incremental bugs in rustc itself</a>, or issues around rerunning build scripts. <a href="#fr-14-1">↩</a></p>
+</li>
+<li id="fn-1">
+<p>see <a href="https://langdev.stackexchange.com/questions/153/what-are-the-advantages-of-requiring-forward-declaration-of-methods-fields-like/">this stackexchange post</a> for more discussion about the tradeoffs between forward declarations and requiring full access to the source. <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="fn-2">
+<p>even <a href="https://github.com/rust-lang/rust/issues/11937">Rust depends on crt1.o when linking</a>! <a href="#fr-2-1">↩</a></p>
+</li>
+<li id="fn-3">
+<p>early binding is called "static linking". <a href="#fr-3-1">↩</a></p>
+</li>
+<li id="fn-4">
+<p>actually, Zig solved this in <a href="https://andrewkelley.me/post/zig-cc-powerful-drop-in-replacement-gcc-clang.html">the funniest way possible</a>, by bundling a C toolchain with their Zig compiler. This is a legitimately quite impressive feat. If there's any Zig contributors reading—props to you, you did a great job. <a href="#fr-4-1">↩</a></p>
+</li>
+<li id="fn-6">
+<p>almost every build system does this, so I don't even feel compelled to name names. <a href="#fr-6-1">↩</a></p>
+</li>
+<li id="fn-7">
+<p>Starlark is <em>not</em> tied to hermetic build systems. The fact that the only common uses of it are in hermetic build systems is unfortunate. <a href="#fr-7-1">↩</a></p>
+</li>
+<li id="fn-8">
+<p>H.T. <a href="https://jvns.ca/blog/2020/10/26/ninja--a-simple-way-to-do-builds/">Julia Evans</a> <a href="#fr-8-1">↩</a></p>
+</li>
+<li id="fn-12">
+<p>actually variables are more general than this, but for $in and $out this is true. <a href="#fr-12-1">↩</a></p>
+</li>
+<li id="fn-9">
+<p>another example is  "rebuilding build.ninja when the build graph changes". it's more common than you think because the language is so limited that it's easier to rerun the configure script than to try and fit the dependency info into the graph. <a href="#fr-9-1">↩</a></p>
+</li>
+<li id="fn-10">
+<p>not actually turing-complete <a href="#fr-10-1">↩</a></p>
+</li>
+<li id="fn-13">
+<p>I have been informed that the open-source version of Bazel is not actually hermetic-by-default inside of its prelude, and just uses system libraries. This is quite unfortunate; with this method of using Bazel you are getting a lot of the downsides and little of the upside. Most people I know using it are doing so in the hermetic mode. <a href="#fr-13-1">↩</a></p>
+</li>
+<li id="fn-11">
+<p>there's something <em>called</em> <code>docker compose</code>, but it composes containers, not images. <a href="#fr-11-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+    
+    
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;build-system-tradeoffs&#x2F;&amp;type=story">Hacker News</a>,
+    
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;build-system-tradeoffs&#x2F;">Lobste.rs</a>,
+    
+    <a href="https:&#x2F;&#x2F;tech.lgbt&#x2F;@jyn&#x2F;115480639582540712">Mastodon</a>, or
+    <a href="https:&#x2F;&#x2F;bsky.app&#x2F;profile&#x2F;jyn.dev&#x2F;post&#x2F;3m4nqq5nrf22k">Bluesky</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>an overview of what builds for complicated projects have to think about</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Scheduling Do-Not-Disturb in GNOME</title>
+    
+    <meta name="description" content="i write about code, and things that bring me joy, and sometimes other things too">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1  class="post-title" itemprop="name headline">Scheduling Do-Not-Disturb in GNOME</h1>
+    <p class="post-meta">
+      <time datetime="2025-02-22" itemprop="datePublished">
+        2025-02-22
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/walkthroughs/">walkthroughs</a>
+        
+      • <a href="https://jyn.dev/tags/workflows/">workflows</a>
+        
+      
+    </p>
+  </header>
+
+  
+
+	
+
+  
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <h2 id="do-not-disturb">Do Not Disturb<a class="zola-anchor" href="#do-not-disturb" aria-label="Anchor link for: do-not-disturb"></a>
+</h2>
+<p>GNOME has a little button that lets you turn on Do-Not-Disturb for notifications:</p>
+<img src="&#x2F;assets&#x2F;Pasted image 20250222135047.png"
+	 alt="Gnome notifications menu"
+	
+>
+<p>Unfortunately, it has <a href="https://gitlab.gnome.org/GNOME/gnome-control-center/-/issues/2200">no way of scheduling DnD</a>.</p>
+<p>Good news, though! It does support turning on DnD through the CLI: <code>gsettings set org.gnome.desktop.notifications show-banners false</code>. I put that in a script named <code>toggle-dnd</code> in my dotfiles:</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">$</span></span><span class="z-meta z-function-call z-arguments z-shell"> cat bin/toggle-dnd</span>
+</span><span class="z-source z-shell z-bash"><span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell">!/bin/sh</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span><span class="z-source z-shell z-bash">
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-conditional z-case z-shell"><span class="z-keyword z-control z-conditional z-case z-shell">case</span> <span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-punctuation z-section z-expansion z-parameter z-begin z-shell">{</span></span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-variable z-other z-readwrite z-shell">1</span></span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-keyword z-operator z-assignment z-shell">:-</span></span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-section z-expansion z-parameter z-end z-shell">}</span></span> <span class="z-keyword z-control z-in z-shell">in</span>
+</span></span><span class="z-source z-shell z-bash"><span class="z-meta z-conditional z-case z-shell">	<span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> &quot;show-banners&quot; is reversed from what you would expect &quot;do not disturb&quot; to mean</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span></span><span class="z-source z-shell z-bash"><span class="z-meta z-conditional z-case z-shell">	</span><span class="z-meta z-conditional z-case z-clause z-patterns z-shell">true<span class="z-meta z-conditional z-case z-shell"><span class="z-keyword z-control z-conditional z-patterns z-end z-shell">)</span></span></span><span class="z-meta z-conditional z-case z-clause z-commands z-shell"> <span class="z-variable z-other z-readwrite z-assignment z-shell">new</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell">false</span></span><span class="z-meta z-conditional z-case z-clause z-commands z-shell"><span class="z-punctuation z-terminator z-case z-clause z-shell">;;</span></span><span class="z-meta z-conditional z-case z-clause z-patterns z-shell">
+</span></span><span class="z-source z-shell z-bash"><span class="z-meta z-conditional z-case z-clause z-patterns z-shell">	</span><span class="z-meta z-conditional z-case z-clause z-patterns z-shell">false<span class="z-meta z-conditional z-case z-clause z-patterns z-shell"><span class="z-keyword z-control z-conditional z-patterns z-end z-shell">)</span></span></span><span class="z-meta z-conditional z-case z-clause z-commands z-shell"> <span class="z-variable z-other z-readwrite z-assignment z-shell">new</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell">true</span></span><span class="z-meta z-conditional z-case z-clause z-commands z-shell"><span class="z-punctuation z-terminator z-case z-clause z-shell">;;</span></span><span class="z-meta z-conditional z-case z-clause z-patterns z-shell">
+</span></span><span class="z-source z-shell z-bash"><span class="z-meta z-conditional z-case z-clause z-patterns z-shell">	</span><span class="z-meta z-conditional z-case z-clause z-patterns z-shell"><span class="z-keyword z-operator z-regexp z-quantifier z-shell">*</span><span class="z-meta z-conditional z-case z-clause z-patterns z-shell"><span class="z-keyword z-control z-conditional z-patterns z-end z-shell">)</span></span></span><span class="z-meta z-conditional z-case z-clause z-commands z-shell">
+</span></span><span class="z-source z-shell z-bash"><span class="z-meta z-conditional z-case z-clause z-commands z-shell">	<span class="z-keyword z-control z-conditional z-if z-shell">if</span> <span class="z-support z-function z-test z-begin z-shell">[</span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span><span class="z-meta z-group z-expansion z-command z-parens z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-punctuation z-section z-parens z-begin z-shell">(</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">gsettings</span></span><span class="z-meta z-function-call z-arguments z-shell"> get org.gnome.desktop.notifications show-banners</span><span class="z-punctuation z-section z-parens z-end z-shell">)</span></span><span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span> <span class="z-keyword z-operator z-logical z-shell">=</span> true <span class="z-support z-function z-test z-end z-shell">]</span></span>
+</span></span><span class="z-source z-shell z-bash"><span class="z-meta z-conditional z-case z-clause z-commands z-shell">		<span class="z-keyword z-control z-conditional z-then z-shell">then</span> <span class="z-variable z-other z-readwrite z-assignment z-shell">new</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell">false</span>
+</span></span><span class="z-source z-shell z-bash"><span class="z-meta z-conditional z-case z-clause z-commands z-shell">		<span class="z-keyword z-control z-conditional z-else z-shell">else</span> <span class="z-variable z-other z-readwrite z-assignment z-shell">new</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell">true</span>
+</span></span><span class="z-source z-shell z-bash"><span class="z-meta z-conditional z-case z-clause z-commands z-shell">	<span class="z-keyword z-control z-conditional z-end z-shell">fi</span>
+</span></span><span class="z-source z-shell z-bash"><span class="z-meta z-conditional z-case z-clause z-commands z-shell">	</span><span class="z-meta z-conditional z-case z-clause z-commands z-shell"><span class="z-punctuation z-terminator z-case z-clause z-shell">;;</span></span><span class="z-meta z-conditional z-case z-clause z-patterns z-shell">
+</span></span><span class="z-source z-shell z-bash"><span class="z-meta z-conditional z-case z-clause z-patterns z-shell"><span class="z-keyword z-control z-conditional z-end z-shell">esac</span></span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">gsettings</span></span><span class="z-meta z-function-call z-arguments z-shell"> set org.gnome.desktop.notifications show-banners <span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">new</span></span></span>
+</span></code></pre>
+<h2 id="scheduling">scheduling<a class="zola-anchor" href="#scheduling" aria-label="Anchor link for: scheduling"></a>
+</h2>
+<p>I tried putting that in cron<sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">1</a></sup>, had a sneaking suspicion it wouldn't work, set it to run every minute, and saw this very unhelpful line of logging:</p>
+<pre data-lang="console" class="language-console z-code"><code class="language-console" data-lang="console"><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">journalctl</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>unit</span> cron<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>since</span> <span class="z-string z-quoted z-single z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&#39;</span>5m ago<span class="z-punctuation z-definition z-string z-end z-shell">&#39;</span></span></span>
+</span><span class="z-source z-shell z-console">Feb 22 12:00:01 pop-os CRON[1623131]: (CRON) info (No MTA installed, discarding output)
+</span></code></pre>
+<p>Ok, fine. Let's pipe the output to the system log<sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">2</a></sup>, since clearly cron can't handle that itself.</p>
+<pre data-lang="crontab" class="language-crontab z-code"><code class="language-crontab" data-lang="crontab"><span class="z-text z-plain">* * * * * bash -lc &#39;org.gnome.desktop.notifications show-banners false 2&gt;&amp;1 | logger -t toggle-dnd&#39;
+</span></code></pre>
+<p>That at least shows more useful output.</p>
+<pre data-lang="console" class="language-console z-code"><code class="language-console" data-lang="console"><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">journalctl</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>t</span> toggle-dnd</span>
+</span><span class="z-source z-shell z-console">Feb 22 05:59:01 pop-os toggle-dnd[1376772]: /bin/sh: 1: toggle-dnd: not found
+</span></code></pre>
+<p>Oh right. Cron is running things with a default PATH. Technically there are ways to configure this <sup class="footnote-reference" id="fr-3-1"><a href="#fn-3">3</a></sup>, but the simple solution is just to run a bash login shell which sources all the directories i would normally have in a shell. at this point, however, it is getting somewhat annoying to test via cron, so let's replicate cron's environment:</p>
+<pre data-lang="console" class="language-console z-code"><code class="language-console" data-lang="console"><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">env</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>i</span> HOME=<span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">HOME</span></span><span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span> TERM=<span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">TERM</span></span><span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span> PS1=<span class="z-string z-quoted z-single z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&#39;</span>$ <span class="z-punctuation z-definition z-string z-end z-shell">&#39;</span></span> HISTSIZE=-1 HISTFILE= bash<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>norc</span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>noprofile</span></span>
+</span><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-support z-function z-echo z-shell">echo</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">PATH</span></span></span>
+</span><span class="z-source z-shell z-console">/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+</span><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">bash</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>l</span></span>
+</span><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-support z-function z-echo z-shell">echo</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">PATH</span></span></span>
+</span><span class="z-source z-shell z-console">/home/jyn/Documents/node-v20.12.2-linux-x64/bin:/home/jyn/.local/bin:/home/jyn/src/dotfiles/bin:/home/jyn/.local/lib/cargo/bin:/snap/bin:/usr/games:/home/jyn/perl5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+</span></code></pre>
+<p>neat. let's run  make sure our command runs.
+before:</p>
+<img src="&#x2F;assets&#x2F;Pasted image 20250222141930.png"
+	 alt="Left side of the Gnome topbar"
+	
+>
+<p>after running <code>toggle-dnd</code> in our login shell:</p>
+<img src="&#x2F;assets&#x2F;Pasted image 20250222141930.png"
+	 alt="Still the left side of the gnome topbar. In fact this is the exact same image as before."
+	
+>
+<p>... nothing happened.
+we can confirm this on the CLI:</p>
+<pre data-lang="console" class="language-console z-code"><code class="language-console" data-lang="console"><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">gsettings</span></span><span class="z-meta z-function-call z-arguments z-shell"> get org.gnome.desktop.notifications show-banners</span>
+</span><span class="z-source z-shell z-console">true
+</span><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">gsettings</span></span><span class="z-meta z-function-call z-arguments z-shell"> set org.gnome.desktop.notifications show-banners false</span>
+</span><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">gsettings</span></span><span class="z-meta z-function-call z-arguments z-shell"> get org.gnome.desktop.notifications show-banners</span>
+</span><span class="z-source z-shell z-console">true
+</span></code></pre>
+<h2 id="dbus">DBUS<a class="zola-anchor" href="#dbus" aria-label="Anchor link for: dbus"></a>
+</h2>
+<p>at this point i started to get annoyed and ran <code>systemctl --user status</code> in hopes of writing a systemd timer instead. fortunately, i did that inside the bash login shell, which gave me this helpful error message:</p>
+<pre data-lang="console" class="language-console z-code"><code class="language-console" data-lang="console"><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">systemctl</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>user</span> status</span>
+</span><span class="z-source z-shell z-console">Failed to connect to bus: $DBUS_SESSION_BUS_ADDRESS and $XDG_RUNTIME_DIR not defined (consider using --machine=&lt;user&gt;@.host --user to connect to bus of other user)
+</span></code></pre>
+<p>It turns out that both <code>gsettings</code> and <code>systemctl</code> are trying to communicate over DBUS, and DBUS is linked to your "user session", set when you login. Unsetting environment variables disables DBUS <sup class="footnote-reference" id="fr-4-1"><a href="#fn-4">4</a></sup>.</p>
+<p>I found a helpful <a href="https://askubuntu.com/a/1468012">stackoverflow post</a> that helps us reconnect to DBUS <sup class="footnote-reference" id="fr-5-1"><a href="#fn-5">5</a></sup>:</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-storage z-modifier z-shell">export</span> <span class="z-variable z-other z-readwrite z-assignment z-shell">XDG_RUNTIME_DIR</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell"><span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span>/run/user/<span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">UID</span></span><span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span></span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-storage z-modifier z-shell">export</span> <span class="z-variable z-other z-readwrite z-assignment z-shell">DBUS_SESSION_BUS_ADDRESS</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell"><span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span>unix:path=<span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-punctuation z-section z-expansion z-parameter z-begin z-shell">{</span></span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-variable z-other z-readwrite z-shell">XDG_RUNTIME_DIR</span></span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-section z-expansion z-parameter z-end z-shell">}</span></span>/bus<span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span></span>
+</span></code></pre>
+<p>Let's write a little abstraction for that, too <sup class="footnote-reference" id="fr-6-1"><a href="#fn-6">6</a></sup>.</p>
+<pre data-lang="bash" class="language-bash z-code"><code class="language-bash" data-lang="bash"><span class="z-source z-shell z-bash"><span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell">!/usr/bin/env bash</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span><span class="z-source z-shell z-bash"><span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> Run a command in an environment where DBUS commands (e.g. `systemd --user`, `gsettings`) are available</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-support z-function z-colon z-shell">:</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-punctuation z-section z-expansion z-parameter z-begin z-shell">{</span></span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-variable z-other z-readwrite z-shell">XDG_RUNTIME_DIR</span></span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-keyword z-operator z-assignment z-shell">:=</span></span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span>/run/user/<span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">UID</span></span><span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-section z-expansion z-parameter z-end z-shell">}</span></span><span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-support z-function z-colon z-shell">:</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-punctuation z-section z-expansion z-parameter z-begin z-shell">{</span></span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-variable z-other z-readwrite z-shell">DBUS_SESSION_BUS_ADDRESS</span></span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-keyword z-operator z-assignment z-shell">:=</span></span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span>unix:path=<span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-punctuation z-section z-expansion z-parameter z-begin z-shell">{</span></span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-variable z-other z-readwrite z-shell">XDG_RUNTIME_DIR</span></span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-section z-expansion z-parameter z-end z-shell">}</span></span>/bus<span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-section z-expansion z-parameter z-end z-shell">}</span></span><span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-storage z-modifier z-shell">export</span> <span class="z-variable z-other z-readwrite z-assignment z-shell">XDG_RUNTIME_DIR</span> <span class="z-variable z-other z-readwrite z-assignment z-shell">DBUS_SESSION_BUS_ADDRESS</span></span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-support z-function z-exec z-shell">exec</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-language z-shell">@</span></span><span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span>
+</span></code></pre>
+<p>Now, finally, we can put the pieces together:</p>
+<pre data-lang="console" class="language-console z-code"><code class="language-console" data-lang="console"><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">crontab</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>l</span></span>
+</span><span class="z-source z-shell z-console">0 20 * * * bash -lc &#39;dbus-run-user toggle-dnd true  2&gt;&amp;1 | logger -t toggle-dnd&#39;
+</span><span class="z-source z-shell z-console">0 8  * * * bash -lc &#39;dbus-run-user toggle-dnd false 2&gt;&amp;1 | logger -t toggle-dnd&#39;
+</span></code></pre>
+<h3 id="p-s">P.S.<a class="zola-anchor" href="#p-s" aria-label="Anchor link for: p-s"></a>
+</h3>
+<h4 id="x11">X11<a class="zola-anchor" href="#x11" aria-label="Anchor link for: x11"></a>
+</h4>
+<p>just setting up DBUS doesn't set up our X11 environment again. I didn't happen to need that. but now that we have DBUS, you can retrieve it pretty easily:</p>
+<pre data-lang="console" class="language-console z-code"><code class="language-console" data-lang="console"><span class="z-source z-shell z-console"><span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">$</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">dbus-run-user</span></span><span class="z-meta z-function-call z-arguments z-shell"> systemctl<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>user</span> show-environment</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">grep</span></span><span class="z-meta z-function-call z-arguments z-shell"> ^DISPLAY</span>
+</span><span class="z-source z-shell z-console">DISPLAY=:1
+</span></code></pre>
+<p>You can do something similar for <code>XAUTHORITY</code>, <code>TMUX*</code>, and <code>XDG_*</code> environment variables. Note that <code>systemctl --user</code> may be using a tmux session or pane that no longer exists; use caution.</p>
+<h4 id="why-were-you-doing-this-in-the-first-place">why were you doing this in the first place<a class="zola-anchor" href="#why-were-you-doing-this-in-the-first-place" aria-label="Anchor link for: why-were-you-doing-this-in-the-first-place"></a>
+</h4>
+<p>hahahaha so i had the foolish idea that this would get discord to silence notifications at night. <a href="https://support.discord.com/hc/en/community/posts/22549582088343-Respect-desktop-s-Do-Not-Disturb-mode-for-desktop-notifications">it does not do that</a>. i ended up just turning off desktop notification sounds altogether.</p>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-1">
+<p>"why not a systemd user timer" because i don't know a helper that lets you write the timer schedule interactively, the way that <a href="https://cron.help/">https://cron.help/</a> works for crontabs, and because systemd's documentation is smeared across a ton of different man pages. cron is just <code>crontab -e</code>. <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="fn-2">
+<p>"why not set cron to automatically write output to the system log" hahahahaha there's no way to do that. unless you're using specifically <a href="https://man.archlinux.org/man/extra/cronie/cron.8.en#OPTIONS"><code>cronie</code></a>, which isn't packaged in Ubuntu 22.04. <a href="#fr-2-1">↩</a></p>
+</li>
+<li id="fn-3">
+<p>see <a href="https://manpages.ubuntu.com/manpages/trusty/man5/crontab.5.html"><code>man 5 crontab</code></a>; also this differs depending which version of cron you have installed. this link for instance does not match the man page i have installed locally for <code>man 5 crontab</code>. <a href="#fr-3-1">↩</a></p>
+</li>
+<li id="fn-4">
+<p>it's almost like <a href="https://blog.sunfishcode.online/no-ghosts/">using environment variables to communicate data through a system is a bad idea</a>! <a href="#fr-4-1">↩</a></p>
+</li>
+<li id="fn-5">
+<p>note that recommends using <code>machinectl</code> or <code>systemctl --machine=$USER@localhost --user</code> instead. but both of those don't work in this environment: <code>machinectl</code> requires interactive login, and <code>--machine</code> just doesn't work at all:
+<code>Failed to connect to bus: Host is down</code>
+<code>Failed to list units: Transport endpoint is not connected</code> <a href="#fr-5-1">↩</a></p>
+</li>
+<li id="fn-6">
+<p>This uses bash because that sets <code>$UID</code> for us automatically. Theoretically we could do this with sh and <code>id -u</code>, but it's more of a pain than it's worth. <a href="#fr-6-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;do-not-disturb-in-gnome&#x2F;&amp;type=story">Hacker News</a>,
+    
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;do-not-disturb-in-gnome&#x2F;">Lobste.rs</a>, or
+    <a href="https:&#x2F;&#x2F;tech.lgbt&#x2F;@jyn&#x2F;114050592085483555">Mastodon</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>i write about code, and things that bring me joy, and sometimes other things too</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

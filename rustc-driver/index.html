@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>building your own rustc_driver</title>
+    
+    <meta name="description" content="what happens when you run &lt;code&gt;cargo clippy&lt;&#x2F;code&gt;?">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="what happens when you run &lt;code&gt;cargo clippy&lt;&#x2F;code&gt;?" class="post-title" itemprop="name headline">building your own <code>rustc_driver</code></h1>
+    <p class="post-meta">
+      <time datetime="2024-10-24" itemprop="datePublished">
+        2024-10-24
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/walkthroughs/">walkthroughs</a>
+        
+      • <a href="https://jyn.dev/tags/rust/">rust</a>
+        
+      
+    </p>
+  </header>
+
+  
+
+	
+
+  
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <h2 id="a-deeper-rabbit-hole-than-expected">a deeper rabbit hole than expected<a class="zola-anchor" href="#a-deeper-rabbit-hole-than-expected" aria-label="Anchor link for: a-deeper-rabbit-hole-than-expected"></a>
+</h2>
+<p>what happens when you run <code>cargo clippy</code>?</p>
+<p>well, we can ask cargo what it does:</p>
+<pre class="z-code"><code><span class="z-text z-plain">$ cargo clippy -v
+</span><span class="z-text z-plain">    Checking example v0.1.0 (/home/jyn/src/example)
+</span><span class="z-text z-plain">     Running `/home/jyn/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/clippy-driver /home/jyn/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rustc --crate-name example --edition=2021 src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --diagnostic-width=124 --crate-type bin --emit=dep-info,metadata -C embed-bitcode=no -C debuginfo=2 --check-cfg &#39;cfg(docsrs)&#39; --check-cfg &#39;cfg(feature, values())&#39; -C metadata=f3baefdd4f0d88a8 -C extra-filename=-f3baefdd4f0d88a8 --out-dir /home/jyn/.cargo/target/debug/deps -C incremental=/home/jyn/.cargo/target/debug/incremental -L dependency=/home/jyn/.cargo/target/debug/deps`
+</span><span class="z-text z-plain">    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.67s
+</span></code></pre>
+<p>that's kinda weird! it's running something called <code>clippy-driver</code>? and passing <code>bin/rustc</code> as an argument to it? what's going on there? is it running any other programs afterwards?</p>
+<p>we can find that out too:</p>
+<pre class="z-code"><code><span class="z-text z-plain">; strace -f -e execve cargo clippy
+</span></code></pre>
+<details><summary>all of strace's output</summary>
+<p>note this is massaged slightly for clarity; the actual command i ran was</p>
+<pre class="z-code"><code><span class="z-text z-plain">cargo clean; strace -f -e execve,clone3 -s 100 cargo clippy 2&gt;&amp;1 | sed &#39;s/Process /\nProcess /; s/execve([^,]*, \([^]]*\).*/execve(\1])/&#39; | rg -v &#39;resumed&gt;&#39; | rg &#39;(\[pid[^]]*\] )?(execve.*|clone3|Process.*)&#39; -o | sed &#39;s/clone3/clone3()/&#39;
+</span></code></pre>
+<p>followed by some manual cleanup.</p>
+<pre class="z-code"><code><span class="z-text z-plain">execve([&quot;cargo&quot;, &quot;clippy&quot;])
+</span><span class="z-text z-plain">execve([&quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/cargo&quot;, &quot;clippy&quot;])
+</span><span class="z-text z-plain">execve([&quot;/home/jyn/.local/lib/cargo/bin/cargo-clippy&quot;, &quot;clippy&quot;])
+</span><span class="z-text z-plain">execve([&quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/cargo-clippy&quot;, &quot;clippy&quot;])
+</span><span class="z-text z-plain">clone3(): Process 6125 attached
+</span><span class="z-text z-plain">[pid  6125] execve([&quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/cargo&quot;, &quot;check&quot;])
+</span><span class="z-text z-plain">[pid  6125] clone3(): Process 6126 attached
+</span><span class="z-text z-plain">[pid  6126] execve([&quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/clippy-driver&quot;, &quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rustc&quot;, &quot;-vV&quot;])
+</span><span class="z-text z-plain">[pid  6125] clone3(): Process 6127 attached
+</span><span class="z-text z-plain">[pid  6127] execve([&quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/clippy-driver&quot;, &quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rustc&quot;, &quot;-&quot;, &quot;--crate-name&quot;, &quot;___&quot;, &quot;--print=file-names&quot;, &quot;--crate-type&quot;, &quot;bin&quot;, &quot;--crate-type&quot;, &quot;rlib&quot;, &quot;--crate-type&quot;, &quot;dylib&quot;, &quot;--crate-type&quot;, &quot;cdylib&quot;, &quot;--crate-type&quot;, &quot;staticlib&quot;, &quot;--crate-type&quot;, &quot;proc-macro&quot;, &quot;--check-cfg&quot;, &quot;cfg()&quot;])
+</span><span class="z-text z-plain">[pid  6125] clone3(): Process 6129 attached
+</span><span class="z-text z-plain">[pid  6129] execve([&quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/clippy-driver&quot;, &quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rustc&quot;, &quot;-&quot;, &quot;--crate-name&quot;, &quot;___&quot;, &quot;--print=file-names&quot;, &quot;--crate-type&quot;, &quot;bin&quot;, &quot;--crate-type&quot;, &quot;rlib&quot;, &quot;--crate-type&quot;, &quot;dylib&quot;, &quot;--crate-type&quot;, &quot;cdylib&quot;, &quot;--crate-type&quot;, &quot;staticlib&quot;, &quot;--crate-type&quot;, &quot;proc-macro&quot;, &quot;--print=sysroot&quot;, &quot;--print=split-debuginfo&quot;, &quot;--print=crate-name&quot;, &quot;--print=cfg&quot;])
+</span><span class="z-text z-plain">[pid  6125] clone3(): Process 6131 attached
+</span><span class="z-text z-plain">[pid  6131] execve([&quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/clippy-driver&quot;, &quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rustc&quot;, &quot;-vV&quot;])
+</span><span class="z-text z-plain">[pid  6125] clone3(): Process 6134 attached
+</span><span class="z-text z-plain">[pid  6134] execve([&quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/clippy-driver&quot;, &quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rustc&quot;, &quot;--crate-name&quot;, &quot;example&quot;, &quot;--edition=2021&quot;, &quot;src/main.rs&quot;, &quot;--error-format=json&quot;, &quot;--json=diagnostic-rendered-ansi,artifacts,future-incompat&quot;, &quot;--crate-type&quot;, &quot;bin&quot;, &quot;--emit=dep-info,metadata&quot;, &quot;-C&quot;, &quot;embed-bitcode=no&quot;, &quot;-C&quot;, &quot;debuginfo=2&quot;, &quot;--check-cfg&quot;, &quot;cfg(docsrs)&quot;, &quot;--check-cfg&quot;, &quot;cfg(feature, values())&quot;, &quot;-C&quot;, &quot;metadata=f3baefdd4f0d88a8&quot;, &quot;-C&quot;, &quot;extra-filename=-f3baefdd4f0d88a8&quot;, &quot;--out-dir&quot;, &quot;/home/jyn/.local/lib/cargo/target/debug/deps&quot;, &quot;-C&quot;, &quot;incremental=/home/jyn/.local/lib/cargo/target/debug/incremental&quot;, &quot;-L&quot;, &quot;dependency=/home/jyn/.local/lib/cargo/target/debug/deps&quot;])
+</span></code></pre>
+</details>
+<p>wow, we have like 10 different commands running here! <sup class="footnote-reference" id="fr-paths-1"><a href="#fn-paths">1</a></sup></p>
+<ol>
+<li><code>~/.cargo/bin/cargo clippy -v</code></li>
+<li><code>~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/cargo clippy -v</code></li>
+<li><code>~/.cargo/bin/cargo-clippy -v</code></li>
+<li><code>~/.rustup/.../cargo-clippy clippy -v</code></li>
+<li><code>~/.rustup/.../cargo check -v</code></li>
+<li><code>~/.rustup/.../clippy-driver ~/.rustup/.../rustc -vV</code></li>
+<li><code>~/.rustup/.../clippy-driver ~/.rustup/../rustc - --print=file-names</code></li>
+<li><code>~/.rustup/.../clippy-driver ~/.rustup/.../rustc -- --print=sysroot</code></li>
+<li><code>~/.rustup/.../clippy-driver ~/.rustup/.../rustc -vV</code></li>
+<li><code>~/.rustup/.../clippy-driver ~/.rustup/../rustc src/main.rs</code></li>
+</ol>
+<p>that's a lot of indirection to compile a simple hello world! let's dig into why it happens.</p>
+<h2 id="rustup-toolchain-proxies">Rustup toolchain proxies<a class="zola-anchor" href="#rustup-toolchain-proxies" aria-label="Anchor link for: rustup-toolchain-proxies"></a>
+</h2>
+<p>twice, we see the same binary executed first from <code>~/.cargo</code>, then again from <code>~/.rustup</code>: for <code>cargo</code> and for <code>cargo-clippy</code>. what's the difference between these?</p>
+<p>let's take a look at the first one that runs:</p>
+<details><summary>
+<pre class="z-code"><code><span class="z-text z-plain">; strace -e readlink,openat -z ~/.local/lib/cargo/bin/cargo
+</span><span class="z-text z-plain">readlink(&quot;/proc/self/exe&quot;, &quot;/home/jyn/.local/lib/cargo/bin/cargo&quot;, 256) = 36
+</span><span class="z-text z-plain">openat(AT_FDCWD, &quot;/home/jyn/.local/lib/rustup/settings.toml&quot;, O_RDONLY|O_CLOEXEC) = 3
+</span></code></pre>
+</summary>
+<pre class="z-code"><code><span class="z-text z-plain">; strace -e readlink,openat -s 100 -z ~/.local/lib/cargo/bin/cargo 2&gt;&amp;1| rg &#39;readlink|openat&#39; | rg -v &#39;&quot;/(lib|etc)&#39;
+</span><span class="z-text z-plain">openat(AT_FDCWD, &quot;/proc/self/maps&quot;, O_RDONLY|O_CLOEXEC) = 3
+</span><span class="z-text z-plain">readlink(&quot;/proc/self/exe&quot;, &quot;/home/jyn/.local/lib/cargo/bin/cargo&quot;, 256) = 36
+</span><span class="z-text z-plain">openat(AT_FDCWD, &quot;/home/jyn/.local/lib/rustup/settings.toml&quot;, O_RDONLY|O_CLOEXEC) = 3
+</span><span class="z-text z-plain">openat(AT_FDCWD, &quot;/home/jyn/.local/lib/rustup/toolchains&quot;, O_RDONLY|O_CLOEXEC) = 3
+</span><span class="z-text z-plain">openat(3, &quot;nightly-x86_64-unknown-linux-gnu&quot;, O_RDONLY|O_NOCTTY|O_CLOEXEC) = 4
+</span><span class="z-text z-plain">openat(AT_FDCWD, &quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/rust-installer-version&quot;, O_RDONLY|O_CLOEXEC) = 3
+</span><span class="z-text z-plain">openat(AT_FDCWD, &quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/multirust-channel-manifest.toml&quot;, O_RDONLY|O_CLOEXEC) = 3
+</span><span class="z-text z-plain">openat(AT_FDCWD, &quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/multirust-config.toml&quot;, O_RDONLY|O_CLOEXEC) = 3
+</span><span class="z-text z-plain">readlink(&quot;/proc/self/exe&quot;, &quot;/home/jyn/.local/lib/rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/cargo&quot;, 4096) = 81
+</span><span class="z-text z-plain">openat(AT_FDCWD, &quot;/proc/self/maps&quot;, O_RDONLY|O_CLOEXEC) = 3
+</span></code></pre>
+</details>
+<p>it turns out this is something called a <a href="https://rust-lang.github.io/rustup/concepts/proxies.html">rustup proxy</a>. this is a little shim that <a href="https://blog.axo.dev/2024/07/an-app-by-any-other-name">hardlinks</a> from the proxy (in this case <code>cargo</code>) to rustup. rustup then looks at its own executable name, notices that it's cargo, and picks the right toolchain to run the actual cargo binary.</p>
+<p>you can actually ask rustup to just find the path without running it:</p>
+<pre class="z-code"><code><span class="z-text z-plain">; rustup which cargo
+</span><span class="z-text z-plain">/home/jyn/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/cargo
+</span></code></pre>
+<p>and you can see that the real cargo doesn't support rustup features like toolchain selectors:</p>
+<pre class="z-code"><code><span class="z-text z-plain">; cargo +nightly --version
+</span><span class="z-text z-plain">cargo 1.81.0-nightly (4dcbca118 2024-06-11)
+</span><span class="z-text z-plain">; $(rustup which cargo) +nightly --version
+</span><span class="z-text z-plain">error: no such command: `+nightly`
+</span><span class="z-text z-plain">
+</span><span class="z-text z-plain">        Cargo does not handle `+toolchain` directives.
+</span><span class="z-text z-plain">        Did you mean to invoke `cargo` through `rustup` instead?
+</span></code></pre>
+<p>you can even verify for yourself that <code>~/.cargo/bin/cargo</code> is just a hardlink by comparing the <a href="https://en.wikipedia.org/wiki/Inode">inodes</a>:</p>
+<pre class="z-code"><code><span class="z-text z-plain">; ls -i /home/jyn/.cargo/bin/rustup
+</span><span class="z-text z-plain">32294517 /home/jyn/.cargo/bin/rustup
+</span><span class="z-text z-plain">; ls -i /home/jyn/.cargo/bin/rustc
+</span><span class="z-text z-plain">32294517 /home/jyn/.cargo/bin/rustc
+</span></code></pre>
+<h2 id="cargo-extensions">cargo extensions<a class="zola-anchor" href="#cargo-extensions" aria-label="Anchor link for: cargo-extensions"></a>
+</h2>
+<p>ok, we've figured out 2/10 of the processes. what are the other 8?</p>
+<p>the first one that runs after <code>cargo clippy</code> is ... <code>cargo-clippy</code> (with a <em>-</em> dash, not a space). this is a <a href="https://doc.rust-lang.org/cargo/reference/external-tools.html#custom-subcommands">cargo extension</a>; <code>cargo clippy</code> is doing very little here other than setting <code>CARGO</code> in the environment to point back to itself. why does it need to do that? because <code>cargo-clippy</code> is about to call back to cargo: that's process 5, <code>cargo check</code>.</p>
+<p>what's changed is that <a href="https://github.com/rust-lang/rust-clippy/blob/cefa31a5243b90c0c606e2fdb3fc3e036a8bec16/src/main.rs#L109-L126"><code>cargo-clippy</code> has set</a> <a href="https://doc.rust-lang.org/cargo/reference/config.html#buildrustc-workspace-wrapper"><code>RUSTC_WORKSPACE_WRAPPER</code></a> to <code>clippy-driver</code>. that means that instead of invoking rustc on each crate, it's going to invoke clippy-driver. and because it's a <code>WRAPPER</code>, it gets passed <code>rustc</code> as an argument. the intended use-case is for tools like <a href="https://github.com/mozilla/sccache"><code>sccache</code></a> that transparently wrap rustc before invoking it; <a href="https://github.com/rust-lang/rust-clippy/blob/9cf416dc6ec9d7ebc8df299ca970e4a92efa2596/src/driver.rs#L229-L255">clippy never invokes rustc as a process</a>, but there's no equivalent of <a href="https://doc.rust-lang.org/cargo/reference/config.html#buildrustc"><code>RUSTC</code></a> that's only used for workspaces.</p>
+<h2 id="sysroots-and-dynamic-libraries">sysroots and dynamic libraries<a class="zola-anchor" href="#sysroots-and-dynamic-libraries" aria-label="Anchor link for: sysroots-and-dynamic-libraries"></a>
+</h2>
+<p>now, at this point you might imagine that we have enough info to write our own clippy-like tool that gets invoked instead of rustc. if we look at <a href="https://github.com/rust-lang/rust/blob/b8bb2968ce1e44d01520c9d59ee6299ed66df3f9/compiler/rustc/src/main.rs"><code>compiler/rustc/src/main.rs</code> in rust-lang/rust</a>, other than some weird jemalloc stuff, all it does is call <code>rustc_driver::main</code>. let's write a toy program that does that.</p>
+<pre data-lang="rust" class="language-rust z-code"><code class="language-rust" data-lang="rust"><span class="z-source z-rust"><span class="z-punctuation z-terminator z-rust">;</span> cargo new driver
+</span><span class="z-source z-rust"><span class="z-punctuation z-terminator z-rust">;</span> cd driver
+</span><span class="z-source z-rust"><span class="z-punctuation z-terminator z-rust">;</span> echo <span class="z-keyword z-operator z-rust">&#39;</span><span class="z-meta z-annotation z-rust"><span class="z-punctuation z-definition z-annotation z-rust">#!</span><span class="z-punctuation z-section z-group z-begin z-rust">[</span><span class="z-variable z-annotation z-rust">feature</span><span class="z-meta z-annotation z-parameters z-rust"><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span></span><span class="z-meta z-annotation z-parameters z-rust"><span class="z-meta z-group z-rust">rustc_private</span></span><span class="z-meta z-annotation z-parameters z-rust"><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span></span><span class="z-punctuation z-section z-group z-end z-rust">]</span></span>
+</span><span class="z-source z-rust"><span class="z-keyword z-other z-rust">extern</span> <span class="z-keyword z-other z-rust">crate</span> rustc_driver<span class="z-punctuation z-terminator z-rust">;</span>
+</span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-function z-rust"><span class="z-storage z-type z-function z-rust">fn</span> </span><span class="z-entity z-name z-function z-rust">main</span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">(</span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-end z-rust">)</span></span></span></span><span class="z-meta z-function z-rust"> </span><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">  <span class="z-support z-macro z-rust">println!</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-string z-quoted z-double z-rust"><span class="z-punctuation z-definition z-string z-begin z-rust">&quot;</span>this is a custom driver!<span class="z-punctuation z-definition z-string z-end z-rust">&quot;</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">  <span class="z-meta z-path z-rust">rustc_driver<span class="z-punctuation z-accessor z-rust">::</span></span>main<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"></span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span></span><span class="z-keyword z-operator z-rust">&#39;</span> <span class="z-keyword z-operator z-comparison z-rust">&gt;</span> src<span class="z-keyword z-operator z-arithmetic z-rust">/</span>main<span class="z-punctuation z-accessor z-dot z-rust">.</span>rs
+</span><span class="z-source z-rust"><span class="z-punctuation z-terminator z-rust">;</span> cargo <span class="z-keyword z-operator z-arithmetic z-rust">+</span>nightly run
+</span><span class="z-source z-rust">error<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">[</span><span class="z-constant z-other z-rust">E0463</span><span class="z-punctuation z-section z-group z-end z-rust">]</span></span><span class="z-punctuation z-separator z-rust">:</span> can<span class="z-storage z-modifier z-lifetime z-rust">&#39;t</span> find <span class="z-keyword z-other z-rust">crate</span> <span class="z-keyword z-control z-rust">for</span> `rustc_driver`
+</span><span class="z-source z-rust"> <span class="z-keyword z-operator z-arithmetic z-rust">-</span><span class="z-meta z-function z-return-type z-rust"><span class="z-punctuation z-separator z-rust">-&gt;</span> src</span><span class="z-keyword z-operator z-arithmetic z-rust">/</span>main<span class="z-punctuation z-accessor z-dot z-rust">.</span>rs<span class="z-punctuation z-separator z-rust">:</span><span class="z-constant z-numeric z-integer z-decimal z-rust">2</span><span class="z-punctuation z-separator z-rust">:</span><span class="z-constant z-numeric z-integer z-decimal z-rust">1</span>
+</span><span class="z-source z-rust">  <span class="z-keyword z-operator z-bitwise z-rust">|</span>
+</span><span class="z-source z-rust"><span class="z-constant z-numeric z-integer z-decimal z-rust">2</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span> <span class="z-keyword z-other z-rust">extern</span> <span class="z-keyword z-other z-rust">crate</span> rustc_driver<span class="z-punctuation z-terminator z-rust">;</span>
+</span><span class="z-source z-rust">  <span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">|</span></span></span><span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust"> ^^^^^^^^^^^^^^^^^^^^^^^^^^ can<span class="z-storage z-modifier z-lifetime z-rust">&#39;t</span> find crate</span>
+</span></span><span class="z-source z-rust"><span class="z-meta z-function z-closure z-rust">  </span><span class="z-meta z-function z-closure z-rust"><span class="z-keyword z-operator z-bitwise z-rust">|</span></span>
+</span><span class="z-source z-rust">  <span class="z-keyword z-operator z-assignment z-rust">=</span> help<span class="z-punctuation z-separator z-rust">:</span> maybe you need to install the missing components with<span class="z-punctuation z-separator z-rust">:</span> `rustup component add rust<span class="z-keyword z-operator z-arithmetic z-rust">-</span>src rustc<span class="z-keyword z-operator z-arithmetic z-rust">-</span>dev llvm<span class="z-keyword z-operator z-arithmetic z-rust">-</span>tools<span class="z-keyword z-operator z-arithmetic z-rust">-</span>preview`
+</span></code></pre>
+<p>oh. huh. that's kinda weird. let's follow those instructions for now though.</p>
+<pre class="z-code"><code><span class="z-text z-plain">; rustup component add rust-src rustc-dev llvm-tools-preview
+</span><span class="z-text z-plain">; cargo +nightly run
+</span><span class="z-text z-plain">   Compiling driver v0.1.0 (/home/jyn/src/driver)
+</span><span class="z-text z-plain">    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.08s
+</span><span class="z-text z-plain">     Running `/home/jyn/.cargo/target/debug/driver`
+</span><span class="z-text z-plain">this is a custom driver!
+</span><span class="z-text z-plain">Usage: rustc [OPTIONS] INPUT
+</span><span class="z-text z-plain">...
+</span></code></pre>
+<p>this is pretty cool! let's install it for our user and see if we can run it on a rust file.</p>
+<pre class="z-code"><code><span class="z-text z-plain">; cargo install --path . --debug
+</span><span class="z-text z-plain">  Installing driver v0.1.0 (/home/jyn/src/driver)
+</span><span class="z-text z-plain">    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
+</span><span class="z-text z-plain">  Installing /home/jyn/.cargo/bin/driver
+</span><span class="z-text z-plain">   Installed package `driver v0.1.0 (/home/jyn/src/driver)` (executable `driver`)
+</span><span class="z-text z-plain">; driver src/main.rs
+</span><span class="z-text z-plain">driver: error while loading shared libraries: librustc_driver-5396912e8af1f65d.so: cannot open shared object file: No such file or directory
+</span></code></pre>
+<p>well that's unfortunate. what happened here?</p>
+<p>when we use <code>cargo run</code> for our driver, it sets some environment variables. in particular, it sets a variable called <code>LD_LIBRARY_PATH</code>:</p>
+<pre class="z-code"><code><span class="z-text z-plain">; strace -s 1000 -v -e execve cargo run 2&gt;&amp;1 &gt;/dev/null | rg debug/driver | rg -o &#39;LD_LIBRARY_PATH=[^&quot;]*&#39;
+</span><span class="z-text z-plain">LD_LIBRARY_PATH=/home/jyn/.cargo/target/debug/deps:/home/jyn/.cargo/target/debug:/home/jyn/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/lib:/home/jyn/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib
+</span></code></pre>
+<p>and indeed if we set that variable, our driver works again:</p>
+<pre class="z-code"><code><span class="z-text z-plain">; env &quot;$(strace -s 1000 -v -e execve cargo run 2&gt;&amp;1 &gt;/dev/null | rg debug/driver | rg -o &#39;LD_LIBRARY_PATH=[^&quot;]*&#39;)&quot; driver src/main.rs
+</span><span class="z-text z-plain">this is a custom driver!
+</span></code></pre>
+<p>what does it do?</p>
+<p>well, <a href="https://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html#AEN80">the linux documentation project</a> documents it as follows:</p>
+<blockquote>
+<p>You can temporarily substitute a different library for this particular execution. In Linux, the environment variable LD_LIBRARY_PATH is a colon-separated set of directories where libraries should be searched for first, before the standard set of directories; this is useful when debugging a new library or using a nonstandard library for special purposes</p>
+</blockquote>
+<p>"library" here means a shared object library. on linux, these files end with <code>.so</code>; on Windows, <code>.dll</code> (for "dynamic-link library") ; on MacOS, <code>.dylib</code>. these are object files that contain code ("symbols" in linker terms) that are loaded by the linker at runtime, after the rest of your program is loaded into memory. for example, if we look at the rustc binary we copied our driver's code from, it's almost empty:</p>
+<pre class="z-code"><code><span class="z-text z-plain">;; stat -c %s $(rustup which rustc) | numfmt --to=iec
+</span><span class="z-text z-plain">2.6M
+</span></code></pre>
+<p>instead, almost all the code is in a shared object:</p>
+<pre class="z-code"><code><span class="z-text z-plain">; stat -c %s /home/jyn/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/librustc_driver-5396912e8af1f65d.so | numfmt --to=iec
+</span><span class="z-text z-plain">136M
+</span></code></pre>
+<p>that shared object gets loaded at runtime by every rustc_driver: <code>rustc</code>, <code>clippy</code>, <code>rustdoc</code>, <code>miri</code> - and our new <code>driver</code> tool. it's actually shipped with every toolchain; if you look at the stable toolchain in <code>.rustup</code> you'll see it there too. however, what you <em>won't</em> see is the <code>.rmeta</code> files in the toolchain directory: <sup class="footnote-reference" id="fr-target-libdir-1"><a href="#fn-target-libdir">2</a></sup></p>
+<pre class="z-code"><code><span class="z-text z-plain">; ls /home/jyn/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/lib/*.rmeta | wc -l
+</span><span class="z-text z-plain">228
+</span></code></pre>
+<p>those are the files we just installed with <code>rustup component add rustc-dev</code>. they give rustc the type information it needs to check our <code>driver</code> code against the type signatures of all the <code>rustc_private</code> internal crates.</p>
+<h2 id="building-a-driver">building a driver<a class="zola-anchor" href="#building-a-driver" aria-label="Anchor link for: building-a-driver"></a>
+</h2>
+<p>so! we have learned a bunch of stuff:</p>
+<ol>
+<li>when we run <code>cargo</code> or <code>rustc</code>, that's actually running a "rustup proxy" that picks the toolchain version to use</li>
+<li>when we run <code>cargo clippy</code>, that's doing a complicated back and forth between cargo and various clippy executables</li>
+<li>when we run <code>rustc</code> or <code>clippy-driver</code>, that's loading a shared object called <code>librustc_driver.so</code> at runtime</li>
+</ol>
+<p>that's enough info we can now build our own driver!</p>
+<p>first, let's make sure we can always run our driver even if we're not going through cargo. it turns out there's a linker flag for this called <a href="https://man.openbsd.org/man1/ld.bfd.1#rpath"><code>-rpath</code></a>, which does essentially the same thing as <code>LD_LIBRARY_PATH</code> but at link time instead of at runtime. to get the path we need, we can use <a href="https://doc.rust-lang.org/stable/rustc/command-line-arguments.html#--print-print-compiler-information"><code>rustc --print=sysroot</code></a> (we can get the right version of <code>rustc</code> from an env variable cargo sets, <a href="https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-build-scripts"><code>RUSTC</code></a>). and finally, to tell cargo to pass that flag to the linker, we can write a build script that uses <a href="https://doc.rust-lang.org/cargo/reference/build-scripts.html#rustc-link-arg"><code>cargo:rustc-link-arg</code></a>. <sup class="footnote-reference" id="fr-rpath-origin-1"><a href="#fn-rpath-origin">3</a></sup></p>
+<pre data-lang="rust" class="language-rust z-code"><code class="language-rust" data-lang="rust"><span class="z-source z-rust"><span class="z-comment z-line z-double-slash z-rust"><span class="z-punctuation z-definition z-comment z-rust">//</span> build.rs
+</span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-function z-rust"><span class="z-storage z-type z-function z-rust">fn</span> </span><span class="z-entity z-name z-function z-rust">main</span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">(</span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-end z-rust">)</span></span></span></span><span class="z-meta z-function z-rust"> </span><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-storage z-type z-rust">let</span> rustc <span class="z-keyword z-operator z-assignment z-rust">=</span> <span class="z-meta z-path z-rust">std<span class="z-punctuation z-accessor z-rust">::</span></span><span class="z-meta z-path z-rust">env<span class="z-punctuation z-accessor z-rust">::</span></span>var<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-string z-quoted z-double z-rust"><span class="z-punctuation z-definition z-string z-begin z-rust">&quot;</span>RUSTC<span class="z-punctuation z-definition z-string z-end z-rust">&quot;</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">unwrap</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-storage z-type z-rust">let</span> output <span class="z-keyword z-operator z-assignment z-rust">=</span> <span class="z-meta z-path z-rust">std<span class="z-punctuation z-accessor z-rust">::</span></span><span class="z-meta z-path z-rust">process<span class="z-punctuation z-accessor z-rust">::</span></span><span class="z-meta z-path z-rust">Command<span class="z-punctuation z-accessor z-rust">::</span></span>new<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span>rustc</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">arg</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-string z-quoted z-double z-rust"><span class="z-punctuation z-definition z-string z-begin z-rust">&quot;</span>--print=sysroot<span class="z-punctuation z-definition z-string z-end z-rust">&quot;</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">output</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-storage z-type z-rust">let</span> stdout <span class="z-keyword z-operator z-assignment z-rust">=</span> <span class="z-support z-type z-rust">String</span><span class="z-meta z-path z-rust"><span class="z-punctuation z-accessor z-rust">::</span></span>from_utf8<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span>output<span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">unwrap</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span>stdout</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">unwrap</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-storage z-type z-rust">let</span> sysroot <span class="z-keyword z-operator z-assignment z-rust">=</span> stdout<span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">trim_end</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-support z-macro z-rust">println!</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-string z-quoted z-double z-rust"><span class="z-punctuation z-definition z-string z-begin z-rust">&quot;</span>cargo:rustc-link-arg=-Wl,-rpath=<span class="z-constant z-other z-placeholder z-rust">{sysroot}</span>/lib<span class="z-punctuation z-definition z-string z-end z-rust">&quot;</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"></span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span></span>
+</span></code></pre>
+<p>next, we want to be able to invoke this as <code>cargo driver</code>, so we need to write a <code>cargo-driver</code> program.</p>
+<pre data-lang="rust" class="language-rust z-code"><code class="language-rust" data-lang="rust"><span class="z-source z-rust"><span class="z-comment z-line z-double-slash z-rust"><span class="z-punctuation z-definition z-comment z-rust">//</span> src/bin/cargo-driver.rs
+</span></span><span class="z-source z-rust"><span class="z-keyword z-other z-rust">use</span> <span class="z-meta z-path z-rust">std<span class="z-punctuation z-accessor z-rust">::</span></span>env<span class="z-punctuation z-terminator z-rust">;</span>
+</span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-function z-rust"><span class="z-storage z-type z-function z-rust">fn</span> </span><span class="z-entity z-name z-function z-rust">main</span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">(</span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-end z-rust">)</span></span></span></span><span class="z-meta z-function z-rust"> <span class="z-meta z-function z-return-type z-rust"><span class="z-punctuation z-separator z-rust">-&gt;</span> <span class="z-meta z-generic z-rust"><span class="z-support z-type z-rust">Result</span><span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-punctuation z-section z-group z-end z-rust">)</span>, <span class="z-storage z-type z-rust">i32</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span></span> </span><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-storage z-type z-rust">let</span> cargo <span class="z-keyword z-operator z-assignment z-rust">=</span> <span class="z-meta z-path z-rust">env<span class="z-punctuation z-accessor z-rust">::</span></span>var<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-string z-quoted z-double z-rust"><span class="z-punctuation z-definition z-string z-begin z-rust">&quot;</span>CARGO<span class="z-punctuation z-definition z-string z-end z-rust">&quot;</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">unwrap_or</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-string z-quoted z-double z-rust"><span class="z-punctuation z-definition z-string z-begin z-rust">&quot;</span>cargo<span class="z-punctuation z-definition z-string z-end z-rust">&quot;</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">into</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-storage z-type z-rust">let</span> <span class="z-storage z-modifier z-rust">mut</span> cmd <span class="z-keyword z-operator z-assignment z-rust">=</span> <span class="z-meta z-path z-rust">std<span class="z-punctuation z-accessor z-rust">::</span></span><span class="z-meta z-path z-rust">process<span class="z-punctuation z-accessor z-rust">::</span></span><span class="z-meta z-path z-rust">Command<span class="z-punctuation z-accessor z-rust">::</span></span>new<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span>cargo</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-storage z-type z-rust">let</span> driver <span class="z-keyword z-operator z-assignment z-rust">=</span> <span class="z-meta z-path z-rust">env<span class="z-punctuation z-accessor z-rust">::</span></span>current_exe<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">unwrap</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">with_file_name</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-string z-quoted z-double z-rust"><span class="z-punctuation z-definition z-string z-begin z-rust">&quot;</span>driver<span class="z-punctuation z-definition z-string z-end z-rust">&quot;</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-storage z-type z-rust">let</span> status <span class="z-keyword z-operator z-assignment z-rust">=</span> cmd<span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">arg</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-string z-quoted z-double z-rust"><span class="z-punctuation z-definition z-string z-begin z-rust">&quot;</span>build<span class="z-punctuation z-definition z-string z-end z-rust">&quot;</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">env</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-string z-quoted z-double z-rust"><span class="z-punctuation z-definition z-string z-begin z-rust">&quot;</span>RUSTC<span class="z-punctuation z-definition z-string z-end z-rust">&quot;</span></span><span class="z-punctuation z-separator z-rust">,</span> driver</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">status</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">unwrap</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-keyword z-control z-rust">match</span> status<span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">code</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span> <span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-block z-rust">        <span class="z-support z-type z-rust">Some</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-constant z-numeric z-integer z-decimal z-rust">0</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span> <span class="z-keyword z-operator z-rust">=&gt;</span> <span class="z-support z-type z-rust">Ok</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-separator z-rust">,</span>
+</span></span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-block z-rust">        <span class="z-support z-type z-rust">Some</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span>other</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span> <span class="z-keyword z-operator z-rust">=&gt;</span> <span class="z-support z-type z-rust">Err</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span>other</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-separator z-rust">,</span>
+</span></span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-block z-rust">        <span class="z-support z-type z-rust">None</span> <span class="z-keyword z-operator z-rust">=&gt;</span> <span class="z-support z-type z-rust">Err</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-keyword z-operator z-arithmetic z-rust">-</span><span class="z-constant z-numeric z-integer z-decimal z-rust">1</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-separator z-rust">,</span>
+</span></span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-block z-rust">    </span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"></span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span></span>
+</span></code></pre>
+<p>note that this works fine when using <code>cargo install</code>, but when using <code>cargo run --bin cargo-driver</code> locally, cargo doesn't rebuild all your binaries automatically - you need to manually run <code>cargo build</code> first to make sure both executables are updated. <sup class="footnote-reference" id="fr-bindeps-1"><a href="#fn-bindeps">4</a></sup></p>
+<h2 id="we-get-a-little-silly-with-it-3">we get a little silly with it :3<a class="zola-anchor" href="#we-get-a-little-silly-with-it-3" aria-label="Anchor link for: we-get-a-little-silly-with-it-3"></a>
+</h2>
+<p>now let's make a program that does something fun! i'm going to disable the <code>unsafe</code> checker, so that we can write unsafe programs in "safe" rust.</p>
+<p>first, let's tell rust-analyzer that we're using rustc internals in this crate, so we get go-to-definition and other nice things:</p>
+<pre data-lang="toml" class="language-toml z-code"><code class="language-toml" data-lang="toml"><span class="z-source z-toml"><span class="z-comment z-line z-number-sign z-toml"><span class="z-punctuation z-definition z-comment z-toml">#</span> Cargo.toml</span>
+</span><span class="z-source z-toml"><span class="z-punctuation z-definition z-table z-begin z-toml">[</span><span class="z-meta z-tag z-table z-toml"><span class="z-entity z-name z-table z-toml">package</span><span class="z-punctuation z-separator z-table z-toml">.</span><span class="z-entity z-name z-table z-toml">metadata</span><span class="z-punctuation z-separator z-table z-toml">.</span><span class="z-entity z-name z-table z-toml">rust-analyzer</span></span><span class="z-punctuation z-definition z-table z-end z-toml">]</span>
+</span><span class="z-source z-toml"><span class="z-comment z-line z-number-sign z-toml"><span class="z-punctuation z-definition z-comment z-toml">#</span> This package uses #[feature(rustc_private)]</span>
+</span><span class="z-source z-toml"><span class="z-meta z-tag z-key z-toml"><span class="z-entity z-name z-tag z-toml">rustc_private</span></span> <span class="z-punctuation z-definition z-key-value z-toml">=</span> <span class="z-constant z-language z-toml">true</span>
+</span></code></pre>
+<p>we also have to configure this per-editor - i use <a href="https://helix-editor.com/">helix</a> so i'm going to configure <code>.helix/languages.toml</code>. for vscode you'd use <code>.vscode/settings.json</code>.</p>
+<pre data-lang="toml" class="language-toml z-code"><code class="language-toml" data-lang="toml"><span class="z-source z-toml"><span class="z-comment z-line z-number-sign z-toml"><span class="z-punctuation z-definition z-comment z-toml">#</span> .helix/languages.toml</span>
+</span><span class="z-source z-toml"><span class="z-punctuation z-definition z-table z-begin z-toml">[</span><span class="z-meta z-tag z-table z-toml"><span class="z-entity z-name z-table z-toml">language-server</span><span class="z-punctuation z-separator z-table z-toml">.</span><span class="z-entity z-name z-table z-toml">rust-analyzer</span><span class="z-punctuation z-separator z-table z-toml">.</span><span class="z-entity z-name z-table z-toml">config</span></span><span class="z-punctuation z-definition z-table z-end z-toml">]</span>
+</span><span class="z-source z-toml"><span class="z-meta z-tag z-key z-toml"><span class="z-entity z-name z-tag z-toml">rust-analyzer</span><span class="z-punctuation z-separator z-key z-toml">.</span><span class="z-entity z-name z-tag z-toml">rustc</span><span class="z-punctuation z-separator z-key z-toml">.</span><span class="z-entity z-name z-tag z-toml">source</span></span> <span class="z-punctuation z-definition z-key-value z-toml">=</span> <span class="z-string z-quoted z-double z-basic z-toml"><span class="z-punctuation z-definition z-string z-begin z-toml">&quot;</span>discover<span class="z-punctuation z-definition z-string z-end z-toml">&quot;</span></span>
+</span></code></pre>
+<p>i'm also going to pin a version of the nightly toolchain, since the internal APIs change quite frequently.</p>
+<pre data-lang="toml" class="language-toml z-code"><code class="language-toml" data-lang="toml"><span class="z-source z-toml"><span class="z-comment z-line z-number-sign z-toml"><span class="z-punctuation z-definition z-comment z-toml">#</span> rust-toolchain.toml</span>
+</span><span class="z-source z-toml"><span class="z-punctuation z-definition z-table z-begin z-toml">[</span><span class="z-meta z-tag z-table z-toml"><span class="z-entity z-name z-table z-toml">toolchain</span></span><span class="z-punctuation z-definition z-table z-end z-toml">]</span>
+</span><span class="z-source z-toml"><span class="z-meta z-tag z-key z-toml"><span class="z-entity z-name z-tag z-toml">channel</span></span> <span class="z-punctuation z-definition z-key-value z-toml">=</span> <span class="z-string z-quoted z-double z-basic z-toml"><span class="z-punctuation z-definition z-string z-begin z-toml">&quot;</span>nightly-2024-10-20<span class="z-punctuation z-definition z-string z-end z-toml">&quot;</span></span>
+</span><span class="z-source z-toml"><span class="z-meta z-tag z-key z-toml"><span class="z-entity z-name z-tag z-toml">components</span></span> <span class="z-punctuation z-definition z-key-value z-toml">=</span> <span class="z-punctuation z-definition z-array z-begin z-toml">[</span><span class="z-string z-quoted z-double z-basic z-toml"><span class="z-punctuation z-definition z-string z-begin z-toml">&quot;</span>cargo<span class="z-punctuation z-definition z-string z-end z-toml">&quot;</span></span><span class="z-punctuation z-separator z-array z-toml">,</span> <span class="z-string z-quoted z-double z-basic z-toml"><span class="z-punctuation z-definition z-string z-begin z-toml">&quot;</span>llvm-tools<span class="z-punctuation z-definition z-string z-end z-toml">&quot;</span></span><span class="z-punctuation z-separator z-array z-toml">,</span> <span class="z-string z-quoted z-double z-basic z-toml"><span class="z-punctuation z-definition z-string z-begin z-toml">&quot;</span>rust-src<span class="z-punctuation z-definition z-string z-end z-toml">&quot;</span></span><span class="z-punctuation z-separator z-array z-toml">,</span> <span class="z-string z-quoted z-double z-basic z-toml"><span class="z-punctuation z-definition z-string z-begin z-toml">&quot;</span>rust-std<span class="z-punctuation z-definition z-string z-end z-toml">&quot;</span></span><span class="z-punctuation z-separator z-array z-toml">,</span> <span class="z-string z-quoted z-double z-basic z-toml"><span class="z-punctuation z-definition z-string z-begin z-toml">&quot;</span>rustc<span class="z-punctuation z-definition z-string z-end z-toml">&quot;</span></span><span class="z-punctuation z-separator z-array z-toml">,</span> <span class="z-string z-quoted z-double z-basic z-toml"><span class="z-punctuation z-definition z-string z-begin z-toml">&quot;</span>rustc-dev<span class="z-punctuation z-definition z-string z-end z-toml">&quot;</span></span><span class="z-punctuation z-separator z-array z-toml">,</span> <span class="z-string z-quoted z-double z-basic z-toml"><span class="z-punctuation z-definition z-string z-begin z-toml">&quot;</span>rustfmt<span class="z-punctuation z-definition z-string z-end z-toml">&quot;</span></span><span class="z-punctuation z-definition z-array z-end z-toml">]</span>
+</span><span class="z-source z-toml"><span class="z-meta z-tag z-key z-toml"><span class="z-entity z-name z-tag z-toml">profile</span></span> <span class="z-punctuation z-definition z-key-value z-toml">=</span> <span class="z-string z-quoted z-double z-basic z-toml"><span class="z-punctuation z-definition z-string z-begin z-toml">&quot;</span>minimal<span class="z-punctuation z-definition z-string z-end z-toml">&quot;</span></span>
+</span></code></pre>
+<p>finally, let's write our program.</p>
+<pre data-lang="rust" class="language-rust z-code"><code class="language-rust" data-lang="rust"><span class="z-source z-rust"><span class="z-comment z-line z-double-slash z-rust"><span class="z-punctuation z-definition z-comment z-rust">//</span> src/main.rs
+</span></span><span class="z-source z-rust"><span class="z-meta z-annotation z-rust"><span class="z-punctuation z-definition z-annotation z-rust">#!</span><span class="z-punctuation z-section z-group z-begin z-rust">[</span><span class="z-variable z-annotation z-rust">feature</span><span class="z-meta z-annotation z-parameters z-rust"><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span></span><span class="z-meta z-annotation z-parameters z-rust"><span class="z-meta z-group z-rust">rustc_private</span></span><span class="z-meta z-annotation z-parameters z-rust"><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span></span><span class="z-punctuation z-section z-group z-end z-rust">]</span></span>
+</span><span class="z-source z-rust"><span class="z-keyword z-other z-rust">extern</span> <span class="z-keyword z-other z-rust">crate</span> rustc_driver<span class="z-punctuation z-terminator z-rust">;</span>
+</span><span class="z-source z-rust"><span class="z-keyword z-other z-rust">extern</span> <span class="z-keyword z-other z-rust">crate</span> rustc_errors<span class="z-punctuation z-terminator z-rust">;</span>
+</span><span class="z-source z-rust"><span class="z-keyword z-other z-rust">extern</span> <span class="z-keyword z-other z-rust">crate</span> rustc_hir<span class="z-punctuation z-terminator z-rust">;</span>
+</span><span class="z-source z-rust"><span class="z-keyword z-other z-rust">extern</span> <span class="z-keyword z-other z-rust">crate</span> rustc_interface<span class="z-punctuation z-terminator z-rust">;</span>
+</span><span class="z-source z-rust"><span class="z-keyword z-other z-rust">extern</span> <span class="z-keyword z-other z-rust">crate</span> rustc_middle<span class="z-punctuation z-terminator z-rust">;</span>
+</span><span class="z-source z-rust"><span class="z-keyword z-other z-rust">extern</span> <span class="z-keyword z-other z-rust">crate</span> rustc_session<span class="z-punctuation z-terminator z-rust">;</span>
+</span><span class="z-source z-rust">
+</span><span class="z-source z-rust"><span class="z-keyword z-other z-rust">use</span> <span class="z-meta z-path z-rust">rustc_driver<span class="z-punctuation z-accessor z-rust">::</span></span>Callbacks<span class="z-punctuation z-terminator z-rust">;</span>
+</span><span class="z-source z-rust"><span class="z-keyword z-other z-rust">use</span> <span class="z-meta z-path z-rust">rustc_errors<span class="z-punctuation z-accessor z-rust">::</span></span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span><span class="z-meta z-path z-rust">emitter<span class="z-punctuation z-accessor z-rust">::</span></span>HumanReadableErrorType<span class="z-punctuation z-separator z-rust">,</span> ColorConfig</span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span><span class="z-source z-rust"><span class="z-keyword z-other z-rust">use</span> <span class="z-meta z-path z-rust">rustc_interface<span class="z-punctuation z-accessor z-rust">::</span></span>interface<span class="z-punctuation z-terminator z-rust">;</span>
+</span><span class="z-source z-rust"><span class="z-keyword z-other z-rust">use</span> <span class="z-meta z-path z-rust">rustc_session<span class="z-punctuation z-accessor z-rust">::</span></span><span class="z-meta z-path z-rust">config<span class="z-punctuation z-accessor z-rust">::</span></span>ErrorOutputType<span class="z-punctuation z-terminator z-rust">;</span>
+</span><span class="z-source z-rust"><span class="z-keyword z-other z-rust">use</span> <span class="z-meta z-path z-rust">rustc_session<span class="z-punctuation z-accessor z-rust">::</span></span>EarlyDiagCtxt<span class="z-punctuation z-terminator z-rust">;</span>
+</span><span class="z-source z-rust">
+</span><span class="z-source z-rust"><span class="z-meta z-struct z-rust"><span class="z-storage z-type z-struct z-rust">struct</span> </span><span class="z-meta z-struct z-rust"><span class="z-entity z-name z-struct z-rust">DisableSafetyChecks</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span><span class="z-source z-rust">
+</span><span class="z-source z-rust"><span class="z-meta z-impl z-rust"><span class="z-storage z-type z-impl z-rust">impl</span> </span><span class="z-meta z-impl z-rust">Callbacks <span class="z-keyword z-other z-rust">for</span></span><span class="z-meta z-impl z-rust"> <span class="z-entity z-name z-impl z-rust">DisableSafetyChecks</span> </span><span class="z-meta z-impl z-rust"><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-impl z-rust"><span class="z-meta z-block z-rust">    <span class="z-meta z-function z-rust"><span class="z-meta z-function z-rust"><span class="z-storage z-type z-function z-rust">fn</span> </span><span class="z-entity z-name z-function z-rust">config</span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">(</span><span class="z-keyword z-operator z-rust">&amp;</span><span class="z-storage z-modifier z-rust">mut</span> <span class="z-variable z-parameter z-rust">self</span>, <span class="z-variable z-parameter z-rust">config</span><span class="z-punctuation z-separator z-rust">:</span> <span class="z-keyword z-operator z-rust">&amp;</span><span class="z-storage z-modifier z-rust">mut</span> <span class="z-meta z-path z-rust">interface<span class="z-punctuation z-accessor z-rust">::</span></span>Config</span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-end z-rust">)</span></span></span></span><span class="z-meta z-function z-rust"> </span><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span></span></span></span><span class="z-source z-rust"><span class="z-meta z-impl z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">        config<span class="z-punctuation z-accessor z-dot z-rust">.</span>override_queries <span class="z-keyword z-operator z-assignment z-rust">=</span>
+</span></span></span></span></span><span class="z-source z-rust"><span class="z-meta z-impl z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">            <span class="z-support z-type z-rust">Some</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">|</span></span></span><span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-variable z-parameter z-rust">_session</span><span class="z-punctuation z-separator z-rust">,</span> <span class="z-variable z-parameter z-rust">queries</span><span class="z-punctuation z-section z-parameters z-end z-rust">|</span></span> </span><span class="z-meta z-function z-closure z-rust">queries<span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-entity z-name z-function z-rust">check_unsafety</span> <span class="z-keyword z-operator z-rust">=</span> <span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">|</span></span></span><span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-variable z-parameter z-rust">_tcx</span><span class="z-punctuation z-separator z-rust">,</span> <span class="z-variable z-parameter z-rust">_def_id</span><span class="z-punctuation z-section z-parameters z-end z-rust">|</span></span> </span><span class="z-meta z-function z-closure z-rust"><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span></span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span></span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span></span></span><span class="z-source z-rust"><span class="z-meta z-impl z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    </span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span></span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-impl z-rust"><span class="z-meta z-block z-rust"></span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span></span>
+</span><span class="z-source z-rust">
+</span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-function z-rust"><span class="z-storage z-type z-function z-rust">fn</span> </span><span class="z-entity z-name z-function z-rust">main</span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">(</span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-end z-rust">)</span></span></span></span><span class="z-meta z-function z-rust"> </span><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-meta z-path z-rust">rustc_driver<span class="z-punctuation z-accessor z-rust">::</span></span>install_ice_hook<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span>
+</span></span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-group z-rust">        <span class="z-string z-quoted z-double z-rust"><span class="z-punctuation z-definition z-string z-begin z-rust">&quot;</span>https://github.com/jyn514/jyn514.github.io/issues/new<span class="z-punctuation z-definition z-string z-end z-rust">&quot;</span></span><span class="z-punctuation z-separator z-rust">,</span>
+</span></span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-group z-rust">        <span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">|</span></span></span><span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust">_<span class="z-punctuation z-section z-parameters z-end z-rust">|</span></span> </span><span class="z-meta z-function z-closure z-rust"><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-separator z-rust">,</span>
+</span></span></span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-group z-rust"><span class="z-meta z-function z-closure z-rust">    </span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-storage z-type z-rust">let</span> handler <span class="z-keyword z-operator z-assignment z-rust">=</span> <span class="z-meta z-path z-rust">EarlyDiagCtxt<span class="z-punctuation z-accessor z-rust">::</span></span>new<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-meta z-path z-rust">ErrorOutputType<span class="z-punctuation z-accessor z-rust">::</span></span>HumanReadable<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span>
+</span></span></span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-group z-rust"><span class="z-meta z-group z-rust">        <span class="z-meta z-path z-rust">HumanReadableErrorType<span class="z-punctuation z-accessor z-rust">::</span></span>Default<span class="z-punctuation z-separator z-rust">,</span>
+</span></span></span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-group z-rust"><span class="z-meta z-group z-rust">        <span class="z-meta z-path z-rust">ColorConfig<span class="z-punctuation z-accessor z-rust">::</span></span>Auto<span class="z-punctuation z-separator z-rust">,</span>
+</span></span></span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-group z-rust"><span class="z-meta z-group z-rust">    </span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-meta z-path z-rust">rustc_driver<span class="z-punctuation z-accessor z-rust">::</span></span>init_rustc_env_logger<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-keyword z-operator z-bitwise z-rust">&amp;</span>handler</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust">    <span class="z-meta z-path z-rust">std<span class="z-punctuation z-accessor z-rust">::</span></span><span class="z-meta z-path z-rust">process<span class="z-punctuation z-accessor z-rust">::</span></span>exit<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-meta z-path z-rust">rustc_driver<span class="z-punctuation z-accessor z-rust">::</span></span>catch_with_exit_code<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-storage z-modifier z-rust">move</span> <span class="z-keyword z-operator z-logical z-rust">||</span> <span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span></span></span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-group z-rust"><span class="z-meta z-group z-rust"><span class="z-meta z-block z-rust">        <span class="z-storage z-type z-rust">let</span> args<span class="z-punctuation z-separator z-rust">:</span> <span class="z-meta z-generic z-rust"><span class="z-support z-type z-rust">Vec</span><span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-support z-type z-rust">String</span><span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span> <span class="z-keyword z-operator z-assignment z-rust">=</span> <span class="z-meta z-path z-rust">std<span class="z-punctuation z-accessor z-rust">::</span></span><span class="z-meta z-path z-rust">env<span class="z-punctuation z-accessor z-rust">::</span></span>args<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">collect</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span></span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-group z-rust"><span class="z-meta z-group z-rust"><span class="z-meta z-block z-rust">        <span class="z-meta z-path z-rust">rustc_driver<span class="z-punctuation z-accessor z-rust">::</span></span><span class="z-meta z-path z-rust">RunCompiler<span class="z-punctuation z-accessor z-rust">::</span></span>new<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-keyword z-operator z-bitwise z-rust">&amp;</span>args<span class="z-punctuation z-separator z-rust">,</span> <span class="z-keyword z-operator z-bitwise z-rust">&amp;</span><span class="z-storage z-modifier z-rust">mut</span> DisableSafetyChecks</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">run</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span>
+</span></span></span></span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-group z-rust"><span class="z-meta z-group z-rust"><span class="z-meta z-block z-rust">    </span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-block z-rust"></span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span></span>
+</span></code></pre>
+<p>there's a lot here. i'm not going to cover it all - see <a href="https://rustc-dev-guide.rust-lang.org/">the rustc dev guide</a> or <a href="https://doc.rust-lang.org/nightly/nightly-rustc/">generated documentation</a> for that - but i want to call out two things in particular:</p>
+<ol>
+<li>we had to explicitly use <code>extern crate</code> to load the rustc_private crates. normally, cargo will pass (e.g.) <code>--extern cfg-if=~/.cargo/debug/deps/libcfg-if.rmeta</code>, so rustc loads our dependencies automatically. these crates are being loaded from the <a href="https://rustc-dev-guide.rust-lang.org/building/bootstrapping/what-bootstrapping-does.html#what-is-a-sysroot">sysroot</a>, though, so cargo doesn't know about them.</li>
+<li>the bit of this driver we actually care about is in <code>queries.check_unsafety = |...| {}</code>. that says "override the default function that checks unsafety with our own function". rustc is built on a "query" model where information is pulled instead of pushed - see the dev guide section on <a href="https://rustc-dev-guide.rust-lang.org/overview.html#queries">queries</a> for more information.</li>
+</ol>
+<p>let's test out our driver and make sure it works. we'll install it, create a new project that uses unsafe code without an <code>unsafe</code> block, and make sure that project compiles.</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"></span><span class="z-keyword z-operator z-logical z-continue z-shell">;</span> <span class="z-meta z-function-call z-shell"><span class="z-support z-function z-cd z-shell">cd</span></span><span class="z-meta z-function-call z-arguments z-shell"> driver</span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"></span><span class="z-keyword z-operator z-logical z-continue z-shell">;</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> install<span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> --</span>path</span> .</span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"></span><span class="z-keyword z-operator z-logical z-continue z-shell">;</span> <span class="z-meta z-function-call z-shell"><span class="z-support z-function z-cd z-shell">cd</span></span><span class="z-meta z-function-call z-arguments z-shell"> ..</span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"></span><span class="z-keyword z-operator z-logical z-continue z-shell">;</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> new safe-rust</span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"></span><span class="z-keyword z-operator z-logical z-continue z-shell">;</span> <span class="z-meta z-function-call z-shell"><span class="z-support z-function z-cd z-shell">cd</span></span><span class="z-meta z-function-call z-arguments z-shell"> safe-rust</span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"></span><span class="z-keyword z-operator z-logical z-continue z-shell">;</span> <span class="z-meta z-function-call z-shell"><span class="z-support z-function z-echo z-shell">echo</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-string z-quoted z-single z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&#39;</span>fn main() { println!(&quot;{}&quot;, *std::ptr::null::&lt;usize&gt;()); }<span class="z-punctuation z-definition z-string z-end z-shell">&#39;</span></span> <span class="z-keyword z-operator z-assignment z-redirection z-shell">&gt;</span> src/main.rs</span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"></span><span class="z-keyword z-operator z-logical z-continue z-shell">;</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> driver</span>
+</span><span class="z-source z-shell z-bash">   <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">Compiling</span></span><span class="z-meta z-function-call z-arguments z-shell"> safe-rust v0.1.0 (/home/jyn/src/safe-rust</span><span class="z-meta z-function-call z-shell"></span>)
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">warning:</span></span><span class="z-meta z-function-call z-arguments z-shell"> dereferencing a null pointer</span>
+</span><span class="z-source z-shell z-bash"> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">--</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-keyword z-operator z-assignment z-redirection z-shell">&gt;</span> src/main.rs:1:28</span>
+</span><span class="z-source z-shell z-bash">  <span class="z-meta z-function-call z-shell"></span><span class="z-keyword z-operator z-logical z-pipe z-shell">|</span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">1</span></span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">fn</span></span><span class="z-meta z-function-call z-arguments z-shell"> main(</span><span class="z-meta z-function-call z-shell"></span>) <span class="z-punctuation z-definition z-compound z-braces z-begin z-shell">{</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">println!</span></span><span class="z-meta z-function-call z-arguments z-shell">(<span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span>{}<span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span>, <span class="z-keyword z-operator z-regexp z-quantifier z-shell">*</span>std::ptr::null::<span class="z-keyword z-operator z-assignment z-redirection z-shell">&lt;</span>usize<span class="z-keyword z-operator z-assignment z-redirection z-process z-shell">&gt;</span><span class="z-punctuation z-section z-parens z-begin z-shell">(</span><span class="z-punctuation z-section z-parens z-end z-shell">)</span></span><span class="z-meta z-function-call z-shell"></span>)<span class="z-keyword z-operator z-logical z-continue z-shell">;</span> <span class="z-punctuation z-definition z-compound z-braces z-end z-shell">}</span>
+</span><span class="z-source z-shell z-bash">  <span class="z-meta z-function-call z-shell"></span><span class="z-keyword z-operator z-logical z-pipe z-shell">|</span>                            <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">^^^^^^^^^^^^^^^^^^^^^^^^^^</span></span><span class="z-meta z-function-call z-arguments z-shell"> this code causes undefined behavior when executed</span>
+</span><span class="z-source z-shell z-bash">  <span class="z-meta z-function-call z-shell"></span><span class="z-keyword z-operator z-logical z-pipe z-shell">|</span>
+</span><span class="z-source z-shell z-bash">  <span class="z-keyword z-operator z-assignment z-shell">=</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">note:</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-meta z-group z-expansion z-command z-backticks z-shell"><span class="z-punctuation z-section z-group z-begin z-shell">`</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">#[warn</span></span><span class="z-meta z-function-call z-arguments z-shell">(deref_nullptr</span><span class="z-meta z-function-call z-shell"></span>)<span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">]</span></span><span class="z-punctuation z-section z-group z-end z-shell">`</span></span> on by default</span>
+</span><span class="z-source z-shell z-bash">
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">warning:</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-meta z-group z-expansion z-command z-backticks z-shell"><span class="z-punctuation z-section z-group z-begin z-shell">`</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">safe-rust</span></span><span class="z-punctuation z-section z-group z-end z-shell">`</span></span> (bin <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span>safe-rust<span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span><span class="z-meta z-function-call z-shell"></span>) <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">generated</span></span><span class="z-meta z-function-call z-arguments z-shell"> 1 warning</span>
+</span><span class="z-source z-shell z-bash">    <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">Finished</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-meta z-group z-expansion z-command z-backticks z-shell"><span class="z-punctuation z-section z-group z-begin z-shell">`</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">dev</span></span><span class="z-punctuation z-section z-group z-end z-shell">`</span></span> profile <span class="z-keyword z-control z-regexp z-set z-begin z-shell">[</span>unoptimized + debuginfo<span class="z-keyword z-control z-regexp z-set z-end z-shell">]</span> target(s</span><span class="z-meta z-function-call z-shell"></span>) <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">in</span></span><span class="z-meta z-function-call z-arguments z-shell"> 0.06s</span>
+</span></code></pre>
+<p>tada!</p>
+<hr />
+<h3 id="a-digression-more-about-rustup-proxies">a digression: more about rustup proxies<a class="zola-anchor" href="#a-digression-more-about-rustup-proxies" aria-label="Anchor link for: a-digression-more-about-rustup-proxies"></a>
+</h3>
+<p>when we built our custom driver, we wrote <code>driver.rs</code> and <code>cargo-driver.rs</code>, but we never wrote a rustup proxy. how was it picking the right version to run?</p>
+<p>well, it was always picking the same version. if we explicitly use a different toolchain - e.g. <code>stable</code> - it will still run our custom driver, which uses the nightly toolchain.</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"></span><span class="z-keyword z-operator z-logical z-continue z-shell">;</span> <span class="z-variable z-other z-readwrite z-assignment z-shell">RUSTFLAGS</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell">--version</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cargo</span></span><span class="z-meta z-function-call z-arguments z-shell"> +stable driver</span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">---</span></span><span class="z-meta z-function-call z-arguments z-shell"> stdout</span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">rustc</span></span><span class="z-meta z-function-call z-arguments z-shell"> 1.84.0-nightly (662180b34 2024-10-20</span><span class="z-meta z-function-call z-shell"></span>)
+</span></code></pre>
+<p>ideally, we would instead have our driver respect the version we're passed. that would also mean stuff like <code>driver +stable</code> would give a nice error when that version isn't installed, instead of what it currently does:</p>
+<pre class="z-code"><code><span class="z-text z-plain">error: couldn&#39;t read +stable: No such file or directory (os error 2)
+</span></code></pre>
+<p>here is a toy shell script that does that, using the same "read my own process name" trick to dispatch to the right binary:</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> ~/.cargo/bin/driver</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span><span class="z-source z-shell z-bash"><span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> ~/.cargo/bin/cargo-driver</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span><span class="z-source z-shell z-bash"><span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell">!/bin/sh</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span><span class="z-source z-shell z-bash"><span class="z-meta z-conditional z-case z-shell"><span class="z-keyword z-control z-conditional z-case z-shell">case</span> <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">1</span></span><span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span> <span class="z-keyword z-control z-in z-shell">in</span>
+</span></span><span class="z-source z-shell z-bash"><span class="z-meta z-conditional z-case z-shell">    </span><span class="z-meta z-conditional z-case z-clause z-patterns z-shell">+<span class="z-keyword z-operator z-regexp z-quantifier z-shell">*</span><span class="z-meta z-conditional z-case z-shell"><span class="z-keyword z-control z-conditional z-patterns z-end z-shell">)</span></span></span><span class="z-meta z-conditional z-case z-clause z-commands z-shell"> <span class="z-variable z-other z-readwrite z-assignment z-shell">RUSTUP_TOOLCHAIN</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell"><span class="z-meta z-group z-expansion z-command z-parens z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-punctuation z-section z-parens z-begin z-shell">(</span><span class="z-meta z-function-call z-shell"><span class="z-support z-function z-echo z-shell">echo</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">1</span></span><span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cut</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>c</span> 1-</span><span class="z-punctuation z-section z-parens z-end z-shell">)</span></span></span><span class="z-meta z-function-call z-shell"></span><span class="z-keyword z-operator z-logical z-continue z-shell">;</span> <span class="z-meta z-function-call z-shell"><span class="z-support z-function z-shift z-shell">shift</span></span></span><span class="z-meta z-conditional z-case z-clause z-commands z-shell"><span class="z-punctuation z-terminator z-case z-clause z-shell">;;</span></span><span class="z-meta z-conditional z-case z-clause z-patterns z-shell">
+</span></span><span class="z-source z-shell z-bash"><span class="z-meta z-conditional z-case z-clause z-patterns z-shell">    </span><span class="z-meta z-conditional z-case z-clause z-patterns z-shell"><span class="z-keyword z-operator z-regexp z-quantifier z-shell">*</span><span class="z-meta z-conditional z-case z-clause z-patterns z-shell"><span class="z-keyword z-control z-conditional z-patterns z-end z-shell">)</span></span></span><span class="z-meta z-conditional z-case z-clause z-commands z-shell"> <span class="z-variable z-other z-readwrite z-assignment z-shell">RUSTUP_TOOLCHAIN</span><span class="z-keyword z-operator z-assignment z-shell">=</span><span class="z-string z-unquoted z-shell"><span class="z-meta z-group z-expansion z-command z-parens z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-punctuation z-section z-parens z-begin z-shell">(</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">rustup</span></span><span class="z-meta z-function-call z-arguments z-shell"> default</span> <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span> <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">cut</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>d</span> <span class="z-string z-quoted z-single z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&#39;</span> <span class="z-punctuation z-definition z-string z-end z-shell">&#39;</span></span><span class="z-variable z-parameter z-option z-shell"><span class="z-punctuation z-definition z-parameter z-shell"> -</span>f</span> 1</span><span class="z-punctuation z-section z-parens z-end z-shell">)</span></span></span>
+</span></span><span class="z-source z-shell z-bash"><span class="z-meta z-conditional z-case z-clause z-commands z-shell"></span><span class="z-meta z-conditional z-case z-clause z-patterns z-shell"><span class="z-keyword z-control z-conditional z-end z-shell">esac</span></span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-support z-function z-exec z-shell">exec</span></span><span class="z-meta z-function-call z-arguments z-shell"> rustup run <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">RUSTUP_TOOLCHAIN</span></span><span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span> <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span><span class="z-meta z-group z-expansion z-command z-parens z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-punctuation z-section z-parens z-begin z-shell">(</span><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">basename</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-other z-readwrite z-shell">0</span></span></span><span class="z-punctuation z-section z-parens z-end z-shell">)</span></span><span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span> <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span><span class="z-meta z-group z-expansion z-parameter z-shell"><span class="z-punctuation z-definition z-variable z-shell">$</span><span class="z-variable z-language z-shell">@</span></span><span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-support z-function z-exit z-shell">exit</span></span><span class="z-meta z-function-call z-arguments z-shell"> 1 <span class="z-comment z-line z-number-sign z-shell"><span class="z-punctuation z-definition z-comment z-begin z-shell">#</span></span><span class="z-comment z-line z-number-sign z-shell"> unreachable</span><span class="z-comment z-line z-number-sign z-shell">
+</span></span></span></code></pre>
+<p>the other advantage of this shell script is it will let you version your tool. for example, you could install it into <code>$(rustc --print sysroot)/bin</code> instead of <code>~/.cargo/bin</code>, and have multiple versions depending on what version of rustc it was built with. this is how clippy and the other tools packaged by rustup work, but rustup doesn't support arbitrary drivers, only the hard-coded ones it knows about.</p>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-paths">
+<p>you may have noticed that i have changed the strace output from <code>~/.local/lib/rustup</code> to <code>~/.rustup</code>, and likewise for <code>~/.cargo</code>. <code>~/.rustup</code> and <code>~/.cargo</code> are the default locations for rustup and cargo respectively, but i've manually changed them with <code>CARGO_HOME</code> and <code>RUSTUP_HOME</code> environment variables. the difference doesn't matter for the purpose of this post. <a href="#fr-paths-1">↩</a></p>
+</li>
+<li id="fn-target-libdir">
+<p>unlike before, these aren't in <code>nightly/lib</code>, they're in <code>nightly/lib/rustlib/x86_64-unknown-linux-gnu/lib</code>. the difference between these is a little out of scope for this post; basically the former is target-independent and the latter is target-specific. see <a href="https://rustc-dev-guide.rust-lang.org/building/bootstrapping/what-bootstrapping-does.html#what-is-a-sysroot">what is a sysroot?</a> for more information. <a href="#fr-target-libdir-1">↩</a></p>
+</li>
+<li id="fn-rpath-origin">
+<p>this strategy embeds an absolute path in our binary. that's fine when running locally, but clippy and other tools want to work on any machine. instead, they use <code>-Wl,-rpath=$ORIGIN/../lib</code>, which says "the lib dir relative to the path to the binary that's currently running". we can't use that here because it only works if our binary is in the sysroot, not if it's installed to <code>~/.cargo/bin</code>. <a href="#fr-rpath-origin-1">↩</a></p>
+</li>
+<li id="fn-bindeps">
+<p><a href="https://github.com/rust-lang/cargo/issues/9096">artifact dependencies</a> don't actually help here. they require that the binary you're using come from another crate; they can't be used to specify a target inside the current package. <a href="#fr-bindeps-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;rustc-driver&#x2F;&amp;type=story">Hacker News</a>,
+    
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;rustc-driver&#x2F;">Lobste.rs</a>, or
+    <a href="https:&#x2F;&#x2F;tech.lgbt&#x2F;@jyn&#x2F;113364625339818650">Mastodon</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>what happens when you run &lt;code&gt;cargo clippy&lt;&#x2F;code&gt;?</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

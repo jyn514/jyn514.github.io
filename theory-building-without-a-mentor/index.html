@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>theory building without a mentor</title>
+    
+    <meta name="description" content="learning how a program is intended to work is hard. here&#x27;s how to do it.">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="learning how a program is intended to work is hard. here&#x27;s how to do it." class="post-title" itemprop="name headline">theory building without a mentor</h1>
+    <p class="post-meta">
+      <time datetime="2025-05-24" itemprop="datePublished">
+        2025-05-24
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/ideas/">ideas</a>
+        
+      • <a href="https://jyn.dev/tags/walkthroughs/">walkthroughs</a>
+        
+      
+    </p>
+  </header>
+
+  
+
+	
+
+  
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <p><strong>NOTE: if you are just here for the how-to guide, <a href="https://jyn.dev/theory-building-without-a-mentor/#recreating-a-theory">click here</a> to skip the philosophizing.</strong></p>
+<h2 id="theory-building">theory building<a class="zola-anchor" href="#theory-building" aria-label="Anchor link for: theory-building"></a>
+</h2>
+<p>Peter Naur wrote a famous article in 1985 called <a href="https://gist.github.com/onlurking/fc5c81d18cfce9ff81bc968a7f342fb1">Programming as Theory Building</a>. it has some excellent ideas, such as:</p>
+<blockquote>
+<p>programming must be the programmers’ building up knowledge of a certain kind, knowledge taken to be basically the programmers’ immediate possession, any documentation being an auxiliary product.</p>
+</blockquote>
+<blockquote>
+<p>solutions suggested by group B [who did not possess a theory of the program] […] effectively destroyed its power and simplicity. The members of group A [who did possess a theory] were able to spot these cases instantly and could propose simple and effective solutions, framed entirely within the existing structure.</p>
+</blockquote>
+<blockquote>
+<p>the program text and its documentation proved insufficient as a carrier of the most important design ideas</p>
+</blockquote>
+<p>i think this article is excellent, and highly recommend reading it in full. however, i want to discuss one particular idea Naur mentions:</p>
+<blockquote>
+<p>For a new programmer to come to possess an existing theory of a program it is insufficient that he or she has the opportunity to become familiar with the program text and other documentation. What is required is that the new programmer has the opportunity to work in close contact with the programmers who already possess the theory [...] program revival, that is reestablishing the theory of a program merely from the documentation, is strictly impossible.</p>
+</blockquote>
+<p>i do not think it is true that it is impossible to recover a theory of the program merely from the code and docs. my day job, and indeed one of my most prized skills when i interview for jobs, is creating a theory of programs from their text and documentation alone. this blog post is about how i do that, and how you can too.</p>
+<h2 id="theory-modification">theory modification<a class="zola-anchor" href="#theory-modification" aria-label="Anchor link for: theory-modification"></a>
+</h2>
+<p>Naur also says in the article:</p>
+<blockquote>
+<p>“in a certain sense there can be no question of theory modification, only program modification”</p>
+</blockquote>
+<p>i think this is wrong: theory modification is exactly what Ward Cunningham describes as "consolidation" in his 1992 article on <a href="https://c2.com/doc/oopsla92.html">Technical Debt</a>. i highly recommend the original article, but the basic idea is that over time, your understanding of how the program <em>should</em> behave changes, and you modify and refactor your program to match that idea. this happens in all programs, but the modification is easier in programs with little <a href="https://jyn.dev/technical-debt-is-different-from-technical-risk/">technical risk</a>.</p>
+<p>furthermore, this theory modification often happens unintentionally over time as people are added and removed from teams. as <a href="https://blog.ceejbot.com/posts/dysfunction-junction/#fn:1">ceejbot puts it</a>:</p>
+<blockquote>
+<p>This is Conway’s Law over time. Teams are immutable: adding or removing a person to a team produces a different team. After enough change, the team is different enough that it no longer recognizes itself in the software system it produces. The result is people being vaguely unhappy about software that might be working perfectly well.</p>
+</blockquote>
+<p>i bring this up to note that you will never recover the <em>same</em> theory as the original programmers (at least, not without talking to them directly). the most you can do is to recover one similar enough that it does not require large changes to the program. in other words, you are creating a new theory of the program, and may end up having to adapt the program to your new theory.</p>
+<h2 id="recreating-a-theory">recreating a theory<a class="zola-anchor" href="#recreating-a-theory" aria-label="Anchor link for: recreating-a-theory"></a>
+</h2>
+<p>this is useful both when fixing bugs and when adding new features; i will focus on new features because i want to emphasize that these skills are useful any time you modify a program. for a focus on debugging, see Julia Evans' <a href="https://wizardzines.com/zines/debugging-guide/">Pocket Guide to Debugging</a>.</p>
+<p>this post is about creating theories at the "micro" level, for small portions of the program. i hope to make a post about the "macro" level in the future, since that's what really lets you start making design decisions about a program.</p>
+<aside role=note class=note-container><div class=note-content>
+<p>i recently made a <a href="https://github.com/neovim/neovim/pull/33339/">PR to neovim</a>, having never worked on neovim before; i'll use that as an example going forward.
+i highly recommend following along with a piece of code you want to learn more about. if you don't have one in mind, i have hidden all the examples behind a drop-down menu, so you can try to apply the ideas on your own before seeing how i use them.</p>
+<p>the investigation i did in this blog post was based off <a href="https://github.com/neovim/neovim/tree/57d99a515f57454370b6c122545ea53685d22d1b">neovim commit 57d99a5</a>.</p>
+<p><button id=expandAll>Click here to open all notes.</button></p>
+</div></aside>
+<h3 id="where-to-start">where to start<a class="zola-anchor" href="#where-to-start" aria-label="Anchor link for: where-to-start"></a>
+</h3>
+<p>to start off, you need an idea of what change you want to make to the program. almost always, programs are too large for you to get an idea of the whole program at once. instead, you need to focus on theory-building for the parts you care about, and only understand the rest of the program to the extent that the parts you care about interact with it.</p>
+<aside role=note class=note-container><div class=note-content>
+<p>in my neovim PR, i cared about the <a href="https://neovim.io/doc/user/windows.html#%3Adrop"><code>:drop</code></a> command, which opens a file if it isn't loaded, or switches to the relevant buffer if it is. specifically i wanted to extend the "switch to the relevant buffer" part to also respect <a href="https://neovim.io/doc/user/editing.html#%2Bcmd"><code>+cmd</code></a>, so that i could pass it a line number.</p>
+</div></aside>
+<h3 id="finding-the-parts-you-care-about">finding the parts you care about<a class="zola-anchor" href="#finding-the-parts-you-care-about" aria-label="Anchor link for: finding-the-parts-you-care-about"></a>
+</h3>
+<p>there are several ways to get started here. the simplest is just finding the relevant part of the code or docs—if you can provoke an error that's related to the part of the code you're changing, you can search for that error directly. often, knowing <em>how</em> execution reaches that state is very helpful, which you can do by getting a backtrace. you can get backtraces for output from arbitrary programs with <a href="https://jade.fyi/blog/debugging-rr-children/">liberal use of rr</a>, but if you're debugging rustc specifically, there's actually a built-in flag for this, so you can just use <a href="https://rustc-dev-guide.rust-lang.org/compiler-debugging.html#getting-a-backtrace-for-errors"><code>rustc file.rs -Z treat-err-as-bug</code></a>.</p>
+<aside role=note class=note-container><details class=note-content><summary><code>:drop</code></summary>
+<p>for <code>:drop</code>, this didn't work: it was documented on <a href="https://neovim.io/doc/user/windows.html#%3Adrop">neovim's site</a>, but i didn't know a <code>:drop</code>-specific error to search for.</p>
+</details></aside>
+<p>if this doesn't print an error message, or if it's not possible to get a recording of the program, things are harder. you want to look for something you already know the name of; search for literal strings with that name, or substrings that might form part of a template.</p>
+<aside role=note class=note-container><details class=note-content><summary><code>:drop</code></summary>
+<p>for <code>:drop</code> i searched for the literal string <code>"drop"</code>, since <em>something</em> needs to parse commands and it's not super common for it to be on its own in a string. that pulled up the following hits:</p>
+<pre class="z-code"><code><span class="z-text z-plain">$ rg &#39;&quot;drop&quot;&#39; src
+</span><span class="z-text z-plain">src/nvim/ex_docmd.c:4196:  } else if (STRICMP(p, &quot;drop&quot;) == 0) {
+</span><span class="z-text z-plain">src/nvim/ex_docmd.c:4213:    &quot;drop&quot;,
+</span><span class="z-text z-plain">src/nvim/ex_docmd.c:4302:    // &quot;drop&quot;.
+</span><span class="z-text z-plain">src/nvim/eval.c:7146:    len += 7 + 4;  // &quot; ++bad=&quot; + &quot;keep&quot; or &quot;drop&quot;
+</span></code></pre>
+<p><code>ex_docmd.c</code> looked promising, so i read the code around there.</p>
+</details></aside>
+<h3 id="reading-source-code">reading source code<a class="zola-anchor" href="#reading-source-code" aria-label="Anchor link for: reading-source-code"></a>
+</h3>
+<p>sometimes triggering the condition is hard, so instead i read the source code to reverse-engineer the stack trace. seeing all possible call sites of a function is instructive in itself, and you can usually narrow it down to only a few callers by skimming what the callers are doing. i highly recommend using an LSP for this part since the advantage comes from seeing <em>all</em> possible callers, not just most, and regex is less reliable than proper name resolution.</p>
+<aside role=note class=note-container><details class=note-content><summary><code>:drop</code></summary>
+<p>it turned out that none of the code i found in my search was for <code>:drop</code> itself, but i did find it was in a function named <code>get_bad_opt</code>. <code>get_bad_opt</code> had only one caller, <code>getargopt</code>. that was called by <code>do_one_cmd</code>. the doc-comment on <code>do_one_cmd</code> mentions that it parses the string, but i am not used to having documentation so i went up one level too far to <code>do_cmdline</code>. at that point, looking at the call site of <code>do_one_cmd</code>, i realized i had gone too far because it was passing in the whole string of the Ex command line. i found a more relevant part of the code by looking at the uses of <code>cmdlinep</code> in <code>do_one_cmd</code>:</p>
+<pre data-lang="c" class="language-c z-code"><code class="language-c" data-lang="c"><span class="z-source z-c">      <span class="z-storage z-type z-c">char</span> <span class="z-keyword z-operator z-c">*</span>cmdname <span class="z-keyword z-operator z-assignment z-c">=</span> after_modifier <span class="z-keyword z-operator z-ternary z-c">?</span> after_modifier <span class="z-keyword z-operator z-ternary z-c">:</span> <span class="z-keyword z-operator z-c">*</span>cmdlinep<span class="z-punctuation z-terminator z-c">;</span>
+</span></code></pre>
+<p>i got lucky - this was not actually the code i cared about, but the bit i did care about had a similar name, so i found it by searching for <code>cmdname</code>:</p>
+<pre data-lang="c" class="language-c z-code"><code class="language-c" data-lang="c"><span class="z-source z-c">  <span class="z-comment z-line z-double-slash z-c"><span class="z-punctuation z-definition z-comment z-c">//</span> 6. Parse arguments.  Then check for errors.
+</span></span><span class="z-source z-c">  <span class="z-keyword z-control z-c">if</span> <span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span><span class="z-keyword z-operator z-arithmetic z-c">!</span><span class="z-meta z-function-call z-c"><span class="z-variable z-function z-c">IS_USER_CMDIDX</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c">ea<span class="z-punctuation z-accessor z-c">.</span><span class="z-variable z-other z-member z-c">cmdidx</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-end z-c">)</span></span></span><span class="z-punctuation z-section z-group z-end z-c">)</span></span> <span class="z-meta z-block z-c"><span class="z-punctuation z-section z-block z-begin z-c">{</span>
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">    ea<span class="z-punctuation z-accessor z-c">.</span><span class="z-variable z-other z-member z-c">argt</span> <span class="z-keyword z-operator z-assignment z-c">=</span> cmdnames<span class="z-meta z-brackets z-c"><span class="z-punctuation z-section z-brackets z-begin z-c">[</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span><span class="z-storage z-type z-c">int</span><span class="z-punctuation z-section z-group z-end z-c">)</span></span>ea<span class="z-punctuation z-accessor z-c">.</span><span class="z-variable z-other z-member z-c">cmdidx</span><span class="z-punctuation z-section z-brackets z-end z-c">]</span></span><span class="z-punctuation z-accessor z-c">.</span><span class="z-variable z-other z-member z-c">cmd_argt</span><span class="z-punctuation z-terminator z-c">;</span>
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">  <span class="z-punctuation z-section z-block z-end z-c">}</span></span>
+</span></code></pre>
+<p>from there i went to the definition of <code>cmdnames</code> (in <code>build/src/nvim/auto/ex_cmds_defs.generated.h</code>) and found <code>"drop"</code> in that file:</p>
+<pre data-lang="c" class="language-c z-code"><code class="language-c" data-lang="c"><span class="z-source z-c">  <span class="z-meta z-brackets z-c"><span class="z-punctuation z-section z-brackets z-begin z-c">[</span>CMD_drop<span class="z-punctuation z-section z-brackets z-end z-c">]</span></span> <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-meta z-block z-c"><span class="z-punctuation z-section z-block z-begin z-c">{</span>
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">    <span class="z-punctuation z-accessor z-c">.</span><span class="z-variable z-other z-member z-c">cmd_name</span> <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-string z-quoted z-double z-c"><span class="z-punctuation z-definition z-string z-begin z-c">&quot;</span>drop<span class="z-punctuation z-definition z-string z-end z-c">&quot;</span></span><span class="z-punctuation z-separator z-c">,</span>
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">    <span class="z-punctuation z-accessor z-c">.</span><span class="z-variable z-other z-member z-c">cmd_func</span> <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span>ex_func_T<span class="z-punctuation z-section z-group z-end z-c">)</span></span><span class="z-keyword z-operator z-c">&amp;</span>ex_drop<span class="z-punctuation z-separator z-c">,</span>
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">    <span class="z-punctuation z-accessor z-c">.</span><span class="z-variable z-other z-member z-c">cmd_preview_func</span> <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-constant z-language z-c">NULL</span><span class="z-punctuation z-separator z-c">,</span>
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">    <span class="z-punctuation z-accessor z-c">.</span><span class="z-variable z-other z-member z-c">cmd_argt</span> <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-constant z-numeric z-integer z-decimal z-c">147854<span class="z-storage z-type z-numeric z-c">L</span></span><span class="z-punctuation z-separator z-c">,</span>
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">    <span class="z-punctuation z-accessor z-c">.</span><span class="z-variable z-other z-member z-c">cmd_addr_type</span> <span class="z-keyword z-operator z-assignment z-c">=</span> ADDR_NONE
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">  <span class="z-punctuation z-section z-block z-end z-c">}</span></span><span class="z-punctuation z-separator z-c">,</span>
+</span></code></pre>
+<p>and from there found that the function i cared about was called <code>ex_drop</code>.</p>
+<p>if i had been a little more careful, i could have found <code>CMD_drop</code> sooner with <code>rg -ul '"drop"'</code> (this time without filtering out hidden files or limiting to the source directory). but this way worked fine as well.</p>
+</details></aside>
+<h3 id="verifying-your-understanding">verifying your understanding<a class="zola-anchor" href="#verifying-your-understanding" aria-label="Anchor link for: verifying-your-understanding"></a>
+</h3>
+<p>do mini experiments: if you see an error emitted in nearby code, try to trigger it so that you verify you're looking in the right place. when debugging, i often use process of elimination to narrow down callers: if an error would have been emitted if a certain code path was taken, or if there would have been more or less logging, i can be sure that code i am looking at was not run.</p>
+<p>the simplest experiment is just <code>exit(1)</code>; it's easy to notice and doesn't change the state of the program, and it can't fail. other experiments could include "adding custom logging" or "change the behavior of the function", which let you perform multiple experiments at once and understand how the function impacts its callers.</p>
+<p>for more complicated code, i like to use a debugger, which lets you see much more of the state at once. if possible, in-editor debuggers are really nice—vscode, and <a href="https://zed.dev/debugger">since recently, zed</a>, have one built-in; for nvim i use <a href="https://github.com/rcarriga/nvim-dap-ui">nvim-dap-ui</a>. you can also just use a debugger in a terminal. some experiments i like to try:</p>
+<ul>
+<li>breaking at a function to make sure it is executed</li>
+<li>printing local variables</li>
+<li>setting hardware watchpoints on memory to see where something is modified (this especially shines <a href="https://rr-project.org/#:~:text=more%20powerful%20is%20reverse%20execution">in combination with a time-travel debugger</a>)</li>
+</ul>
+<aside role=note class=note-container><details class=note-content><summary><code>:drop</code></summary>
+<p>for <code>:drop</code>, i was quite confident i had found the right code, so i didn't bother with any experiments. there are other cases where it's more useful; i made an earlier <a href="https://github.com/tmux/tmux/pull/4399">PR to tmux</a> where there were many different places search happened, so verifying i was looking at the right one was very helpful. specifically i added <code>exit(1)</code> to the function i thought was the right place, since debug logging in tmux is non-trivial to access.</p>
+<p>i rarely use a debugger for adding new code; mostly i use it for debugging existing code. programs complicated enough that i need a debugger just to understand control flow usually have a client/server model that also makes them harder to debug, so i don't bother and just read the source code.</p>
+</details></aside>
+<h3 id="writing-new-code">writing new code<a class="zola-anchor" href="#writing-new-code" aria-label="Anchor link for: writing-new-code"></a>
+</h3>
+<p>reading source code is also useful for finding examples of how to use an API. often it handles edge cases you wouldn't know about by skimming, and uses helper functions that make your life simpler. your goal is to make your change as similar to the existing codebase as possible, both to reduce the risk of bugs and to increase the chance the maintainer likes your change.</p>
+<p>when i write new code, i will usually copy a small snippet from elsewhere in the codebase and modify it to my needs. i try to copy at most 10-15 lines; more than that indicates that i should try to reuse or create a higher-level API.</p>
+<aside role=note class=note-container><details class=note-content><summary><code>:drop</code></summary>
+<p>once in <code>ex_drop</code>, i skimmed the code and found a snippet looked like it was handling existing files:</p>
+<pre data-lang="c" class="language-c z-code"><code class="language-c" data-lang="c"><span class="z-source z-c">  <span class="z-meta z-function-call z-c"><span class="z-variable z-function z-c">FOR_ALL_TAB_WINDOWS</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c">tp<span class="z-punctuation z-separator z-c">,</span> wp</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-end z-c">)</span></span></span> <span class="z-meta z-block z-c"><span class="z-punctuation z-section z-block z-begin z-c">{</span>
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">    <span class="z-keyword z-control z-c">if</span> <span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span>wp<span class="z-punctuation z-accessor z-c">-&gt;</span>w_buffer <span class="z-keyword z-operator z-comparison z-c">==</span> buf<span class="z-punctuation z-section z-group z-end z-c">)</span></span> <span class="z-meta z-block z-c"><span class="z-punctuation z-section z-block z-begin z-c">{</span>
+</span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">      <span class="z-meta z-function-call z-c"><span class="z-variable z-function z-c">goto_tabpage_win</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c">tp<span class="z-punctuation z-separator z-c">,</span> wp</span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-end z-c">)</span></span></span><span class="z-punctuation z-terminator z-c">;</span>
+</span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">      curwin<span class="z-punctuation z-accessor z-c">-&gt;</span>w_arg_idx <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-constant z-numeric z-integer z-decimal z-c">0</span><span class="z-punctuation z-terminator z-c">;</span>
+</span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">      <span class="z-keyword z-control z-c">if</span> <span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span><span class="z-keyword z-operator z-arithmetic z-c">!</span><span class="z-meta z-function-call z-c"><span class="z-variable z-function z-c">bufIsChanged</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c">curbuf</span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-end z-c">)</span></span></span><span class="z-punctuation z-section z-group z-end z-c">)</span></span> <span class="z-meta z-block z-c"><span class="z-punctuation z-section z-block z-begin z-c">{</span>
+</span></span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">        <span class="z-storage z-modifier z-c">const</span> <span class="z-storage z-type z-c">int</span> save_ar <span class="z-keyword z-operator z-assignment z-c">=</span> curbuf<span class="z-punctuation z-accessor z-c">-&gt;</span>b_p_ar<span class="z-punctuation z-terminator z-c">;</span>
+</span></span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">
+</span></span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">        <span class="z-comment z-line z-double-slash z-c"><span class="z-punctuation z-definition z-comment z-c">//</span> reload the file if it is newer
+</span></span></span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">        curbuf<span class="z-punctuation z-accessor z-c">-&gt;</span>b_p_ar <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-constant z-language z-c">true</span><span class="z-punctuation z-terminator z-c">;</span>
+</span></span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">        <span class="z-meta z-function-call z-c"><span class="z-variable z-function z-c">buf_check_timestamp</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c">curbuf</span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-end z-c">)</span></span></span><span class="z-punctuation z-terminator z-c">;</span>
+</span></span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">        curbuf<span class="z-punctuation z-accessor z-c">-&gt;</span>b_p_ar <span class="z-keyword z-operator z-assignment z-c">=</span> save_ar<span class="z-punctuation z-terminator z-c">;</span>
+</span></span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">      <span class="z-punctuation z-section z-block z-end z-c">}</span></span>
+</span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">      <span class="z-keyword z-control z-c">if</span> <span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span>curbuf<span class="z-punctuation z-accessor z-c">-&gt;</span>b_ml<span class="z-punctuation z-accessor z-c">.</span><span class="z-variable z-other z-member z-c">ml_flags</span> <span class="z-keyword z-operator z-c">&amp;</span> ML_EMPTY<span class="z-punctuation z-section z-group z-end z-c">)</span></span> <span class="z-meta z-block z-c"><span class="z-punctuation z-section z-block z-begin z-c">{</span>
+</span></span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">        <span class="z-meta z-function-call z-c"><span class="z-variable z-function z-c">ex_rewind</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c">eap</span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-end z-c">)</span></span></span><span class="z-punctuation z-terminator z-c">;</span>
+</span></span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">      <span class="z-punctuation z-section z-block z-end z-c">}</span></span>
+</span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">      <span class="z-keyword z-control z-flow z-return z-c">return</span><span class="z-punctuation z-terminator z-c">;</span>
+</span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">    <span class="z-punctuation z-section z-block z-end z-c">}</span></span>
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">  <span class="z-punctuation z-section z-block z-end z-c">}</span></span>
+</span></code></pre>
+<p>the bug here is not any code that is present; instead it's code that's missing. i had to figure out where <code>+cmd</code> was stored and how to process it.
+so, i repeated a similar process for <code>+cmd</code>. this time i had something more to start with - i knew the command structure was named <code>eap</code> and had type <code>exarg_t</code>.
+looking at the definition of <code>struct exarg</code> showed me what i wanted:</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash">  <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">char</span></span><span class="z-meta z-function-call z-arguments z-shell"> <span class="z-keyword z-operator z-regexp z-quantifier z-shell">*</span>do_ecmd_cmd</span><span class="z-keyword z-operator z-logical z-continue z-shell">;</span>            <span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">///</span></span><span class="z-meta z-function-call z-arguments z-shell"><span class="z-keyword z-operator z-assignment z-redirection z-shell">&lt;</span> +command arg to be used in edited file</span>
+</span></code></pre>
+<p>looking for <code>do_ecmd_cmd</code>, i found <code>do_exbuffer</code> (with a helpful comment saying it was responsible for <code>:buffer</code>) which called <code>do_cmdline_cmd</code>, and in turn <code>do_cmdline</code>.
+looking at the callers of <code>do_cmdline</code> i found <code>do_ecmd</code>, which handles <code>:edit</code>. <code>:edit</code> has exactly the behavior i wanted for <code>:drop</code>, so i copied its behavior:</p>
+<pre data-lang="c" class="language-c z-code"><code class="language-c" data-lang="c"><span class="z-source z-c">    <span class="z-meta z-function-call z-c"><span class="z-variable z-function z-c">do_cmdline</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c">command<span class="z-punctuation z-separator z-c">,</span> <span class="z-constant z-language z-c">NULL</span><span class="z-punctuation z-separator z-c">,</span> <span class="z-constant z-language z-c">NULL</span><span class="z-punctuation z-separator z-c">,</span> DOCMD_VERBOSE</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-end z-c">)</span></span></span><span class="z-punctuation z-terminator z-c">;</span>
+</span></code></pre>
+<p>out of caution, i also looked at the other places in the function that handled <code>command</code>, and it's a good thing i did, because i found this wild snippet above:</p>
+<pre data-lang="c" class="language-c z-code"><code class="language-c" data-lang="c"><span class="z-source z-c">  <span class="z-keyword z-control z-c">if</span> <span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span>command <span class="z-keyword z-operator z-comparison z-c">!=</span> <span class="z-constant z-language z-c">NULL</span> <span class="z-keyword z-operator z-arithmetic z-c">||</span> newlnum <span class="z-keyword z-operator z-comparison z-c">&gt;</span> <span class="z-constant z-numeric z-integer z-decimal z-c">0</span><span class="z-punctuation z-section z-group z-end z-c">)</span></span>
+</span></span><span class="z-source z-c"><span class="z-meta z-group z-c">      <span class="z-keyword z-operator z-arithmetic z-c">&amp;&amp;</span> <span class="z-keyword z-operator z-c">*</span><span class="z-meta z-function-call z-c"><span class="z-variable z-function z-c">get_vim_var_str</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c">VV_SWAPCOMMAND</span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-end z-c">)</span></span></span> <span class="z-keyword z-operator z-comparison z-c">==</span> NUL<span class="z-punctuation z-section z-group z-end z-c">)</span></span> <span class="z-meta z-block z-c"><span class="z-punctuation z-section z-block z-begin z-c">{</span>
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">    <span class="z-comment z-line z-double-slash z-c"><span class="z-punctuation z-definition z-comment z-c">//</span> Set v:swapcommand for the SwapExists autocommands.
+</span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c">    <span class="z-storage z-modifier z-c">const</span> <span class="z-support z-type z-sys-types z-c">size_t</span> len <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span>command <span class="z-keyword z-operator z-comparison z-c">!=</span> <span class="z-constant z-language z-c">NULL</span><span class="z-punctuation z-section z-group z-end z-c">)</span></span> <span class="z-keyword z-operator z-ternary z-c">?</span> <span class="z-meta z-function-call z-c"><span class="z-support z-function z-C99 z-c">strlen</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c">command</span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-end z-c">)</span></span></span> <span class="z-keyword z-operator z-arithmetic z-c">+</span> <span class="z-constant z-numeric z-integer z-decimal z-c">3</span> <span class="z-keyword z-operator z-ternary z-c">:</span> <span class="z-constant z-numeric z-integer z-decimal z-c">30</span><span class="z-punctuation z-terminator z-c">;</span>
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">    <span class="z-storage z-type z-c">char</span> <span class="z-keyword z-operator z-c">*</span><span class="z-storage z-modifier z-c">const</span> p <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-meta z-function-call z-c"><span class="z-variable z-function z-c">xmalloc</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c">len</span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-end z-c">)</span></span></span><span class="z-punctuation z-terminator z-c">;</span>
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">    <span class="z-keyword z-control z-c">if</span> <span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span>command <span class="z-keyword z-operator z-comparison z-c">!=</span> <span class="z-constant z-language z-c">NULL</span><span class="z-punctuation z-section z-group z-end z-c">)</span></span> <span class="z-meta z-block z-c"><span class="z-punctuation z-section z-block z-begin z-c">{</span>
+</span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">      <span class="z-meta z-function-call z-c"><span class="z-variable z-function z-c">vim_snprintf</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c">p<span class="z-punctuation z-separator z-c">,</span> len<span class="z-punctuation z-separator z-c">,</span> <span class="z-string z-quoted z-double z-c"><span class="z-punctuation z-definition z-string z-begin z-c">&quot;</span>:<span class="z-constant z-other z-placeholder z-c">%s</span><span class="z-constant z-character z-escape z-c">\r</span><span class="z-punctuation z-definition z-string z-end z-c">&quot;</span></span><span class="z-punctuation z-separator z-c">,</span> command</span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-end z-c">)</span></span></span><span class="z-punctuation z-terminator z-c">;</span>
+</span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">    <span class="z-punctuation z-section z-block z-end z-c">}</span></span> <span class="z-keyword z-control z-c">else</span> <span class="z-meta z-block z-c"><span class="z-punctuation z-section z-block z-begin z-c">{</span>
+</span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">      <span class="z-meta z-function-call z-c"><span class="z-variable z-function z-c">vim_snprintf</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c">p<span class="z-punctuation z-separator z-c">,</span> len<span class="z-punctuation z-separator z-c">,</span> <span class="z-string z-quoted z-double z-c"><span class="z-punctuation z-definition z-string z-begin z-c">&quot;</span>%<span class="z-punctuation z-definition z-string z-end z-c">&quot;</span></span> PRId64 <span class="z-string z-quoted z-double z-c"><span class="z-punctuation z-definition z-string z-begin z-c">&quot;</span>G<span class="z-punctuation z-definition z-string z-end z-c">&quot;</span></span><span class="z-punctuation z-separator z-c">,</span> <span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span><span class="z-support z-type z-stdint z-c">int64_t</span><span class="z-punctuation z-section z-group z-end z-c">)</span></span>newlnum</span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-end z-c">)</span></span></span><span class="z-punctuation z-terminator z-c">;</span>
+</span></span></span><span class="z-source z-c"><span class="z-meta z-block z-c"><span class="z-meta z-block z-c">    <span class="z-punctuation z-section z-block z-end z-c">}</span></span>
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">    <span class="z-meta z-function-call z-c"><span class="z-variable z-function z-c">set_vim_var_string</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c">VV_SWAPCOMMAND<span class="z-punctuation z-separator z-c">,</span> p<span class="z-punctuation z-separator z-c">,</span> <span class="z-keyword z-operator z-arithmetic z-c">-</span><span class="z-constant z-numeric z-integer z-decimal z-c">1</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-end z-c">)</span></span></span><span class="z-punctuation z-terminator z-c">;</span>
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">    did_set_swapcommand <span class="z-keyword z-operator z-assignment z-c">=</span> <span class="z-constant z-language z-c">true</span><span class="z-punctuation z-terminator z-c">;</span>
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">    <span class="z-meta z-function-call z-c"><span class="z-variable z-function z-c">xfree</span><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-begin z-c">(</span></span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c">p</span></span><span class="z-meta z-function-call z-c"><span class="z-meta z-group z-c"><span class="z-punctuation z-section z-group z-end z-c">)</span></span></span><span class="z-punctuation z-terminator z-c">;</span>
+</span></span><span class="z-source z-c"><span class="z-meta z-block z-c">  <span class="z-punctuation z-section z-block z-end z-c">}</span></span>
+</span></code></pre>
+<p>i refactored this into a helper function and then called it from both the original <code>:edit</code> command and my new code in <code>:drop</code>.</p>
+</details></aside>
+<h3 id="testing-new-code">testing new code<a class="zola-anchor" href="#testing-new-code" aria-label="Anchor link for: testing-new-code"></a>
+</h3>
+<p>this works in much the same way. try to find existing tests by using <a href="https://jyn.dev/theory-building-without-a-mentor/#finding-the-parts-you-care-about">the same techniques as finding the code you care about</a>. read them; write them using existing examples. tests are also code, after all.</p>
+<p>test suites usually have better documentation than the code itself, since adding new tests is much more common than modifying any particular section of code; see if you can find the docs. i look for <code>CONTRIBUTING.md</code> files, and if i don't find them i fall back to skimming the readme. sometimes there are is also a <code>README.md</code> in the folder where the tests are located, although these tend to be somewhat out of date.</p>
+<p>i care a lot about iteration times, so i try and find how to run individual tests. that info is usually in the README, or sometime you can figure it out from the test command's <code>--help</code> output.</p>
+<p>run your tests! ideally, create and run your tests <em>before</em> modifying the code so that you can see that they start to pass after your change. tests are extra important when you don't already understand the code, because they help you verify that your new theory is correct. run existing tests as well; run those before you make changes so you know which failures are spurious (a surprisingly high number of codebases have flaky or environment-dependent tests).</p>
+<aside role=note class=note-container><details class=note-content><summary><code>:drop</code></summary>
+<p>i started by looking for existing tests for <code>:drop</code>:</p>
+<pre data-lang="sh" class="language-sh z-code"><code class="language-sh" data-lang="sh"><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">$</span></span><span class="z-meta z-function-call z-arguments z-shell"> rg :drop test</span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">test/functional/ex_cmds/drop_spec.lua:8:describe</span></span><span class="z-meta z-function-call z-arguments z-shell">(<span class="z-string z-quoted z-single z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&#39;</span>:drop<span class="z-punctuation z-definition z-string z-end z-shell">&#39;</span></span>, function(</span><span class="z-meta z-function-call z-shell"></span>)
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">test/functional/ex_cmds/drop_spec.lua:75:</span></span><span class="z-meta z-function-call z-arguments z-shell">      :drop Xdrop_modified.txt</span>           <span class="z-keyword z-operator z-logical z-pipe z-shell">|</span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">test/old/testdir/test_winfixbuf.vim:1094:<span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span> Fail :drop but :drop! is allowed
+</span></span></span></span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell"><span class="z-string z-quoted z-double z-shell">test/old/testdir/test_excmd.vim:92:<span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span></span><span class="z-meta z-function-call z-arguments z-shell"> Test for the :drop command</span>
+</span><span class="z-source z-shell z-bash"><span class="z-meta z-function-call z-shell"><span class="z-variable z-function z-shell">test/old/testdir/test_excmd.vim:775:</span></span><span class="z-meta z-function-call z-arguments z-shell">  call term_sendkeys(buf, <span class="z-string z-quoted z-double z-shell"><span class="z-punctuation z-definition z-string z-begin z-shell">&quot;</span>:drop Xdrop_modified.txt\&lt;CR&gt;<span class="z-punctuation z-definition z-string z-end z-shell">&quot;</span></span></span><span class="z-meta z-function-call z-shell"></span>)
+</span></code></pre>
+<p>fortunately this had results right away and i was able to start adding my new test. <code>CONTRIBUTING.md</code> had a pointer to <code>test/README.md</code> which documented <code>TEST_FILE</code> and <code>mak functionaltest</code>. neovim has very good internal tooling and when my <code>screen:expect()</code> call failed it gave me a very helpful pointer to <code>screen:snapshot_util</code>.</p>
+</details></aside>
+<h2 id="what-have-we-learned">what have we learned?<a class="zola-anchor" href="#what-have-we-learned" aria-label="Anchor link for: what-have-we-learned"></a>
+</h2>
+<ul>
+<li><a href="https://gist.github.com/onlurking/fc5c81d18cfce9ff81bc968a7f342fb1">programming is theory building</a>.</li>
+<li>recovering a theory from code and docs alone is hard, but possible.</li>
+<li>most programs are too large for you to understand them all at once. decide on your goal and learn just enough to accomplish it.</li>
+<li>reading source code is surprisingly rewarding.</li>
+<li>match the existing code as closely as you can until you are sure you have a working theory.</li>
+</ul>
+<p>hopefully this was helpful! i am told by my friends that i am unusually good at this skill, so i am interested whether this post was effective at teaching it. if you have any questions, or if you just want to get in contact, feel free to reach out <a href="mailto:blog@jyn.dev">via email</a>.</p>
+<!--say you want to change the output (e.g. you are adding a new field to JSON emitted by the program). i like to start by breaking it down along interface boundaries: finding the code that creates the JSON, then breaking it down into smaller and smaller pieces, ideally to a single function. if there are multiple possible places that could have emitted it, see if you can determine which of them are reachable from your input. you can usually get an idea of which parts of the program are reachable statically just by reading the source code, even if you have no trace and aren't able to replicate locally.-->
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+    
+    
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;theory-building-without-a-mentor&#x2F;&amp;type=story">Hacker News</a>,
+    
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;theory-building-without-a-mentor&#x2F;">Lobste.rs</a>,
+    
+    <a href="https:&#x2F;&#x2F;tech.lgbt&#x2F;@jyn&#x2F;114562643662798658">Mastodon</a>, or
+    <a href="https:&#x2F;&#x2F;bsky.app&#x2F;profile&#x2F;jyn.dev&#x2F;post&#x2F;3lpw3jssir22t">Bluesky</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>learning how a program is intended to work is hard. here&#x27;s how to do it.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>

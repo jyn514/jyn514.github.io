@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Rust in 2021</title>
+    
+    <meta name="description" content="Rust in 2021 should focus on discoverability">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=cshxqZNByYq&#x2F;QgS1UUzDewC9wa2LxgEbbhhyltch5DBSF7yvV+h0vYmB0KrhfQjY" defer></script>
+    <link rel="stylesheet" href="https://jyn.dev/minima.css?v=7OannKi8WSigcMMmIJC3r8u0QjFzHN&#x2F;8YbHyvSXfBf9SM1wuge9+cUh&#x2F;cMs&#x2F;K&#x2F;3j">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="Rust in 2021 should focus on discoverability" class="post-title" itemprop="name headline">Rust in 2021</h1>
+    <p class="post-meta">
+      <time datetime="2020-09-05" itemprop="datePublished">
+        2020-09-05
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/ideas/">ideas</a>
+        
+      • <a href="https://jyn.dev/tags/rust/">rust</a>
+        
+      
+    </p>
+  </header>
+
+  
+
+	
+
+  
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <h2 id="who-is-this-guy-anyway">Who is this guy anyway?<a class="zola-anchor" href="#who-is-this-guy-anyway" aria-label="Anchor link for: who-is-this-guy-anyway"></a>
+</h2>
+<p>Hello, it's me! I'm a somewhat new contributor to Rust and I'm about three blog posts behind. Here they are all at once:</p>
+<ul>
+<li><a href="https://jyn.dev/building-docs-rs/">I work on docs.rs!</a></li>
+<li><a href="https://github.com/jyn514/saltwater/">I wrote a C compiler in Rust</a></li>
+<li>I spend way too much time <a href="https://github.com/rust-lang/rust/pulls?q=is%3Apr+label%3AA-intra-doc-links+author%3Ajyn514+">working on intra-doc links</a></li>
+<li>I <a href="https://github.com/rust-lang/compiler-team/issues/326">help</a> <a href="https://github.com/rust-lang/rustc-dev-guide/pulls?q=+is%3Apr+author%3Ajyn514+">make</a> it easier to contribute to the Rust compiler</li>
+</ul>
+<h2 id="wait-we-re-writing-a-blog-post-here">Wait, we're writing a blog post here.<a class="zola-anchor" href="#wait-we-re-writing-a-blog-post-here" aria-label="Anchor link for: wait-we-re-writing-a-blog-post-here"></a>
+</h2>
+<p>In particular I want to talk about that last point.
+I spend way too much time on Discord and I commonly run into questions like this:</p>
+<blockquote>
+<p>How do I get the first element of a vector if I don't care about the rest? <code>vec[0]</code> gives me a reference.</p>
+</blockquote>
+<blockquote>
+<p>How does docs.rs calculate the percentage of items documented in a crate?</p>
+</blockquote>
+<blockquote>
+<p>Why doesn't <code>async || { ... }</code> work? The compiler told me to add <code>async</code> if I want to use <code>await</code>!</p>
+</blockquote>
+<blockquote>
+<p>Why am I getting a borrow check error when I try to add something to a map if it's not yet there?</p>
+</blockquote>
+<blockquote>
+<p>How can I use generic types in an <code>extern "C"</code> function? Is this even possible? (This one I asked!)</p>
+</blockquote>
+<blockquote>
+<p>How do I link to the latest version of a subpage of my docs on docs.rs?</p>
+</blockquote>
+<blockquote>
+<p>Is there a guide on how to add a new target or promote a target to tier 2?</p>
+</blockquote>
+<blockquote>
+<p>How can I use C or C++ functions from Rust? (not just the C standard library, but other libraries)</p>
+</blockquote>
+<blockquote>
+<p>Can I have an API that takes either a value or a reference?</p>
+</blockquote>
+<blockquote>
+<p>Can I have a logging function that will print then return a value?</p>
+</blockquote>
+<blockquote>
+<p>Where did <code>arg_enum!</code> end up in clap 3? It's not at <code>clap::arg_enum</code> like it was before.</p>
+</blockquote>
+<blockquote>
+<p>Is there a way to do this with iterator methods instead?</p>
+</blockquote>
+<p>All of these have <a href="https://jyn.dev/rust-in-2021/#faq">answers</a> that are simple to understand after the fact, but
+are very hard to figure out if you don't already know them.</p>
+<h2 id="discoverability">Discoverability<a class="zola-anchor" href="#discoverability" aria-label="Anchor link for: discoverability"></a>
+</h2>
+<p>As a frequent contributor to the compiler, the theme I want to focus on in 2021 is <strong>discoverability</strong>.
+Rust and the Rust ecosystem have a lot of features, but it can be hard to find them all,
+or even to know that they exist - you can't search if you don't know what to search for!</p>
+<h3 id="in-the-compiler">In the compiler<a class="zola-anchor" href="#in-the-compiler" aria-label="Anchor link for: in-the-compiler"></a>
+</h3>
+<p>Rust has a well-earned reputation for good error messages.
+I want to continue to expand those to catch more common errors and guide you
+in the right direction. There is a <a href="https://github.com/rust-lang/rust/pull/73996">lot</a> of
+<a href="https://github.com/rust-lang/rust/pull/76171">great</a> <a href="https://github.com/rust-lang/rust/pull/75931">work</a> going on this area:
+A giant thank you to <strong>@estebank</strong>, <strong>@da-x</strong>, and everyone else working on improving diagnostics!</p>
+<h3 id="in-libraries">In libraries<a class="zola-anchor" href="#in-libraries" aria-label="Anchor link for: in-libraries"></a>
+</h3>
+<p>This one is harder - libraries can't give error messages,
+the best they can do is write documentation.
+I want to see more examples of ways to solve errors <em>using the library</em>.
+For example, imagine if this error:</p>
+<pre data-lang="rust" class="language-rust z-code"><code class="language-rust" data-lang="rust"><span class="z-source z-rust">error<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">[</span><span class="z-constant z-other z-rust">E0499</span><span class="z-punctuation z-section z-group z-end z-rust">]</span></span><span class="z-punctuation z-separator z-rust">:</span> cannot borrow `<span class="z-keyword z-operator z-arithmetic z-rust">*</span>map` <span class="z-keyword z-operator z-rust">as</span> mutable more than once at a time
+</span><span class="z-source z-rust">  <span class="z-keyword z-operator z-arithmetic z-rust">-</span><span class="z-meta z-function z-return-type z-rust"><span class="z-punctuation z-separator z-rust">-&gt;</span> src</span><span class="z-keyword z-operator z-arithmetic z-rust">/</span>main<span class="z-punctuation z-accessor z-dot z-rust">.</span>rs<span class="z-punctuation z-separator z-rust">:</span><span class="z-constant z-numeric z-integer z-decimal z-rust">14</span><span class="z-punctuation z-separator z-rust">:</span><span class="z-constant z-numeric z-integer z-decimal z-rust">13</span>
+</span><span class="z-source z-rust">   <span class="z-keyword z-operator z-bitwise z-rust">|</span>
+</span><span class="z-source z-rust"><span class="z-constant z-numeric z-integer z-decimal z-rust">6</span>  <span class="z-keyword z-operator z-bitwise z-rust">|</span>   <span class="z-meta z-function z-rust"><span class="z-meta z-function z-rust"><span class="z-storage z-type z-function z-rust">fn</span> </span><span class="z-entity z-name z-function z-rust">get_default</span></span><span class="z-meta z-generic z-rust"><span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;m</span>, K, V<span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">(</span><span class="z-variable z-parameter z-rust">map</span><span class="z-punctuation z-separator z-rust">:</span> <span class="z-keyword z-operator z-rust">&amp;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;m</span> <span class="z-storage z-modifier z-rust">mut</span> <span class="z-meta z-generic z-rust">HashMap<span class="z-punctuation z-definition z-generic z-begin z-rust">&lt;</span>K, V<span class="z-punctuation z-definition z-generic z-end z-rust">&gt;</span></span>, <span class="z-variable z-parameter z-rust">key</span><span class="z-punctuation z-separator z-rust">:</span> K</span><span class="z-meta z-function z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-end z-rust">)</span></span></span></span><span class="z-meta z-function z-rust"> <span class="z-meta z-function z-return-type z-rust"><span class="z-punctuation z-separator z-rust">-&gt;</span> <span class="z-keyword z-operator z-rust">&amp;</span><span class="z-storage z-modifier z-lifetime z-rust">&#39;m</span> <span class="z-storage z-modifier z-rust">mut</span> V
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-function z-rust"><span class="z-meta z-function z-return-type z-rust">   </span></span><span class="z-keyword z-operator z-bitwise z-rust">|</span>                  <span class="z-keyword z-operator z-arithmetic z-rust">-</span><span class="z-keyword z-operator z-arithmetic z-rust">-</span> lifetime `<span class="z-storage z-modifier z-lifetime z-rust">&#39;m</span>` defined here
+</span><span class="z-source z-rust"><span class="z-keyword z-operator z-range z-rust">...</span>
+</span><span class="z-source z-rust"><span class="z-constant z-numeric z-integer z-decimal z-rust">11</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span>       <span class="z-keyword z-control z-rust">match</span> map<span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">get_mut</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-keyword z-operator z-bitwise z-rust">&amp;</span>key</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span> <span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span><span class="z-source z-rust"><span class="z-meta z-block z-rust">   <span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">|</span></span></span><span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust">       -     --- first mutable borrow occurs here</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-function z-closure z-rust">   </span><span class="z-meta z-function z-closure z-rust"><span class="z-keyword z-operator z-bitwise z-rust">|</span>  <span class="z-constant z-other z-rust">_____</span><span class="z-keyword z-operator z-bitwise z-rust">|</span></span>
+</span></span><span class="z-source z-rust"><span class="z-meta z-block z-rust">   <span class="z-keyword z-operator z-bitwise z-rust">|</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span>
+</span></span><span class="z-source z-rust"><span class="z-meta z-block z-rust"><span class="z-constant z-numeric z-integer z-decimal z-rust">12</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span>         <span class="z-support z-type z-rust">Some</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span>value</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span> <span class="z-keyword z-operator z-rust">=&gt;</span> value<span class="z-punctuation z-separator z-rust">,</span>
+</span></span><span class="z-source z-rust"><span class="z-meta z-block z-rust"><span class="z-constant z-numeric z-integer z-decimal z-rust">13</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span>         <span class="z-support z-type z-rust">None</span> <span class="z-keyword z-operator z-rust">=&gt;</span> <span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-block z-rust"><span class="z-constant z-numeric z-integer z-decimal z-rust">14</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span>             map<span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">insert</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span>key<span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">clone</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-separator z-rust">,</span> <span class="z-meta z-path z-rust">V<span class="z-punctuation z-accessor z-rust">::</span></span>default<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-terminator z-rust">;</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-block z-rust">   <span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">|</span></span></span><span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust"> <span class="z-punctuation z-section z-parameters z-end z-rust">|</span></span>             </span><span class="z-meta z-function z-closure z-rust"><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span> second mutable borrow occurs here</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-block z-rust"><span class="z-constant z-numeric z-integer z-decimal z-rust">15</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span>             map<span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">get_mut</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-keyword z-operator z-bitwise z-rust">&amp;</span>key</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">unwrap</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-block z-rust"><span class="z-constant z-numeric z-integer z-decimal z-rust">16</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span>         </span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span>
+</span></span><span class="z-source z-rust"><span class="z-meta z-block z-rust"><span class="z-constant z-numeric z-integer z-decimal z-rust">17</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span>     </span><span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-end z-rust">}</span></span>
+</span><span class="z-source z-rust">   <span class="z-keyword z-operator z-bitwise z-rust">|</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span><span class="z-constant z-other z-rust">_____</span><span class="z-keyword z-operator z-arithmetic z-rust">-</span> returning this value requires that `<span class="z-keyword z-operator z-arithmetic z-rust">*</span>map` is borrowed <span class="z-keyword z-control z-rust">for</span> `<span class="z-storage z-modifier z-lifetime z-rust">&#39;m</span>`
+</span></code></pre>
+<p>also said this:</p>
+<pre data-lang="rust" class="language-rust z-code"><code class="language-rust" data-lang="rust"><span class="z-source z-rust">   <span class="z-keyword z-operator z-assignment z-rust">=</span> note<span class="z-punctuation z-separator z-rust">:</span> this pattern is valid<span class="z-punctuation z-separator z-rust">,</span> but not currently recognized by the borrow<span class="z-keyword z-operator z-arithmetic z-rust">-</span>checker<span class="z-punctuation z-separator z-rust">:</span> https<span class="z-punctuation z-separator z-rust">:</span><span class="z-comment z-line z-double-slash z-rust"><span class="z-punctuation z-definition z-comment z-rust">//</span>doc.rust-lang.org/nomicon/lifetime-mismatch.html#improperly-reduced-borrows
+</span></span><span class="z-source z-rust">   <span class="z-keyword z-operator z-assignment z-rust">=</span> help<span class="z-punctuation z-separator z-rust">:</span> try using the `Entry` <span class="z-constant z-other z-rust">API</span><span class="z-punctuation z-separator z-rust">:</span>
+</span><span class="z-source z-rust">   <span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">|</span></span></span><span class="z-meta z-function z-closure z-rust">
+</span></span><span class="z-source z-rust"><span class="z-meta z-function z-closure z-rust"></span><span class="z-meta z-function z-closure z-rust"><span class="z-constant z-numeric z-integer z-decimal z-rust">11</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span>       map<span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">entry</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span><span class="z-keyword z-operator z-bitwise z-rust">&amp;</span>key</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span><span class="z-punctuation z-accessor z-dot z-rust">.</span><span class="z-support z-function z-rust">or_default</span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">(</span></span><span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-end z-rust">)</span></span></span>
+</span><span class="z-source z-rust">   <span class="z-keyword z-operator z-bitwise z-rust">|</span>       <span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span><span class="z-keyword z-operator z-bitwise z-rust">^</span>
+</span></code></pre>
+<p>Another example:</p>
+<pre data-lang="rust" class="language-rust z-code"><code class="language-rust" data-lang="rust"><span class="z-source z-rust">error<span class="z-meta z-group z-rust"><span class="z-punctuation z-section z-group z-begin z-rust">[</span><span class="z-constant z-other z-rust">E0433</span><span class="z-punctuation z-section z-group z-end z-rust">]</span></span><span class="z-punctuation z-separator z-rust">:</span> failed to resolve<span class="z-punctuation z-separator z-rust">:</span> could not find `arg_enum` <span class="z-keyword z-operator z-rust">in</span> `clap`
+</span><span class="z-source z-rust"> <span class="z-keyword z-operator z-arithmetic z-rust">-</span><span class="z-meta z-function z-return-type z-rust"><span class="z-punctuation z-separator z-rust">-&gt;</span> src</span><span class="z-keyword z-operator z-arithmetic z-rust">/</span>lib<span class="z-punctuation z-accessor z-dot z-rust">.</span>rs<span class="z-punctuation z-separator z-rust">:</span><span class="z-constant z-numeric z-integer z-decimal z-rust">2</span><span class="z-punctuation z-separator z-rust">:</span><span class="z-constant z-numeric z-integer z-decimal z-rust">10</span>
+</span><span class="z-source z-rust">  <span class="z-keyword z-operator z-bitwise z-rust">|</span>
+</span><span class="z-source z-rust"><span class="z-constant z-numeric z-integer z-decimal z-rust">2</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span>     <span class="z-meta z-path z-rust">clap<span class="z-punctuation z-accessor z-rust">::</span></span>arg_enum<span class="z-keyword z-operator z-logical z-rust">!</span> <span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span><span class="z-source z-rust"><span class="z-meta z-block z-rust">  <span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">|</span></span></span><span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust">           ^^^^^^^^ could not find `arg_enum` in `clap`</span>
+</span></span></span></code></pre>
+<p>Could instead be:</p>
+<pre data-lang="rust" class="language-rust z-code"><code class="language-rust" data-lang="rust"><span class="z-source z-rust">error<span class="z-punctuation z-separator z-rust">:</span> `arg_enum` is now a derive <span class="z-invalid z-illegal z-rust">macro</span>
+</span><span class="z-source z-rust"> <span class="z-keyword z-operator z-arithmetic z-rust">-</span><span class="z-meta z-function z-return-type z-rust"><span class="z-punctuation z-separator z-rust">-&gt;</span> src</span><span class="z-keyword z-operator z-arithmetic z-rust">/</span>lib<span class="z-punctuation z-accessor z-dot z-rust">.</span>rs<span class="z-punctuation z-separator z-rust">:</span><span class="z-constant z-numeric z-integer z-decimal z-rust">2</span><span class="z-punctuation z-separator z-rust">:</span><span class="z-constant z-numeric z-integer z-decimal z-rust">10</span>
+</span><span class="z-source z-rust">  <span class="z-keyword z-operator z-bitwise z-rust">|</span>
+</span><span class="z-source z-rust"><span class="z-constant z-numeric z-integer z-decimal z-rust">2</span> <span class="z-keyword z-operator z-bitwise z-rust">|</span>     <span class="z-meta z-path z-rust">clap<span class="z-punctuation z-accessor z-rust">::</span></span>arg_enum<span class="z-keyword z-operator z-logical z-rust">!</span> <span class="z-meta z-block z-rust"><span class="z-punctuation z-section z-block z-begin z-rust">{</span>
+</span></span><span class="z-source z-rust"><span class="z-meta z-block z-rust">  <span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust"><span class="z-punctuation z-section z-parameters z-begin z-rust">|</span></span></span><span class="z-meta z-function z-closure z-rust"><span class="z-meta z-function z-parameters z-rust">           ^^^^^^^^ <span class="z-variable z-parameter z-rust">note</span><span class="z-punctuation z-separator z-rust">:</span> this code was valid in clap 2.0<span class="z-punctuation z-separator z-rust">,</span> but has changed in 3.0</span>
+</span></span></span><span class="z-source z-rust"><span class="z-meta z-block z-rust"><span class="z-meta z-function z-closure z-rust">  </span><span class="z-meta z-function z-closure z-rust"><span class="z-keyword z-operator z-assignment z-rust">=</span> help<span class="z-punctuation z-separator z-rust">:</span> <span class="z-keyword z-other z-rust">use</span> a derive instead<span class="z-punctuation z-separator z-rust">:</span> `<span class="z-meta z-annotation z-rust"><span class="z-punctuation z-definition z-annotation z-rust">#</span><span class="z-punctuation z-section z-group z-begin z-rust">[</span><span class="z-variable z-annotation z-rust">clap</span>::<span class="z-variable z-annotation z-rust">arg_enum</span><span class="z-punctuation z-section z-group z-end z-rust">]</span></span>`</span>
+</span></span></code></pre>
+<p>Not only would it help fix the code, but it would help you learn more about the library and the Rust language!
+I'm sure there's many things making this difficult, but I think it's a great goal to reach for.</p>
+<h3 id="in-devtools">In devtools<a class="zola-anchor" href="#in-devtools" aria-label="Anchor link for: in-devtools"></a>
+</h3>
+<p>This one I think has both the most room for improvement and needs the least effort to fix.
+Currently, a lot of functionality is 'hidden' behind <code>cargo</code> subcommands.
+For examples, <code>cargo test -- --ignored</code> and <code>cargo test -- --test-threads 1</code>
+are very difficult to find unless you see existing examples online.
+Even experienced rustaceans don't know about many rustdoc options because they need
+<code>cargo rustdoc -- -h</code>, not <code>cargo doc -h</code> or <code>cargo doc -- -h</code>.</p>
+<p>I think we should both document these options better and make them easier to find
+by experimenting.</p>
+<p>Another improvement I see in devtools is distinguishing between stable and unstable features.
+Right now the way to do this is different for every tool:</p>
+<ul>
+<li><code>cargo</code> has <code>cargo-features = ["..."]</code></li>
+<li><code>rustfmt</code> has <code>unstable_features = true</code>, including on the stable channel</li>
+<li><code>rustdoc</code> enables most features by default, even without <code>#![feature(...)]</code></li>
+</ul>
+<p>This causes confusion: In the <a href="https://github.com/rust-lang/rust/issues/63305">words of <strong>@abonader</strong></a>,</p>
+<blockquote>
+<p>I assume it works on stable if there's no feature flags.</p>
+</blockquote>
+<p>I think there should be a consistent story here that makes it easier to see
+what's nightly and what isn't (even I <a href="https://github.com/rust-lang/rust/pull/75953">got confused</a> by this!).</p>
+<h3 id="in-the-community">In the community<a class="zola-anchor" href="#in-the-community" aria-label="Anchor link for: in-the-community"></a>
+</h3>
+<p>It can be difficult to know where discussions take place.
+There are many different places:</p>
+<ul>
+<li>Zulip</li>
+<li>Discord</li>
+<li>rustc-dev-guide</li>
+<li>Forge</li>
+<li>Blog posts (usually discussed on reddit)</li>
+<li>internals.rust-lang.org</li>
+<li>users.rust-lang.org</li>
+<li>MCPs in rust-lang/compiler</li>
+<li>MCPs in rust-lang/lang</li>
+<li>RFCs in rust-lang/rfcs</li>
+<li>FCPs in rust-lang/rust</li>
+<li>Various READMEs in the compiler itself (although most of those point to external links now)</li>
+</ul>
+<p>This makes it hard for new contributors to find information
+and hard for frequent contributors to stay up to date on the current status of issues.</p>
+<p>I think we should consolidate documentation into fewer places and discussion
+into fewer channels. This would make it easier to understand what's going on
+without having to spend lots of time chasing down leads (in both senses 😉).</p>
+<h2 id="what-do-you-think-could-be-more-discoverable">What do <em>you</em> think could be more discoverable?<a class="zola-anchor" href="#what-do-you-think-could-be-more-discoverable" aria-label="Anchor link for: what-do-you-think-could-be-more-discoverable"></a>
+</h2>
+<p>Is there a feature of Rust you really enjoy that people don't know about?
+Are you looking for a feature that <em>seems</em> like it should exist but you haven't been able to find?
+Please let me know! Good ways to bring this up are writing other blog posts or opening an issue.</p>
+<h2 id="summary">Summary<a class="zola-anchor" href="#summary" aria-label="Anchor link for: summary"></a>
+</h2>
+<p>I think Rust is a great language with a bright future.
+I want to make it easier not just to get started, but to
+explore and learn more about Rust and the Rust community.</p>
+<h3 id="faq">FAQ<a class="zola-anchor" href="#faq" aria-label="Anchor link for: faq"></a>
+</h3>
+<p>You can't have questions without answers!</p>
+<blockquote>
+<p>How do I get the first element of a vector if I don't care about the rest? <code>vec[0]</code> gives me a reference.</p>
+</blockquote>
+<p><code>vec.into_iter().next()</code> or <code>vec.truncate(1); vec.pop()</code> depending on when you want to drop the items (<a href="https://rust-lang.zulipchat.com/#narrow/stream/219381-t-libs/topic/Eager.20skipping.20for.20iterators/near/209045693">discussion</a>).</p>
+<blockquote>
+<p>How does docs.rs calculate the percentage of items documented in a crate?</p>
+</blockquote>
+<p><a href="https://doc.rust-lang.org/rustdoc/unstable-features.html#--show-coverage-calculate-the-percentage-of-items-with-documentation"><code>rustdoc --show-coverage</code></a>.</p>
+<blockquote>
+<p>Why doesn't <code>async || { ... }</code> work? The compiler told me to add <code>async</code> if I want to use <code>await</code>!</p>
+</blockquote>
+<p>Use <code>async { ... }</code> instead. I opened <a href="https://github.com/rust-lang/rust/issues/76011">an issue</a> to add a suggestion for this.</p>
+<blockquote>
+<p>Why am I getting a borrow check error when I try to add something to a map if it's not yet there?</p>
+</blockquote>
+<p>This is a limitation of the borrow checker; use <a href="https://doc.rust-lang.org/std/collections/hash_map/enum.Entry.html"><code>entry()</code></a> instead.</p>
+<blockquote>
+<p>How can I use generic types in an <code>extern "C"</code> function? Is this even possible? (This one I asked!)</p>
+</blockquote>
+<p>It works like a normal function pointer! You can simply use <code>my_c_func(my_callback::&lt;T&gt; as fn()</code>,
+and declare <code>my_callback</code> like a normal generic function that happens to have <code>extern "C"</code> at the front.</p>
+<blockquote>
+<p>How do I link to the latest version of a subpage of my docs on docs.rs?</p>
+</blockquote>
+<p><code>/my-crate/latest/my_crate/module/kind.name.html</code>; <a href="https://docs.rs/about/redirections">docs</a>.</p>
+<blockquote>
+<p>Is there a guide on how to add a new target or promote a target to tier 2?</p>
+</blockquote>
+<p>There is an <a href="https://github.com/rust-lang/rfcs/pull/2803">RFC in progress</a> and docs for <a href="https://rustc-dev-guide.rust-lang.org/building/new-target.html">adding a new target</a>.
+However I'm not aware of any documentation for promoting a target from tier 3 to tier 2,
+or from 'tier 2 cross-compiled' to 'tier 2 hosted' (see the RFC).</p>
+<blockquote>
+<p>How can I use C or C++ functions from Rust? (not just the C standard library, but other libraries)</p>
+</blockquote>
+<p>You probably want either <a href="https://github.com/dtolnay/cxx/">bindgen</a> or <a href="https://github.com/dtolnay/cxx/">cxx</a>. For the reverse, calling Rust from C or C++,
+take a look at <a href="https://github.com/eqrion/cbindgen">cbindgen</a>.</p>
+<blockquote>
+<p>Can I have an API that takes either a value or a reference?</p>
+</blockquote>
+<p>Yes, <a href="https://doc.rust-lang.org/std/borrow/trait.Borrow.html"><code>Borrow&lt;T&gt;</code></a>.</p>
+<p>NOTE: this answer originally said <a href="https://doc.rust-lang.org/std/convert/trait.AsRef.html"><code>AsRef&lt;T&gt;</code></a>,
+which doesn't always work - there's no blanket <code>impl AsRef&lt;T&gt; for &amp;T</code>
+like there is for <code>Borrow</code>. This difference is itself a discoverability problem! Thanks to <strong>@raphlinus</strong> for pointing out the difference.</p>
+<blockquote>
+<p>Can I have a logging function that will print then return a value?</p>
+</blockquote>
+<p>Yes, and it's even in the standard library: <a href="https://doc.rust-lang.org/std/macro.dbg.html"><code>dbg!</code></a>.
+Unfortunately it doesn't work with <code>log</code> or <code>tracing</code>,
+but it's not too hard to write your own wrapper around those.</p>
+<blockquote>
+<p>Where did <code>arg_enum!</code> end up in clap 3? It's not at <code>clap::arg_enum</code> like it was before.</p>
+</blockquote>
+<p>It's now a <a href="https://github.com/clap-rs/clap/blob/master/clap_derive/examples/arg_enum.rs">derive macro</a>.</p>
+<blockquote>
+<p>Is there a way to do this with iterator methods instead?</p>
+</blockquote>
+<p>Yes.</p>
+<h3 id="updates">Updates!<a class="zola-anchor" href="#updates" aria-label="Anchor link for: updates"></a>
+</h3>
+<p>This was surprisingly popular <a href="https://www.reddit.com/r/rust/comments/inxwka/rust_in_2021_discoverability/">on reddit</a>! I'm answering a few of the most relevant questions here so everyone can see them.</p>
+<blockquote>
+<p>Is there a way a library can give a custom message on trait errors?</p>
+</blockquote>
+<p>Yes, <a href="https://github.com/rust-lang/rust/issues/29628"><code>rustc_on_unimplemented</code></a>. Unfortunately it's not intended to be stabilized,
+but I'd be happy to see an RFC for it!</p>
+<blockquote>
+<p>Is there something like Hoogle for Rust, where you give it a type signature and it suggests possible implementations?</p>
+</blockquote>
+<p>Yes, rustdoc has <a href="https://doc.rust-lang.org/std/rc/struct.Rc.html?search=*%20-%3E%20String">'type-based search'</a>. Press <code>?</code> in any rustdoc page for more information about it.</p>
+<blockquote>
+<p>Couldn't the maintainers of clap make <code>arg_enum!</code> deprecated and point to the derive macro?</p>
+</blockquote>
+<p>No, because both the old and new macro have the same name in the same namespace.
+So adding both would be a compile error. Fortunately this means the compiler can help out, I <a href="https://github.com/rust-lang/rust/issues/76429">opened an issue</a> for it to do so.</p>
+
+  </div>
+</article>
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;rust-in-2021&#x2F;&amp;type=story">Hacker News</a> or
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;rust-in-2021&#x2F;">Lobste.rs</a></small>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Rust in 2021 should focus on discoverability</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>
