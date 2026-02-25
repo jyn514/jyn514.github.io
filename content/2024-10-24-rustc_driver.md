@@ -149,7 +149,7 @@ now, at this point you might imagine that we have enough info to write our own c
 
 [rustc-main]: https://github.com/rust-lang/rust/blob/b8bb2968ce1e44d01520c9d59ee6299ed66df3f9/compiler/rustc/src/main.rs
 
-```
+```rust
 ; cargo new driver
 ; cd driver
 ; echo '#![feature(rustc_private)]
