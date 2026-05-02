@@ -39,20 +39,26 @@ function addFootnoteTooltips() {
   const vWidth = document.documentElement.clientWidth;
   for (const elem of document.querySelectorAll("sup.footnote-reference > a")) {
     const anchor = elem.getAttribute('href').substring(1);
-    const note = document.getElementById(anchor).innerHTML;
+    const note = document.getElementById(anchor);
     const popup = document.createElement('div');
     popup.setAttribute('role', 'tooltip');
     popup.className = 'note-container';
 
-    const p = document.createElement('p');
-    p.innerHTML = note;
-    p.className = 'note-content';
+    // const content = document.createElement(note.childElementCount === 1 ? 'p' : 'div');
+    const content = document.createElement('p');
+    content.innerHTML = note.innerHTML;
+    content.className = 'note-content';
 
-    // Remove '↩'
-    const inner = p.lastElementChild;
-    inner.removeChild(inner.lastElementChild);
+    // Remove '↩'. Zola is annoying and has different HTML if there are blockquotes in the
+    // footnote.
+    if (content.childElementCount === 1) {
+      const inner = content.lastElementChild;
+      inner.removeChild(inner.lastElementChild);
+    } else {
+      content.removeChild(content.lastElementChild);
+    }
 
-    popup.appendChild(p);
+    popup.appendChild(content);
 
     elem.parentElement.appendChild(popup);
 

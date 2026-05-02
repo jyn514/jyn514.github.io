@@ -469,6 +469,9 @@ div[role="tooltip"] * {
   background-color: black;
   margin-bottom: 0px;
 }
+div[role="tooltip"] blockquote {
+  margin-top: $spacing-unit / 2;
+}
 div[role="tooltip"] code {
   font-size: large;
 }
