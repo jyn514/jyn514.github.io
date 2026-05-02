@@ -16,10 +16,9 @@ This post is part 3/4 of [a series about build systems](/four-posts-about-build-
 The next post and last post is [I want a better build executor][build executor].
 
 [build executor]: /i-want-a-better-build-executor/
-
 ---
 {% quote(author="mathstuf", username=true, url="https://lobste.rs/s/uwyfpy/build_system_tradeoffs#c_ymm0ad") %}
-
+![clipboard_image_20260117_231002_049414458.png](assets/clipboard_image_20260117_231002_049414458.png)
 As someone who ends up getting the ping on "my build is weird" _after_ it has gone through a round of "poke it with a stick", I would really appreciate the _mechanisms_ for \[correct dependency edges\] rolling out sooner rather than later.
 
 {% end %}

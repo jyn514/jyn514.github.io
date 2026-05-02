@@ -1,6 +1,7 @@
 +++
 title = "posts"
 sort_by = "date"
-template = "home.html"
+template = "new-home.html"
+# template = "home.html"
 page_template = "page.html"
 +++

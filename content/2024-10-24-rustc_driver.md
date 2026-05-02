@@ -218,7 +218,6 @@ instead, almost all the code is in a shared object:
 136M
 ```
 that shared object gets loaded at runtime by every rustc_driver: `rustc`, `clippy`, `rustdoc`, `miri` - and our new `driver` tool. it's actually shipped with every toolchain; if you look at the stable toolchain in `.rustup` you'll see it there too. however, what you *won't* see is the `.rmeta` files in the toolchain directory: [^target-libdir]
-
 ```
 ; ls /home/jyn/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/lib/*.rmeta | wc -l
 228
