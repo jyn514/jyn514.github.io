@@ -12,7 +12,7 @@ path=$(echo "$@" | tr '\t \r' '---' | tr -d '\n!,?:"')
 dst=content/$path.md
 
 if ! [ -e "$dst" ]; then
-    echo "creating new post at $(realpath "$dst")"
+    echo "creating new post at $dst"
     echo "---
 title: \"$title\"
 date: $date
