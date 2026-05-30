@@ -56,7 +56,7 @@ arbitrary code on. When I tried using it, it took about 20 minutes and then I
 [got an ugly error](https://github.com/rust-lang/docs.rs/issues/200#issuecomment-539771094) without any explanation.
 Remember, this isn't even the hard part of the change, I just wanted to get it running from master.
 
-I chatted with [Pietro](https://github.com/pietroalbini) on Discord
+I chatted with [Emily](https://github.com/emilyalbini) on Discord
 and it turns out that docs.rs had recently
 [switched to a different sandbox](https://github.com/rust-lang/docs.rs/pull/407),
 but the Vagrantfile never got updated. Since I don't know really how to use Vagrant
@@ -68,7 +68,7 @@ and 30 manually steps, most of which have to be done in order.
 So I figured, hey, I'm a developer, let's automate this!
 
 Long story short, I ended up [writing a `Dockerfile`](https://github.com/rust-lang/docs.rs/pull/432)
-and Pietro was so impressed that he started [using it in production](https://github.com/rust-lang/docs.rs/pull/455) :D
+and Emily was so impressed that she started [using it in production](https://github.com/rust-lang/docs.rs/pull/455) :D
 
 After a month and what has been called
 > [Unprecedented (but greatly appreciated) levels of yak shaving](https://users.rust-lang.org/t/rust-2020-growth/34956/43)
@@ -77,9 +77,9 @@ I finally [got the original change merged](https://github.com/rust-lang/docs.rs/
 
 ## What next?
 
-Pietro and [QuietMisdreavus](https://github.com/QuietMisdreavus) were so impressed
+Emily and [QuietMisdreavus](https://github.com/QuietMisdreavus) were so impressed
 with my work that they invited me to the team! As of November 1st, I have push access
-to `docs.rs` :) (Pietro still handles the deploys)
+to `docs.rs` :) (Emily still handles the deploys)
 
 I've been helping with [a](https://github.com/rust-lang/docs.rs/pull/487)
 [few](https://github.com/rust-lang/docs.rs/pull/485)
@@ -90,7 +90,7 @@ and plan to contribute for the foreseeable future!
 
 ## Acknowledgments
 
-Thank you so much to Pietro and QuietMisdreavus for helping me get started with
+Thank you so much to Emily and QuietMisdreavus for helping me get started with
 the project! My favorite part of working on docs.rs is giving and receiving feedback
 from my friends.
 
