@@ -5,6 +5,7 @@ description: "\"technical debt\" is about updating your understanding of the pro
 taxonomies:
   tags:
     - ideas
+    - software-architecture
 extra:
   fedi: https://tech.lgbt/@jyn/114560131909686297
   bsky: https://bsky.app/profile/jyn.dev/post/3lpvfhngtlk2a

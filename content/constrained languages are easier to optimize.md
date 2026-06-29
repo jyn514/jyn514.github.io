@@ -6,6 +6,7 @@ description: exposing raw pointers make the optimizer’s job horribly hard. hig
 taxonomies:
   tags:
     - compilers
+    - software-architecture
 extra:
   fedi: https://tech.lgbt/@jyn/114841091700161946
   bsky: https://bsky.app/profile/jyn.dev/post/3ltrs3sya6s2o

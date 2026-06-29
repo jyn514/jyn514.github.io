@@ -2,6 +2,8 @@
 title: brownouts reveal system boundaries
 date: 2025-11-19
 description: You have backups for your critical data. Do you have backups for your critical infrastructure?
+taxonomies:
+  tags: [software-architecture]
 extra:
   toc: 1
   fedi: https://tech.lgbt/@jyn/115579050310890481
