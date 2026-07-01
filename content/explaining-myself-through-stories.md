@@ -14,6 +14,12 @@ audience: "everyone"
 #  stub: true
 ---
 
+{% quote(author="Flannery O'Connor", url="https://archive.org/details/mysterymannersoc00ocon/page/96/mode/2up") %}
+
+A story is a way to say something that can't be said any other way, and it takes every word in the story to say what the meaning is. You tell a story because a statement would be inadequate. When anyone asks what the story is about, the only proper thing is to tell him to read the story.
+
+{% end %}
+
 i fall back into stories because i don't know any other way to explain myself.
 stories convey the sense of “there is more here than i can say aloud”.
 you don’t expect to start a story halfway through and understand the nuance.
