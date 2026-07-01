@@ -48,6 +48,7 @@
     {{ page.content | safe }}
   </div>
 </article>
+{% if not page.extra.no_discuss %}
 <hr>
   {# every goddamn time i use tera i regret it #}
   {# lobste.rs doesn't allow searching by url >:( #}
@@ -81,4 +82,5 @@
     <a href="{{link.url}}">{{link.name}}</a>
   {%- endfor -%}
 </small>
+{% endif %}
 {% endblock content %}

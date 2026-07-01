@@ -6,6 +6,7 @@ taxonomies:
  tags: [art]
 #  computer-of-the-future: ["0"]
 extra:
+  no_discuss: true
 #  category: "tools"
 audience: "everyone"
 #  toc: 2
