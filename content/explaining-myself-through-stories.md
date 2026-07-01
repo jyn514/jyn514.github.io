@@ -76,6 +76,16 @@ i guess i would be too.
 
 ---
 
+sometimes words don't get close enough to the thing i mean.
+if i say a word, i'm not just saying a definition, i'm evoking a connotation, a memory, a feeling.
+i can be precise with definitions; it's much harder to be precise with feelings.
+stories give us that shared context where, even if we aren't feeling the same things, i know we have roughly the same memories.
+
+sometimes i have words in mind that might even be true by a dictionary definition, but don't have the right meaning.
+instead i have to build my own meaning around them; shade them just darkly enough that you can see the outline; without giving you a false sense of security that you've seen the whole thing at once.
+
+---
+
 Edouard Glissant talks about [the right to opacity](https://tool-shed.org/resource/edouard-glissants-right-to-opacity/):
 
 > [It is not the case] that everything is futile, but that there are limits to absolute truth. How can one point out these limits without lapsing into skepticism or paralysis? How can one reconcile the hard line inherent in any politics and the questioning essential to any relation? Only by understanding that it is impossible to reduce anyone, no matter who, to a truth he would not have generated on his own.
