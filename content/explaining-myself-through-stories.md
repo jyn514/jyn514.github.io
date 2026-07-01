@@ -1,13 +1,11 @@
 ---
 title: "explaining myself through stories"
 date: 2026-07-01
-draft: true
 description: "When most people think “river” I bet they think “personal identity.”"
 taxonomies:
  tags: [art]
 #  computer-of-the-future: ["0"]
 extra:
-  draft: true
 #  category: "tools"
 audience: "everyone"
 #  toc: 2
