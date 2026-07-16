@@ -1,5 +1,6 @@
 ---
 title: "i've started drawing again"
+description: "I just miss doing art. Don't you?"
 date: 2026-07-16
 taxonomies:
  tags: [art]
