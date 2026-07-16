@@ -10,7 +10,7 @@ audience: "everyone"
 
 {% quote(author="Naomi Kritzer, *Better Living Through Algorithms*", url="https://clarkesworldmagazine.com/kritzer_05_23/") %}
 
-I *liked* drawing, I realized. It had been fun when I was a kid. Why had I ever given it up?
+*I just miss doing art. Don’t you?*
 
 {% end %}
 
