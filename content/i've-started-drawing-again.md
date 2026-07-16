@@ -15,8 +15,19 @@ I *liked* drawing, I realized. It had been fun when I was a kid. Why had I ever 
 {% end %}
 
 i bought myself some presents.
-![](/assets/colored-pencils.webp)
+
+![
+a picture of a table with a tall jar of colored pencils and the cap laying next to it.
+underneath is a sketchbook, which has a drawing of the pencils themselves.
+inside the drawing is another sketchbook, with a tiny miniature nested pencil drawing.
+](/assets/colored-pencils.webp)
 
 i like them. they're nice.
 
-![](/assets/sunset.webp)
+![
+a picture of a loose blank paper with a drawing of the sunset.
+in the distance are two mountains with an island nearby.
+in the midground are two sailboats. their names are just barely visible: STABERINDE and GREY MATTER.
+in the foreground are two people sitting on the beach on a wooden log. their footsteps trail off the page.
+one says to the other: "do you think the sun ever thinks about us?"
+](/assets/sunset.webp)
