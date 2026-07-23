@@ -289,7 +289,7 @@ Note some things about Magma:
 - Build parameters can be referred to in rules through the `vars` argument.
 - `dynout` is a [thunk](https://wiki.haskell.org/Thunk); it only registers an intent to add edges in the future, it does not eagerly require `example.tar.dd` to exist.
 - Our `watch` input edge is generalized and can apply to any rule, not just to the configure step. It executes when a file is modified (or if the tool doesn’t support file watching, on each file in the calculated diff in the next tool invocation).
-- Our `watch` edge provides the file event type, but not the file contents. This allows ronin to automatically map `true` results to one of the three edge kinds: `:ifwritten`, `:ifcreated`, `:ifdeleted`. `:always` and `:ifchanged` are not available through this API.
+- Our `watch` edge provides the file event type, but not the file contents. This allows the executor to automatically map `true` results to one of the three edge kinds: `:ifwritten`, `:ifcreated`, `:ifdeleted`. `:always` and `:ifchanged` are not available through this API.
 - We naturally distinguish between “phony targets” and files because the former are `group`s and the latter are `action`s. No more accidentally failing to build if an `all` file is created. [^13]
 - We naturally distinguish between “groups of targets” and “commands that always need to be rerun”; the latter just uses `:inputs :always`.
 - Data can be transformed in memory using clojure functions without needing a separate process invocation. No more need to use `sed` in your build system.
