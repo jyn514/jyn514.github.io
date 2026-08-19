@@ -10,6 +10,11 @@
 #let sans-face = "Arial"
 #let mono-face = "Courier"
 #let current-chapter = state("ugh-current-chapter", none)
+#let outline-marker(level, body) = box(
+  width: 0pt,
+  height: 0pt,
+  hide(heading(level: level, outlined: true, bookmarked: true, body)),
+)
 
 #let ugh-book(
   title: none,
@@ -36,7 +41,13 @@
         let folio = counter(page).get().first()
         let book-name = if title == none { [Notes] } else { title }
         let chapter-name = if chapter == none { [Notes] } else { chapter }
-        if calc.even(folio) {
+        if chapter == [Table of Contents] {
+          grid(
+            columns: (auto, 1fr),
+            counter(page).display("1"),
+            [],
+          )
+        } else if calc.even(folio) {
           grid(
             columns: (auto, 1fr),
             align: (left, right),
@@ -85,6 +96,59 @@
 }
 
 // Front matter -------------------------------------------------------------
+
+#let compact-front-matter(
+  title,
+  subtitle: none,
+  authors: (),
+  publisher: none,
+  dedication: none,
+  copyright: none,
+) = {
+  current-chapter.update(none)
+  block(width: 100%, height: 100%)[
+    #align(center)[
+      #set text(font: title-face, fill: ink)
+      #line(length: 1.25in, stroke: 4pt + ink)
+      #v(16pt)
+      #text(size: 32pt, weight: "bold", title)
+      #if subtitle != none [
+        #v(9pt)
+        #text(size: 14pt, style: "italic", subtitle)
+      ]
+      #v(20pt)
+      #for author in authors [
+        #text(size: 11pt, weight: "bold", author)
+        #linebreak()
+      ]
+    ]
+    #v(1fr)
+    #if dedication != none [
+      #align(center, block(width: 60%)[
+        #set text(size: 11pt, style: "italic")
+        #set par(justify: false, first-line-indent: 0pt)
+        #align(center, dedication)
+      ])
+      #v(1fr)
+    ]
+    #if publisher != none [
+      #align(center, text(
+        font: cover-face,
+        size: 9pt,
+        weight: 800,
+        stretch: 75%,
+        smallcaps(publisher),
+      ))
+      #v(14pt)
+    ]
+    #if copyright != none [
+      #set text(size: 7.5pt)
+      #set par(justify: false, leading: 0.45em, first-line-indent: 0pt)
+      #copyright
+    ]
+  ]
+  pagebreak()
+}
 
 #let title-page(title, subtitle: none, authors: (), publisher: none) = {
   current-chapter.update(none)
@@ -139,8 +203,30 @@
 #let contents(title: [Table of Contents], depth: 3) = {
   current-chapter.update(title)
   set text(font: body-face, size: 10pt)
-  show outline.entry.where(level: 1): set text(font: display-face, weight: "bold")
-  outline(title: title, depth: depth, indent: auto)
+  show outline.entry: it => {
+    let level = it.level
+    let size = if level == 1 { 13pt } else if level == 2 { 10.5pt } else { 8.5pt }
+    let gap = if level == 1 { 0.72em } else if level == 2 { 0.18em } else { 0.08em }
+    v(gap)
+    link(it.element.location())[
+      #set text(size: size, weight: "regular")
+      #block(inset: (left: (level - 1) * 1.1em))[
+        #grid(
+          columns: (auto, 1fr, auto),
+          column-gutter: 0.35em,
+          it.element.body,
+          box(width: 1fr, repeat[.]),
+          context text(
+            size: 8.5pt,
+            str(counter(page).at(it.element.location()).first()),
+          ),
+        )
+      ]
+    ]
+  }
+  text(font: body-face, size: 18pt, weight: "bold", title)
+  v(1.1em)
+  outline(title: none, depth: depth, indent: auto)
   pagebreak()
 }
 
@@ -148,6 +234,7 @@
 #let chapter(number, title, deck: none) = {
   current-chapter.update(title)
   pagebreak(weak: true)
+  outline-marker(1, [#number#h(1em)#title])
   block(height: 2.18in, width: 100%, breakable: false)[
     #grid(
       columns: (1fr, auto),
@@ -186,6 +273,7 @@
 #let part(number, title) = {
   current-chapter.update(none)
   pagebreak(weak: true)
+  outline-marker(1, strong[Part #number: #title])
   align(center + horizon)[
     #set text(font: display-face, fill: ink)
     #text(size: 12pt, weight: "bold", tracking: 0.12em, smallcaps[Part #number])

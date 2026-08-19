@@ -3,33 +3,33 @@
 #let title = "The NIX-HATERS Handbook"
 #show: ugh-book.with(title: title, author: "jyn")
 
-#title-page(
+#compact-front-matter(
   [The NIX-#linebreak() HATERS Handbook],
   authors: ("jyn",),
   publisher: "jyn Really Likes Fruit LLC",
+  dedication: [For Jade and edef. Love you lots.],
+  copyright: [
+    Copyright © 2026 Jynn Nelson. Typeset with Typst.
+
+    No Nix executor, `.nix` DSL, `nixpkgs`, or `NixOS` machine was used in the
+    creation of this document.
+  ],
 )
-
-#copyright-page[
-  Copyright © 2026 Jynn Nelson. Typeset with Typst.
-
-  No Nix executor, `.nix` DSL, `nixpkgs`, or `NixOS` machine was used in the creation of this document.
-]
-
-#dedication[For Jade and edef. Love you lots.]
 
 #contents()
 
 #part(1, "Nix Is/Is Not")
 
+#chapter(1, "'Nix'", deck: "We can't even agree on what the word means")
+
 #figure(
   image("assets/nix-is-not.jpg", width: 80%),
-  caption: [what's up with your naming, folks],
+  caption: [what's up with your naming, folks
+
+source: #link("https://xeiaso.net/talks/asg-2023-nixos/")],
 ) <fig-nix-is-not>
 
-#chapter(1, "The Machine", deck: "A tool with opinions of its own")
-
-#pullquote(attribution: "an operator")[Every interface is simple after one has mem
-orized its accidents.]
+// #pullquote(attribution: "an operator")[Every interface is simple after one has mem orized its accidents.]
 
 This is a specimen paragraph. It exists to test the measure, leading, indentation,
 running head, and the ordinary disposition of ink on the page. A second sentence
