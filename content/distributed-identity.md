@@ -15,11 +15,16 @@ extra:
 #  stub: true
 ---
 
-## What problem are we solving?
+We've all heard the horror stories of [dealing with names and technology][name-falsehoods], and yet, we must persist.
+In this story, we journey through the thorny brambles of git commit histo*ry and life event*s, and ultimately manage to tame them using ATProto.
+
+[name-falsehoods]: https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/
+
+## Let's Write A User Story
 
 Say that you have a big 'ol git repo.
 Thousands of commits, hundreds of issues, dozens of PRs.
-And now let's say one of your contributors—not a maintainer, mind you, just someone who helps out once in a while—is named Andrea P. Researcher <andrea@conglomerate.example.com>.
+And now let's say one of your contributors—not a maintainer, mind you, just someone who helps out once in a while—is named Andrea P. Researcher \<andrea@conglomerate.example.com\>.
 
 Andrea gets a new job at Greenfield & Co and changes her email.
 She come to you with a request: actually, i didn't like my old job very much, could you update the commit history to the new email?
@@ -50,7 +55,7 @@ She uses mailmap to change her commits to consistently use Andrea Locksmith for 
 ---
 
 Andrea meets some friends and goes to some movies and shows and reads some books and has a few revelations about himself.
-He comes back and says, hey i have some news about myself, um, my new name is Bobby.
+He comes back and says, hey i have some news, um, my new name is Bobby.
 Can you update all my commits?
 And you point him to mailmap and he says no no, that keeps my deadname around right at the top of the repo.
 Can't you change the *actual data* somehow?
@@ -68,7 +73,7 @@ But all the same, he contributes a bit less now.
 Bobby moves to Germany and learns they have this neat thing called [GDPR].
 And one of his friends tells him, look man, you have a right to be called the name you chose, you know?
 An honest-to-god, enshrined-in-law legal right.
-And now Bobby comes back to you and say "I want you rip my name out of the repository because it's personal data of an individual."
+And now Bobby comes back to you and say "I want you to rip my name out of the repository because it's personal data of an individual."
 
 Well, you're not *quite* sure that's how GDPR works (maybe you have a "legitimate interest"? are we really sure you were offering a "product or service" to Bobby?).
 But all the same, lawyers are expensive, and you'd rather not go through the hassle, especially since, well, Bobby really does have a good reason here.
@@ -78,7 +83,7 @@ So you figure out how to use [`git-filter-repo`]
 and update `.git-blame-ignore-revs`
 and force-push to `main`
 and write a blog post telling everyone how to rebase their PRs
-and realize you hard-coded commit hashes in your docs so you go back and fix those too,
+and realize you hard-coded commit hashes in your docs so you go back and fix those too
 and realize you hard-coded them even in some blog posts so now you have to update *those*
 and ugh. ok. that's probably most of it now.
 
@@ -87,6 +92,17 @@ And then his mate Charlie comes by and says actually that was neat, can you do t
 
 [GDPR]: https://www.edpb.europa.eu/sme/learn-the-basics/data-protection-basics_en#does-the-gdpr-apply-to-your-organisation
 [`git-filter-repo`]: https://github.com/newren/git-filter-repo
+
+---
+
+## What problem are we solving?
+
+Bobby asked for three things:
+1. Changing names and emails after the fact.
+2. Changing names after the fact, in a way that's time-based instead of identity-based.
+3. Changing names after the fact, in such a way that the previous name isn't detectable.
+
+Git can give us 1, but not 2 or 3.
 
 ---
 
@@ -157,12 +173,16 @@ What's interesting about this is it allows *you* to control where your data live
 ATProto has a concept of a [**Personal Data Server** (PDS)][pds]:
 by default, when you join Bluesky, your data lives on their servers,
 but you can migrate your PDS and self-host your own data.
-This means, for example, that Bluesky can't ban you [^2].
+This means, for example, that Bluesky can't ban you;
+you can always migrate to [Blacksky] [^2].
+
+[Blacksky]: https://blacksky.community/
 
 Ok, so, let's put this together and use it in our Git identity alternative.
 We now have portability, modification, revocability, and—oh? what's that? [a primary source?][did-plc]
 
 > The full history of DID operations and updates, including timestamps, is permanently publicly accessible. This is true even after DID deactivation. It is important to recognize (and communicate to account holders) that any personally identifiable information (PII) encoded in alsoKnownAs URIs will be publicly visible even after DID deactivation, and can not be redacted or purged.
+>
 > In the context of atproto, this includes the full history of handle updates and PDS locations (URLs) over time. To be explicit, it does not include any other account metadata such as email addresses or IP addresses. Handle history could potentially de-anonymize account holders if they switch handles between a known identity and an anonymous or pseudonymous identity.
 
 aww.....
@@ -174,7 +194,7 @@ But ATProto has a bunch of other [kinds of data][lexicon].
 We could just. You know. Build our own. With blackjack, and hookers.
 
 [Here's][chess-record] an example of a custom ATPRoto record:
-```
+```json
 {
   "uri": "at://did:plc:h2okxbr76w5522tailkxmidq/blue.checkmate.game/3msn57l2vrt2x",
   "cid": "bafyreiab3suqph7m5xw2weronkts7ekp224rfrkltwiafluqjff7wtjlsi",
@@ -211,20 +231,48 @@ Unlike `did:plc` records, normal ATProto records have no permanent history and c
 
 So, one way we could fix Bobby's problem is something like this:
 1. Just build a new VCS data model from scratch. Look, if we make it a [jj] backend, it can't be *that* much work, right?
-2. When you create a commit, instead of having a name/email pair in metadata, embed an opaque id that's *mumble mumble [fancy crypto secrets][digital-credentials] generated from your DID + per-repo salt*.
-3. Create a new `org.jyns-awesome-vcs.identity` ATProto schema that has a list of claimed opaque ids, current name and email, optional past emails, optional github link using OAuth, etc.
-4. When you run `jj log`, it fetches your identity from ATProto. [^3]
+2. `.mailmap` holds a list of *mumble mumble unique public key per repo*, not a list of names/emails  [^4].
+3. When you create a commit, instead of having a name/email pair in metadata, embed a private key signature of the commit.
+4. Create a new `org.jyns-awesome-vcs.identity` ATProto schema that has an optional current name and email, optional past emails, optional github link using OAuth, etc.
+   Embed the public key and *mumble mumble per-repo private key signature of the DID*.
+5. When you run `jj log`, it fetches your identity from ATProto. [^3]
 
 [digital-credentials]: https://www.w3.org/TR/digital-credentials/
 
 This gets us all the properties we want!
 - You can edit any identity after the fact.
-- You can delete your identity by removing the claimed opaque ID from your ATProto record.
-- The [*mumble mumble crypto secrets*][digital-credentials] make sure that only you can claim that DID. Probably. I'm not a cryptographer.
+- You can add custom fields to the identity record that say to use certain names before or after a given date.
+- You can delete your identity by removing the signature of the DID from your ATProto record.
+  Because the signature is per-repo, deleting one signature doesn't affect the others.
+- The *mumble mumble asymmetric key pair* make sure that only you can claim that DID corresponds to that commit. Probably. I'm not a cryptographer.
+
+One possible UI that could be built around this:
+1. Bobby runs `jj git init`, which gives him a private key he puts in 1password.
+   The public key is automatically set up for him.
+2. Bobby, optionally, sets up commit signing.
+   If he doesn't set up signing, `jj commit` just embeds the public key as the identity.
+1. Bobby visits a website that has a pretty GUI setup for letting him edit his identity record. It can't exfiltrate his key because it runs fully client-side, which Bobby can test by turning off WiFi on his laptop, generating the new record (with only the signature, not the key), and then turning WiFi back on to copy-paste it into a fresh page of the app.
+
+Bobby is happy because from his perspective he just commits like normal, maybe with one extra `jj identity publish` if he wants to tie his identity to the repo immediately.
+The maintainer is happy because they NEVER EVER EVER have to think about GDPR for commits again.
+Bobby's ex is unhappy that he moved to Germany, but that's a different story.
+
+You could imagine an extension of this idea to commit bodies that allows building `hg censor` on the same mechanism, although it's more complicated because you probably want that to be under the control of the repo owner, not the person who originally submitted the change.
+
+Now, this doesn't solve literally every problem—archive.org is a thing—but it sure does solve "all people have to do to deanonymize you is run `cat .mailmap`".
+
+## Summary
+
+- Git preserves *all* data *forever*, in amber.
+  Trying to change it is a goddamn nightmare.
+  This is a problem for credentials, identities, and copyrighted material.
+- `hg censor` makes a good-faith attempt to fix this, but only works for commit contents, not commit metadata
+- This post proposes a way to fix this for identities, not just commit contents,
+  using ATProto's distributed identities and personally-owned data storage.
 
 [jj]: https://docs.jj-vcs.dev/latest/
 
-[^1]: if this doesn't sound important to you, imagine that idk, Bobby is going into a witness protection program or something, or getting a divorce from an abusive ex. but also, get the hell off my site.
+[^1]: if this doesn't sound important to you, imagine that idk, Bobby is going into a witness protection program or something, or getting a divorce from an abusive ex. also, get the hell off my site.
 
 [^2]: they can ban you from Bluesky, but not from ATProto as a whole. see [here][rudy-post] for more information about this.
 
@@ -236,3 +284,5 @@ This gets us all the properties we want!
 
 [appview]: https://atproto.wiki/en/wiki/reference/core-architecture/appview
 [trustfall]: https://github.com/obi1kenobi/trustfall
+
+[^4]: You want this per-repo so that you can delete your association with one project without having to delete all of them.
