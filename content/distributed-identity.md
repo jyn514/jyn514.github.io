@@ -147,7 +147,7 @@ Let's consider the properties we want by comparing to how changes usually work o
 
 `mailmap` gets us 1, kinda. It's still traceable pretty easily.
 `hg censor` gets us 3.
-Nothing currently out there gets us 2 or 4.
+Nothing currently out there gets us 2 or[^8] 4.
 
 4 is probably not something we care about too much here.
 "Delete all traces of this commit, even the fact it existed" doesn't seem particularly necessary.
@@ -290,3 +290,5 @@ Now, this doesn't solve literally every problem—archive.org is a thing—but i
 [^6]: actually, [tangled](https://tangled.org/) cheats and lets you write *only* your email in the commit, then looks for a ATProto DID with that email and uses that to find your Bluesky handle and display name. wild shit. doesn't help with our goal of hiding names and emails though.
 
 [^7]: real crypto, not that web3 bullshit. "crypto means cryptographers".
+
+[^8]: 522 came up with an alternate way to allow deletions and renames by having a [mutable mailmap that's not on the main branch](https://www.5snb.club/w/make-git-username-emails-mutable/). This isn't quite as flexible as the proposal here, but it's *much* much simpler, and works today with normal `git` config.
