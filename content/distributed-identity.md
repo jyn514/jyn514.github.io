@@ -165,7 +165,7 @@ and it's the protocol powering [Bluesky](https://bsky.app/).
 Exactly how ATProto works is a bit out of scope for this post (for more on that see [The Hitchhiker's Guide to the Atmosphere][what-is-atproto]),
 but what is relevant is how ATProto handles *identity*.
 It does this with a [**decentralized identifier** (DID)][did].
-For example, my Bluesky handle is `@jyn.dev`, but my ATProto DID is
+For example, my Bluesky handle is `@jyn.dev`, but my ATProto DID [^5] is
 [`did:plc:h2okxbr76w5522tailkxmidq`][atproto-explorer].
 Because the two are different, that allowed me to change my handle from `@jyn.bsky.social` to `@jyn.dev` when I first joined Bluesky.
 
@@ -286,3 +286,5 @@ Now, this doesn't solve literally every problem—archive.org is a thing—but i
 [trustfall]: https://github.com/obi1kenobi/trustfall
 
 [^4]: You want this per-repo so that you can delete your association with one project without having to delete all of them.
+
+[^5]: technically DIDs [aren't specific to ATProto](https://www.w3.org/TR/did/), but they weren't widely used before Bluesky started using them.
