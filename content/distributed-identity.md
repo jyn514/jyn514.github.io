@@ -14,7 +14,7 @@ extra:
 ---
 
 We've all heard the horror stories of [dealing with names and technology][name-falsehoods], and yet, we must persist.
-In this story, we journey through the thorny brambles of git commit histo*ry and life event*s, and ultimately manage to tame them using ATProto.
+In this story, we journey through the thorny brambles of git commit history and life events, and ultimately manage to tame them using ATProto.
 
 [name-falsehoods]: https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/
 
