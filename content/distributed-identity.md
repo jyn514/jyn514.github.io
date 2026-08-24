@@ -1,16 +1,14 @@
 ---
 title: "distributed identity"
 date: 2026-08-24
-draft: true
 description: "Git makes it stupidly hard to change or hide your identity"
-#taxonomies:
-#  tags: []
+taxonomies:
+ tags: [git, ideas, people, stories]
 #  computer-of-the-future: ["0"]
 extra:
-  draft: true
 #  category: "tools"
 #  audience: "everyone"
-#  toc: 2
+ toc: 1
 #  unlisted: true
 #  stub: true
 ---
@@ -167,7 +165,7 @@ but what is relevant is how ATProto handles *identity*.
 It does this with a [**decentralized identifier** (DID)][did].
 For example, my Bluesky handle is `@jyn.dev`, but my ATProto DID [^5] is
 [`did:plc:h2okxbr76w5522tailkxmidq`][atproto-explorer].
-Because the two are different, that allowed me to change my handle from `@jyn.bsky.social` to `@jyn.dev` when I first joined Bluesky.
+Because the two are different, that allowed me to change my handle from `@jyn.bsky.social` to `@jyn.dev` when I first joined Bluesky [^6].
 
 What's interesting about this is it allows *you* to control where your data lives.
 ATProto has a concept of a [**Personal Data Server** (PDS)][pds]:
@@ -268,23 +266,27 @@ Now, this doesn't solve literally every problem—archive.org is a thing—but i
   This is a problem for credentials, identities, and copyrighted material.
 - `hg censor` makes a good-faith attempt to fix this, but only works for commit contents, not commit metadata
 - This post proposes a way to fix this for identities, not just commit contents,
-  using ATProto's distributed identities and personally-owned data storage.
+  using ATProto's distributed identities and personally-owned data storage, as well as a completely off-the-cuff unreviewed crypto[^7] scheme.
 
 [jj]: https://docs.jj-vcs.dev/latest/
 
 [^1]: if this doesn't sound important to you, imagine that idk, Bobby is going into a witness protection program or something, or getting a divorce from an abusive ex. also, get the hell off my site.
 
-[^2]: they can ban you from Bluesky, but not from ATProto as a whole. see [here][rudy-post] for more information about this.
+[^2]: they can ban you from Bluesky, but not from ATProto as a whole. see [the creator of Blacksky's post about this][rudy-post] for more information.
 
 [rudy-post]: https://bsky.app/profile/rude1.blacksky.team/post/3mcozwdhjos2b
 [chess-record]: https://atproto.at/uri/at://did:plc:h2okxbr76w5522tailkxmidq/blue.checkmate.game/3msn57l2vrt2x
 
-[^3]: Live fetches would be expensive, but you can make them cheaper with an [appview], which you can think of as a giant cache with structured database-like queries.
-     This is similar to the idea behind [trustfall].
+[^3]: live fetches would be expensive, but you can make them cheaper with an [appview], which you can think of as a giant cache with structured database-like queries.
+     this is similar to the idea behind [trustfall].
 
 [appview]: https://atproto.wiki/en/wiki/reference/core-architecture/appview
 [trustfall]: https://github.com/obi1kenobi/trustfall
 
-[^4]: You want this per-repo so that you can delete your association with one project without having to delete all of them.
+[^4]: you want this per-repo so that you can delete your association with one project without having to delete all of them.
 
 [^5]: technically DIDs [aren't specific to ATProto](https://www.w3.org/TR/did/), but they weren't widely used before Bluesky started using them.
+
+[^6]: actually, [tangled](https://tangled.org/) cheats and lets you write *only* your email in the commit, then looks for a ATProto DID with that email and uses that to find your Bluesky handle and display name. wild shit. doesn't help with our goal of hiding names and emails though.
+
+[^7]: real crypto, not that web3 bullshit. "crypto means cryptographers".
