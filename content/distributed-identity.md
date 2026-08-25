@@ -15,6 +15,12 @@ extra:
 #  stub: true
 ---
 
+{% quote(author="rain", url="https://bsky.app/profile/sunshowers.io/post/3mtmqke3gkc22") %}
+
+Sorry but the law doesn't care about your merkle trees
+
+{% end %}
+
 We've all heard the horror stories of [dealing with names and technology][name-falsehoods], and yet, we must persist.
 In this story, we journey through the thorny brambles of git commit history and life events, and ultimately manage to tame them using ATProto.
 
@@ -249,7 +255,7 @@ This gets us all the properties we want!
 One possible UI that could be built around this:
 1. Bobby runs `jj git init`, which gives him a private key he puts in 1password.
    The public key is automatically set up for him.
-2. Bobby, optionally, sets up commit signing.
+1. Bobby, optionally, sets up commit signing. [^9]
    If he doesn't set up signing, `jj commit` just embeds the public key as the identity.
 1. Bobby visits a website that has a pretty GUI setup for letting him edit his identity record. It can't exfiltrate his key because it runs fully client-side, which Bobby can test by turning off WiFi on his laptop, generating the new record (with only the signature, not the key), and then turning WiFi back on to copy-paste it into a fresh page of the app.
 
@@ -268,7 +274,7 @@ Now, this doesn't solve literally every problem—archive.org is a thing—but i
   This is a problem for credentials, identities, and copyrighted material.
 - `hg censor` makes a good-faith attempt to fix this, but only works for commit contents, not commit metadata
 - This post proposes a way to fix this for identities, not just commit contents,
-  using ATProto's distributed identities and personally-owned data storage, as well as a completely off-the-cuff unreviewed crypto[^7] scheme.
+  using ATProto's distributed identities and personally-owned data storage, as well as a completely off-the-cuff unreviewed crypto[^7] scheme. The scheme allows *you* to change your identity without having to rely on a second- or third-party.
 
 [jj]: https://docs.jj-vcs.dev/latest/
 
@@ -289,8 +295,12 @@ Now, this doesn't solve literally every problem—archive.org is a thing—but i
 
 [^5]: technically DIDs [aren't specific to ATProto](https://www.w3.org/TR/did/), but they weren't widely used before Bluesky started using them.
 
-[^6]: actually, [tangled](https://tangled.org/) cheats and lets you write *only* your email in the commit, then looks for a ATProto DID with that email and uses that to find your Bluesky handle and display name. wild shit. doesn't help with our goal of hiding names and emails though.
+[^6]: actually, [tangled][tangled id] cheats and lets you write *only* your email in the commit, then looks for a ATProto DID with that email and uses that to find your Bluesky handle and display name. it also lets you use a DID directly rather than an email. wild shit. doesn't help with our goal of hiding names and emails though.
+
+[tangled id]: https://docs.tangled.org/troubleshooting-guide#empty-punchcard
 
 [^7]: real crypto, not that web3 bullshit. "crypto means cryptographers".
 
-[^8]: 522 came up with an alternate way to allow deletions and renames by having a [mutable mailmap that's not on the main branch](https://www.5snb.club/w/make-git-username-emails-mutable/). This isn't quite as flexible as the proposal here, but it's *much* much simpler, and works today with normal `git` config.
+[^8]: 522 came up with an alternate way to allow deletions and renames by having a [mutable mailmap that's not on the main branch](https://www.5snb.club/w/make-git-username-emails-mutable/). This isn't quite as flexible as the proposal here, because it only allows the maintainer to change your identity, not you yourself, but it's *much* much simpler, and works today with normal `git` config.
+
+[^9]: If you want, you can imagine the public/private keypair to be a literal SSH key, which makes it work out of the box with most existing VCS'. This also lets you do fancy things with ssh-agent and SSH forwarding.
