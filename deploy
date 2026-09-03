@@ -1,0 +1,4 @@
+#!/bin/sh
+rm -rf build
+zola build
+wrangler pages deploy build
