@@ -1,15 +1,12 @@
 ---
 title: "simple is not small"
 date: 2026-08-27
-draft: true
 description: "small programs hide coupling"
 taxonomies:
  tags: [ideas, software-architecture]
 extra:
-  draft: true
   audience: "programmers"
   toc: 2
-#  unlisted: true
 ---
 
 > **@notjack.space**: UIs with too many buttons confuse and alarm me  
