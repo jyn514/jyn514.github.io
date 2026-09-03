@@ -134,8 +134,11 @@ This is exactly the thing that makes "separate ordering from aggregation" so har
 we end up having to do this weird dance with table-joins-through-text-files.
 
 You might have heard the phrase "Write programs that do one thing and do it well" in reference to Unix systems.
+Maybe you heard it called the [Unix Philosophy].
 I think "do one thing" is commonly understood to be about simplicity, but in practice it's actually about *size*.
 Unix tools are _small_ but they are not _simple_.
+
+[Unix Philosophy]: https://archive.org/details/aquartercenturyofunixpeterh.salus_201910/page/n65/mode/2up
 
 ## Large is not the same as coupled
 
