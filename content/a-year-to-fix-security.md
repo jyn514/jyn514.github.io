@@ -177,43 +177,64 @@ Things are getting weird, and scary, very quickly.
 We need to act with urgency, not panic.
 Some things we can do:
 
-### Governments and regulation agencies
+### Governments and regulatory agencies
 
 Scanning with frontier models is relatively cheap and does not need major incentives.
-What does need incentives is *deployment*, and requiring organizations to look at their security practices in the first place.
+What does need incentives is *deployment* and *remediation*, and requiring organizations to look at their security practices in the first place.
+On the current policy trajectory, the biggest risk is a heap of untriaged warnings that never get fixed.
 
-If you're in a position to make policy, the following would be very effective:
-Fund security engineering, either through token subsidies or raw money that can be used for hiring.
-Create mandates and incentives for improving security.
-Greatly reward people and organizations who do this research.
-Penalize *not* deploying and revising security posture regularly, with increased penalties if a hack happens as a result.
+If you're in a position to make policy, the following would help:
+Fund security engineering, preferably with flexible grants that can be used for hiring or technology products as decided by the organization.
+Create mandates and incentives for improving security, especially for frequent penetration testing.
+Encourage using frontier models with human oversight for that pentesting.
+Penalize *not* investigating and revising security posture regularly, with increased penalties if a hack happens as a result.
+Require findings to be fixed within a risk-based deadline from discovery, with federal funding for the fixes.
 Both carrot and stick.
 
-Some specific things that are worth looking into:
+Some specific things that may be worth looking into:
 
 - Be especially sure to fund local governments and hospitals, which are unlikely to get this funding through other channels.
-- For banks, extend [DORA] in the EU
-  and [FFIEC cyber resilience banking regulations][FFIEC] in the US to require frontier LLM scanning as part of routine penetration testing.
-- For power companies, extend [NERC Critical Infrastructure Protection][NERC-CIP] in the US to apply to local utilities and municipalities, not just large systems.
-  Extend NERC-CIP and the EU's [Electronic Communications Code][ECC] to require *and fund* frontier LLM scanning; power companies don't have the sorts of margins that banks do.
-- Telecoms in the US are currently high risk and have no mandatory cybersecurity risk standards.
+  [EO 14409] is not enough because it's unfunded and voluntary.
+- For banks, extend DORA's [TLPT] in the EU and [FTC]/[OCC]/[NCUA] in the US.
+  TLPT should increase the frequency and coverage of penetration testing.
+  NCUA currently only suggests pentesting; upgrade it to a mandate.
+  The FTC doesn't mandate pentesting if the financial institution has "continuous monitoring": it should be unconditionally mandated.
+- For power companies in the US, adopt guidelines similar to [NERC Critical Infrastructure Protection][NERC-CIP] at the state and local level, including for distribution systems and others that aren't currently regulated, not just for the highest-risk and largest systems.
+  Create federal grants for implementing those guidelines.
+  Extend NERC-CIP to require active testing for all systems, not just high-impact systems.
+  Change NERC-CIP and the EU's [NIS2] / [Network Code on Cybersecurity][NCCS] to increase the frequency of required tests.
+- Telecoms in the US are currently high risk and have no unified mandatory cybersecurity risk standards.
   Create one and enforce it, using existing regulations for banks and power companies as a starting point.
 
-[DORA]: https://www.esma.europa.eu/esmas-activities/digital-finance-and-innovation/digital-operational-resilience-act-dora
-[FFIEC]: https://ithandbook.ffiec.gov/it-booklets/business-continuity-management/iv-business-continuity-strategies/iva-resilience/iva2-cyber-resilience/
-[NERC-CIP]: https://www.nerc.com/standards/reliability-standards/cip?utm_source=chatgpt.com
-[ECC]: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02024R1366-20250914
+[FTC]: https://www.ftc.gov/business-guidance/resources/ftc-safeguards-rule-what-your-business-needs-know?utm_source=chatgpt.com
+[OCC]: https://www.ecfr.gov/current/title-12/chapter-I/part-30/appendix-Appendix%20B%20to%20Part%2030
+[NCUA]: https://www.ecfr.gov/current/title-12/chapter-VII/subchapter-A/part-748
+[EO 14409]: https://www.whitehouse.gov/presidential-actions/2026/06/promoting-advanced-artificial-intelligence-innovation-and-security/
+[TLPT]: https://eba.europa.eu/activities/single-rulebook/regulatory-activities/operational-resilience/joint-regulatory-technical-standards-specifying-elements-related-threat-led-penetration-tests
+[NERC-CIP]: https://www.nerc.com/standards/reliability-standards/cip
+[NIS2]: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02022L2555-20221227
+[NCCS]: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02024R1366-20250914
+
+Across the board, require security postures to be updated *frequently*.
+Mandating specific models or providers will become outdated as new models are released.
+This is a rapidly changing field and defenses that were effective 12 months ago may not be effective in a year as threat models (both senses) change.
+Mandate testing and accountability, not specific techniques.
 
 Banning GLM 5.3-flash weights from being hosted anywhere in the US or Europe will be hardly any use in the short term,
 and no use at all in the long term.
 In the short-term, it will just pop up again on file-sharing sites; you'll have no more luck killing it than killing piracy.
 In the long-term, some other lab will release another model that's just as capable.
 
-Banning access to Mythos or Astra will actively make things worse; it will remove defenders' most powerful tool at exactly the moment they need it most.
+Blanket-banning access to Mythos or Astra will actively make things worse; it will remove defenders' most powerful tool at exactly the moment they need it most.
+Instead, restrict access to approved organizations and individuals, as frontier labs are already doing.
+This likely doesn't need new policy unless a lab shows signs of breaking ranks.
 
 Banning the sale/export of new GPUs or large unified memory will extend the year-long window for a bit but won't help long-term.
 It can't do anything about existing hardware, and it will be massively unpopular.
 Memory in particular is hard to regulate because *everything* uses it, not just specialized AI systems.
+
+In general, prioritize policies that address *triaging* and *fixing* security findings.
+Findings are getting very cheap; the fixes are not.
 
 ### Companies and open source foundations
 
