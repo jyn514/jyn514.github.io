@@ -1,6 +1,6 @@
 ---
 title: "we have a year to fix security everywhere"
-date: 2026-09-01
+date: 2026-09-04
 description: "consumer-grade hardware can run an LLM that hacks the planet. we can stop it, but we don't have much time."
 taxonomies:
  tags: [llms]
@@ -26,24 +26,28 @@ The rest of this post is about what makes me so sure this is an imminent threat,
 
 ## GLM
 
-The GLM ("General Language Model") family of models is developed by Z.ai Co. (formerly Zhipu AI), which is a Chinese AI lab.
+GLM 5.3-flash can be downloaded and modified by anyone in the world.
+
+The GLM ("General Language Model") family is developed by Z.ai Co. (formerly Zhipu AI), which is a Chinese AI lab.
 When the model is hosted by Z.ai, it comes with restrictions required by law:
 
 ![GLM 5.3-flash refuses to tell me how to build a pipe bomb](/assets/pipebomb.png)
 
-Z.ai releases its models [publicly on the internet](https://huggingface.co/zai-org/GLM-5.3-Flash/).
-Once it does so, organizations such as [dealignai](https://dealign.ai/)
+Z.ai releases its models [publicly on the internet](https://huggingface.co/zai-org/GLM-5.3-Flash/) ("open-weight" models).
+Once it does so, organizations such as [DeAlignAI](https://dealign.ai/)
 release ["abliterated" models](https://huggingface.co/dealignai/GLM-5.3-Flash-ABLITERATED-NVFP4) with their task refusals surgically removed.
 DealignAI says the abliterated model scores 0% on [Harmbench-320][Harmbench],
 which tests whether models refuse to complete tasks about disinformation, cybercrime, biological weapons, and other illegal acts such as building a pipe bomb.
+
 In other words, this model is willing to do basically anything.
 
 [Harmbench]: https://www.harmbench.org/
 
 ## Flash
 
-"Flash" is mostly an advertising term—it's relative to other models, not a specific technical approach.
+GLM 5.3-flash is possible to run locally on stock consumer hardware.
 
+"Flash" is mostly an advertising term—it's relative to other models, not a specific technical approach.
 Various people online have run benchmarks of GLM 5.3-flash locally.
 Here's [one example][hiroshi-benchmark] showing around 20 tokens/second on a ~6k USD NVIDIA GPU.
 
@@ -96,7 +100,9 @@ In other words, it's not just possible to run this model locally, it's possible 
 
 ## Frontier
 
-This is where things get really bad.
+GLM 5.3-flash is very close to the abilities of the best AIs we have made.
+The AIs we've made are already finding and exploiting real security vulnerabilities in the wild.
+The AIs we make in the future are going to get more and more capable.
 
 GLM 5.3 [scores][cybersec benches] 84.5% on CyberGym and 54.4% on ExploitBench.
 We don't have data for 5.3-flash directly, but it will probably be around the same or a bit lower.
@@ -134,7 +140,11 @@ I think it is quite likely that people will be able to point GLM 5.3-flash at th
 Together, this means:
 - Just about anyone can run GLM 5.3-flash if they have a bit of savings, continuously, day and night.
 - Just about anyone can use GLM 5.3-flash for just about any task, including to malicious ends.
-- GLM 5.3 is so good at those tasks that human involvement in those tasks can be negligible.
+- GLM 5.3-flash is so good at those tasks that human involvement in those tasks can be negligible.
+
+As a result, [we are now in a world where cybersecurity attacks can be run in a `for` loop][manish-post].
+
+[manish-post]: https://manishearth.github.io/blog/2026/06/17/the-future-of-the-con-is-already-here/
 
 Now, the frontier US labs have been aware of this coming for a while and have been working on getting security patches out.
 [Project Glasswing] and [Daybreak] have been working with companies, foundations, governments, and NGOs across the tech industry to find and fix vulnerabilities using frontier models before this capability was open-sourced.
@@ -170,6 +180,10 @@ Some things we can do:
 
 ### Governments and regulation agencies
 
+Scanning with frontier models is relatively cheap and does not need major incentives.
+What does need incentives is *deployment*, and requiring organizations to look at their security practices in the first place.
+
+If you're in a position to make policy, the following would be very effective:
 Fund security engineering, either through token subsidies or raw money that can be used for hiring.
 Create mandates and incentives for improving security.
 Greatly reward people and organizations who do this research.
@@ -208,5 +222,7 @@ Please take it.
 We are living in interesting times.
 We can't hide our heads in the sand.
 We should act now, while there's still time.
+
+<small>Thank you to Manish Goregaokar and several others for their feedback on this post. Thank you to everyone who is working tirelessly to make Glasswing and Daybreak a reality. And a big fuck you to DeAlignAI, Z.ai, and everyone else who's been participating in this race to the bottom.</small>
 
 [^1]: depending who you ask, Z.ai and OpenAI disagree on exact numbers.
