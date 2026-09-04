@@ -13,23 +13,23 @@ GLM 5.3-flash [released last week](https://z.ai/blog/glm-5.3-flash), and that me
 Cheap models capable of dangerous hacking are now available to anyone, without the normal safeguards for refusing malicious actions.
 We need to fix vulnerabilities across the industry so that we aren't caught unawares.
 And for one of the first times in computing history, we have the ability to!
-We can use frontier LLMs that move faster than a human to find and fix these issues in the little time we have left.
+We can use frontier LLMs that move faster than a human to find and fix these issues in the time we have left.
 
 This probably sounds like nonsense words or hysterical overreacting to most people, so here's what that means:
-- "GLM" is a kind of LLM (AI) built on a different approach than GPT (as in ChatGPT). The GLM family is *open-weight*, which means anyone can download and run the models.
+- "GLM" is a kind of LLM (AI). The GLM family is *open-weight*, which means anyone can download and run the models.
 - "flash" means that it is *cheap* and *fast* to run, compared to most "frontier" models. "cheap" is relative, but think around 5-15k USD in hardware to run it locally.
 - "frontier" here means that the LLM is "close to the frontier of what AI is currently able to achieve".
-- Project Glasswing and Daybreak are initiative to use LLMs to fix security issues across the tech industry.
+- Project Glasswing and Daybreak are initiatives to use LLMs to fix security issues across the tech industry.
 - "malicious actions" includes things like hacking infrastructure and telling people how to build pipe bombs.
 
-The rest of this post is about what makes me so sure this is an imminent threat.
+The rest of this post is about what makes me so sure this is an imminent threat, and what we can do in response.
 
 ## GLM
 
 The GLM ("General Language Model") family of models is developed by Z.ai Co. (formerly Zhipu AI), which is a Chinese AI lab.
 When the model is hosted by Z.ai, it comes with restrictions required by law:
 
-![GLM 5.3-flash refusese to tell me the lyrics to Teenagers by My Chemical Romance)](/assets/mcr.png)
+![GLM 5.3-flash refuses to tell me the lyrics to Teenagers by My Chemical Romance)](/assets/mcr.png)
 
 Z.ai releases its models [publicly on the internet](https://huggingface.co/zai-org/GLM-5.3-Flash/).
 Once it does so, organizations such as [dealignai](https://dealign.ai/)
@@ -105,10 +105,10 @@ Abliterated models will be slightly lower again.
 [cybersec benches]: https://docs.z.ai/guides/llm/glm-5.3#emergent-cyber-capability
 
 CyberGym measures *real world vulnerabilities* that have been found and patched by open source projects in the past.
-In other words, 84.5% of vulnerabilities in this representative sample would have been found by GLM 5.3 just by looking at publicly available source code.
+In other words, 84.5% of vulnerabilities in this representative sample would have been reproduced by GLM 5.3 just by looking at publicly available source code and a CVE description.
 
-ExploitBench measures whether the model can actually use those vulnerabilities to cause harm.
-In other words, 54.4% of vulnerabilities that GLM 5.3 finds can be used to gain code execution ignoring a security boundary.
+ExploitBench measures whether the model can actually use vulnerabilities to cause harm.
+It scores on a sliding scale that gives partial points for partial exploits, with the final step being arbitrary code execution.
 
 For comparison, the leading ("frontier") model on ExploitBench is GPT-6 Astra (100%), with GPT-5.6 Sol as the runner-up with 78.5% [^1].
 The leading model on CyberGym is ... GLM-5.3.
@@ -146,13 +146,19 @@ Both have been sold as products after the initial funding, which feels a little 
 
 However, we are running out of time.
 And despite the good that Daybreak and Glasswing have done, the hard part is *deployment*, not fixing the bugs themselves.
+Critical systems often require physical access or carefully planned staged rollouts to avoid downtime, both of which delay deploying patches.
 It doesn't help to have a patched Linux kernel if your power grid is running Windows Server 2012.
 
 There are some caveats: the 1.5 speedup might not be so high on GLM 5.3-flash; abliterated models might be worse on malicious tasks they weren't trained on; it might be hard to go from "break this" to an exploit without extensive human involvement.
 But those things are temporary and models keep getting better.
 Historically, GLM has lagged around 3-6 months behind OpenAI and Anthropic, and I think it's likely we'll see an Astra-level GLM model by this time next year.
-And when that happens, there's a going to be a high risk of successful cybersecurity attacks on public or private infrastructure.
+And when that happens, there's going to be a high risk of successful cybersecurity attacks on public or private infrastructure.
 We may be getting a lesson on [brownouts] sooner than we'd like.
+
+In general, attackers are getting more capable faster than defenders are improving their posture.
+Even if models stop scaling so fast (which they currently show no sign of doing),
+it's only a matter of time before they get capable enough to start exploiting these vulns.
+We need to act now, the sooner the better.
 
 [brownouts]: https://jyn.dev/brownouts-reveal-system-boundaries/
 
@@ -166,9 +172,25 @@ Some things we can do:
 
 Fund security engineering, either through token subsidies or raw money that can be used for hiring.
 Create mandates and incentives for improving security.
-Penalize *not* using frontier models to scan for vulnerabilities, with greatly increased penalities if an actual hack happens as a result, going as far as personal liability.
-Greatly reward people and companies who do this research.
+Greatly reward people and organizations who do this research.
+Penalize *not* deploying and revising security posture regularly, with increased penalties if a hack happens as a result.
 Both carrot and stick.
+
+Some specific things that are worth looking into:
+
+- Be especially sure to fund local governments and hospitals, which are unlikely to get this funding through other channels.
+- For banks, extend [DORA] in the EU
+  and [FFIEC cyber resilience banking regulations][FFIEC] in the US to require frontier LLM scanning as part of routine penetration testing.
+- For power companies, extend [NERC Critical Infrastructure Protection][NERC-CIP] in the US to apply to local utilities and municipalities, not just large systems.
+  Extend NERC-CIP and the EU's [Electronic Communications Code][ECC] to require *and fund* frontier LLM scanning; power companies don't have the sorts of margins that banks do.
+- Telecoms in the US are currently high risk and have no mandatory cybersecurity risk standards.
+  Create one and enforce it, using existing regulations for banks and power companies as a starting point.
+
+[DORA]: https://www.esma.europa.eu/esmas-activities/digital-finance-and-innovation/digital-operational-resilience-act-dora
+[FFIEC]: https://ithandbook.ffiec.gov/it-booklets/business-continuity-management/iv-business-continuity-strategies/iva-resilience/iva2-cyber-resilience/
+[NERC-CIP]: https://www.nerc.com/standards/reliability-standards/cip?utm_source=chatgpt.com
+[ECC]: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02024R1366-20250914
+
 
 ### Companies and open source foundations
 
@@ -178,7 +200,7 @@ Use Astra, Mythos, and other frontier models for good, to find the risks before 
 Pay attention to developments in frontier and open weight models.
 
 Even if you don't think the threat described here is real,
-you're getting a once-in-a-lifetime opportunity to get funding to improve security for your projects and communities.
+you're getting a once-in-a-lifetime opportunity to improve security for your projects and communities.
 Please take it.
 
 ## Summary
