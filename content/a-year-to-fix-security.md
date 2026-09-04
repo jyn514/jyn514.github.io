@@ -205,6 +205,16 @@ Some specific things that are worth looking into:
 [NERC-CIP]: https://www.nerc.com/standards/reliability-standards/cip?utm_source=chatgpt.com
 [ECC]: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02024R1366-20250914
 
+Banning GLM 5.3-flash weights from being hosted anywhere in the US or Europe will be hardly any use in the short term,
+and no use at all in the long term.
+In the short-term, it will just pop up again on file-sharing sites; you'll have no more luck killing it than killing piracy.
+In the long-term, some other lab will release another model that's just as capable.
+
+Banning access to Mythos or Astra will actively make things worse; it will remove defenders' most powerful tool at exactly the moment they need it most.
+
+Banning the sale/export of new GPUs or large unified memory will extend the year-long window for a bit but won't help long-term.
+It can't do anything about existing hardware, and it will be massively unpopular.
+Memory in particular is hard to regulate because *everything* uses it, not just specialized AI systems.
 
 ### Companies and open source foundations
 
