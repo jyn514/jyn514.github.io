@@ -1,7 +1,7 @@
 ---
-title: "things are getting scary"
+title: "we have a year to fix security everywhere"
 date: 2026-09-01
-description: "consumer-grade hardware can run an LLM that hacks the planet. no one is ready."
+description: "consumer-grade hardware can run an LLM that hacks the planet. we can stop it, but we don't have much time."
 taxonomies:
  tags: [llms]
 extra:
@@ -9,15 +9,18 @@ extra:
   toc: 2
 ---
 
-GLM 5.3-flash [released last week](https://z.ai/blog/glm-5.3-flash), and that means [Project Glasswing] is out of time.
+GLM 5.3-flash [released last week](https://z.ai/blog/glm-5.3-flash), and that means [Project Glasswing] and [Daybreak] are running out of time.
+Cheap models capable of dangerous hacking are now available to anyone, without the normal safeguards for refusing malicious actions.
+We need to fix vulnerabilities across the industry so that we aren't caught unawares
+And for one of the first times in computing history, we have the ability to!
+We can use frontier LLMs that move faster than a human to find and fix these issues in the little time we have left.
 
-This probably sounds like nonsense words to most people, so here's what that means:
-- "GLM" is a kind of LLM (AI) built on a different architecture than GPT (as in ChatGPT). The GLM family is *open-weight*, which means anyone can download and run the models.
+This probably sounds like nonsense words or hysterical overreacting to most people, so here's what that means:
+- "GLM" is a kind of LLM (AI) built on a different approach than GPT (as in ChatGPT). The GLM family is *open-weight*, which means anyone can download and run the models.
 - "flash" means that it is *cheap* and *fast* to run, compared to most "frontier" models. "cheap" is relative, but think around 5-15k USD in hardware to run it locally.
 - "frontier" here means that the LLM is "close to the frontier of what AI is currently able to achieve".
-- Project Glasswing is an initiative by Anthropic and several other large US companies to use LLMs to fix security issues across the tech industry.
-
-This is a *very very bad* combo.
+- Project Glasswing and Daybreak are initiative to use LLMs to fix security issues across the tech industry.
+- "malicious actions" includes things like hacking infrastructure and telling people how to build pipe bombs.
 
 ## GLM
 
@@ -105,7 +108,8 @@ In other words, 54.4% of vulnerabilities that GLM 5.3 finds can be used to gain 
 
 For comparison, the leading ("frontier") model on ExploitBench is GPT-6 Astra (100%), with GPT-5.6 Sol as the runner-up with 78.5% [^1].
 The leading model on CyberGym is ... GLM-5.3.
-The runner-up is GPT-5.6 Sol with 83.6% [^2].
+The runner-up is GPT-5.6 Sol with 83.6%.
+OpenAI hasn't released numbers for Astra on CyberGym yet, but once they do it'll likely beat GLM 5.3.
 
 ![cybersecurity evals visualizing the above stats](/assets/cybersec-eval.png)
 
@@ -129,32 +133,51 @@ Together, this means:
 - GLM 5.3 is so good at those tasks that human involvement in those tasks can be negligible.
 
 Now, the frontier US labs have been aware of this coming for a while and have been working on getting security patches out.
-[Project Glasswing] and [Daybreak] have been working with companies across the tech industry to find and fix vulnerabilities using frontier models before this capability was open-sourced.
+[Project Glasswing] and [Daybreak] have been working with companies, foundations, governments, and NGOs across the tech industry to find and fix vulnerabilities using frontier models before this capability was open-sourced.
 They've done a lot of good, and I'm very glad that this was funded.
 Both have been sold as products after the initial funding, which feels a little bit sketchy at best, but they're at least giving out free credits to security organizations.
 
 [Project Glasswing]: https://www.anthropic.com/glasswing
-[Daybreak]: https://openai.com/daybreak/
+[Daybreak]: https://openai.com/index/daybreak-for-frontline-defenders/
 
-However, we are out of time.
-And despite the good that Glasswing has done, the hard part is *deployment*, not fixing the bugs themselves.
+However, we are running out of time.
+And despite the good that Daybreak and Glasswing have done, the hard part is *deployment*, not fixing the bugs themselves.
 It doesn't help to have a patched Linux kernel if your power grid is running Windows Server 2012.
-The critical systems running our society—energy, transport, hospitals, wastewater plants—are
-often some of the most outdated and vulnerable, because [they can never be shut down for maintenance][brownouts].
 
-This is very, very worrying.
 There are some caveats: the 1.5 speedup might not be so high on GLM 5.3-flash; abliterated models might be worse on malicious tasks they weren't trained on; it might be hard to go from "break this" to an exploit without extensive human involvement.
 But those things are temporary and models keep getting better.
 Historically, GLM has lagged around 3-6 months behind OpenAI and Anthropic, and I think it's likely we'll see an Astra-level GLM model by this time next year.
-And when that happens, we're going to start seeing widespread successful cybersecurity attacks on public or private infrastructure.
+And when that happens, there's a going to be a high risk of successful cybersecurity attacks on public or private infrastructure.
 
-I don't know what to do here.
-I do know that things are getting weird, and scary, very quickly.
+## What do we do?
+
+Things are getting weird, and scary, very quickly.
+We need to act with urgency, not panic.
+Some things we can do:
+
+### Governments and regulation agencies
+
+Fund security engineering, either through token subsidies or raw money that can be used for hiring.
+Create mandates and incentives for improving security.
+Penalize *not* using frontier models to scan for vulnerabilities, with greatly increased penalities if an actual hack happens as a result, going as far as personal liability.
+Greatly reward people and companies who do this research.
+Both carrot and stick.
+
+### Companies
+
+Take advantage of the (literal) billions of dollars that are flooding the industry to improve safety across the board.
+Hire as many security engineers as you can.
+Use Astra, Mythos, and other frontier models for good, to find the risks before attackers do.
+Pay attention to developments in frontier and open weight models.
+
+## Summary
+
+We are living in interesting times.
+We can't hide our heads in the sand.
+We should act now, while there's still time.
 
 [brownouts]: https://jyn.dev/brownouts-reveal-system-boundaries/
 
 [cybersec benches]: https://docs.z.ai/guides/llm/glm-5.3#emergent-cyber-capability
 
 [^1]: depending who you ask, Z.ai and OpenAI disagree on exact numbers.
-
-[^2]: OpenAI hasn't released numbers for Astra on CyberGym yet. Once they do it'll likely beat GLM 5.3.
