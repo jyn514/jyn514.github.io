@@ -100,6 +100,8 @@ GLM 5.3 [scores][cybersec benches] 84.5% on CyberGym and 54.4% on ExploitBench.
 We don't have data for 5.3-flash directly, but it will probably be around the same or a bit lower.
 Abliterated models will be slightly lower again.
 
+[cybersec benches]: https://docs.z.ai/guides/llm/glm-5.3#emergent-cyber-capability
+
 CyberGym measures *real world vulnerabilities* that have been found and patched by open source projects in the past.
 In other words, 84.5% of vulnerabilities in this representative sample would have been found by GLM 5.3 just by looking at publicly available source code.
 
@@ -148,6 +150,9 @@ There are some caveats: the 1.5 speedup might not be so high on GLM 5.3-flash; a
 But those things are temporary and models keep getting better.
 Historically, GLM has lagged around 3-6 months behind OpenAI and Anthropic, and I think it's likely we'll see an Astra-level GLM model by this time next year.
 And when that happens, there's a going to be a high risk of successful cybersecurity attacks on public or private infrastructure.
+We may be getting a lesson on [brownouts] sooner than we'd like.
+
+[brownouts]: https://jyn.dev/brownouts-reveal-system-boundaries/
 
 ## What do we do?
 
@@ -175,9 +180,5 @@ Pay attention to developments in frontier and open weight models.
 We are living in interesting times.
 We can't hide our heads in the sand.
 We should act now, while there's still time.
-
-[brownouts]: https://jyn.dev/brownouts-reveal-system-boundaries/
-
-[cybersec benches]: https://docs.z.ai/guides/llm/glm-5.3#emergent-cyber-capability
 
 [^1]: depending who you ask, Z.ai and OpenAI disagree on exact numbers.
