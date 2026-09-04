@@ -11,7 +11,7 @@ extra:
 
 GLM 5.3-flash [released last week](https://z.ai/blog/glm-5.3-flash), and that means [Project Glasswing] and [Daybreak] are running out of time.
 Cheap models capable of dangerous hacking are now available to anyone, without the normal safeguards for refusing malicious actions.
-We need to fix vulnerabilities across the industry so that we aren't caught unawares
+We need to fix vulnerabilities across the industry so that we aren't caught unawares.
 And for one of the first times in computing history, we have the ability to!
 We can use frontier LLMs that move faster than a human to find and fix these issues in the little time we have left.
 
@@ -22,12 +22,14 @@ This probably sounds like nonsense words or hysterical overreacting to most peop
 - Project Glasswing and Daybreak are initiative to use LLMs to fix security issues across the tech industry.
 - "malicious actions" includes things like hacking infrastructure and telling people how to build pipe bombs.
 
+The rest of this post is about what makes me so sure this is an imminent threat.
+
 ## GLM
 
 The GLM ("General Language Model") family of models is developed by Z.ai Co. (formerly Zhipu AI), which is a Chinese AI lab.
-Because the model is Chinese, it comes with restrictions required by Chinese law:
+When the model is hosted by Z.ai, it comes with restrictions required by law:
 
-![GLM-5.3-flash returns a "Content Security Warning" if you ask it the capital of Taiwan](/assets/taiwan.png)
+![GLM 5.3-flash refusese to tell me the lyrics to Teenagers by My Chemical Romance)](/assets/mcr.png)
 
 Z.ai releases its models [publicly on the internet](https://huggingface.co/zai-org/GLM-5.3-Flash/).
 Once it does so, organizations such as [dealignai](https://dealign.ai/)
@@ -168,12 +170,16 @@ Penalize *not* using frontier models to scan for vulnerabilities, with greatly i
 Greatly reward people and companies who do this research.
 Both carrot and stick.
 
-### Companies
+### Companies and open source foundations
 
 Take advantage of the (literal) billions of dollars that are flooding the industry to improve safety across the board.
 Hire as many security engineers as you can.
 Use Astra, Mythos, and other frontier models for good, to find the risks before attackers do.
 Pay attention to developments in frontier and open weight models.
+
+Even if you don't think the threat described here is real,
+you're getting a once-in-a-lifetime opportunity to get funding to improve security for your projects and communities.
+Please take it.
 
 ## Summary
 
