@@ -7,6 +7,8 @@ taxonomies:
 extra:
   audience: "programmers"
   toc: 2
+  bsky: https://bsky.app/profile/jyn.dev/post/3mund7zof7k2b
+  fedi: https://tech.lgbt/@jyn/117209077591216354
 ---
 
 > **@notjack.space**: UIs with too many buttons confuse and alarm me  

@@ -6,6 +6,8 @@ taxonomies:
  tags: [llms, security]
 extra:
   toc: 2
+  fedi: https://tech.lgbt/@jyn/117214788473336507
+  bsky: https://bsky.app/profile/jyn.dev/post/3mupufnreis2n
 ---
 
 GLM 5.3-flash [released last week](https://z.ai/blog/glm-5.3-flash), and that means [Project Glasswing] and [Daybreak] are running out of time.
