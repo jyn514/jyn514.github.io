@@ -29,7 +29,7 @@ The rest of this post is about what makes me so sure this is an imminent threat,
 The GLM ("General Language Model") family of models is developed by Z.ai Co. (formerly Zhipu AI), which is a Chinese AI lab.
 When the model is hosted by Z.ai, it comes with restrictions required by law:
 
-![GLM 5.3-flash refuses to tell me the lyrics to Teenagers by My Chemical Romance)](/assets/mcr.png)
+![GLM 5.3-flash refuses to tell me how to build a pipe bomb](/assets/pipebomb.png)
 
 Z.ai releases its models [publicly on the internet](https://huggingface.co/zai-org/GLM-5.3-Flash/).
 Once it does so, organizations such as [dealignai](https://dealign.ai/)
