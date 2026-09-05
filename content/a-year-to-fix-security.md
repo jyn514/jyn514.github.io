@@ -255,7 +255,7 @@ Use structured prompts such as Google's [Unsafe Rust Review]; this is much more 
 LLMs are good at writing patches, but [not as one-off-prompts][1pass-study].
 Give them structured prompts and [iterated self-review cycles][close-out-skill] until the LLM itself judges the patch to be high-quality.
 Whenever possible, get them to test their own fixes rather than guessing at whether their patch is effective.
-Only then show it to a human for review.
+Only then consider it ready for a human to review.
 
 [1pass-study]: https://1password.com/blog/why-ai-generated-patches-still-require-human-review
 [close-out-skill]: https://codeberg.org/jyn514/paracress/src/branch/code-dump/.agents/skills/_implementation-closeout.md
@@ -266,7 +266,9 @@ your own LLMs can easily cause incidents if you're careless.
 Restrict credentials to narrow scopes.
 If the issuing authority doesn't support scoped credentials, put a [trusted interface][zulip-proxy] in front of the services that adds the scope limitations itself; do not give agents direct access to broad credentials.
 [Do not rely on filtering to only GET requests][bedrock-escape].
-Block requests at the firewall level and only expose a trusted list of domains and endpoints.
+Block requests at the firewall level and only expose a trusted list of domains.
+Filter endpoints using network proxies and trusted interfaces, not local configuration that the LLM can override.
+Preserve logs of every mutation or network request the agent makes.
 
 [bedrock-escape]: https://unit42.paloaltonetworks.com/bypass-of-aws-sandbox-network-isolation-mode/
 [zulip-proxy]: https://github.com/jyn514/dotfiles/tree/dev/tools/zulip-proxy
@@ -294,6 +296,11 @@ There's a sea-change: you're in a rush, but the people depending on you are too.
 Use that as leverage to get them to upgrade.
 Where possible, write developer tooling that helps them automatically upgrade.
 Track whether people are upgrading and patching; if they aren't, invest more in tooling.
+
+There are going to be a lot of patches and they will be exploited *very* quickly after the embargo lifts.
+Measure how long it takes end-to-end from a patch being reported to being deployed and adopted.
+Conduct campaigns to speed it up, focusing on the bottlenecks.
+Wherever possible, try to shorten embargo times: if you can find a flaw, an attacker probably can too, so the coordination window is much narrower than you're used to.
 
 Invest in supply-chain security.
 Inventory your software and infrastructure dependencies.
