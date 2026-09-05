@@ -17,7 +17,7 @@ or see https://www.getzola.org/documentation/getting-started/installation/ for a
 
 ```
 zola build  # generate a standalone page
-.;/start-zola.sh  # run a toy server and live-reload changes. works with relative domain names.
+./run  # run a toy server and live-reload changes. works with relative domain names.
 ```
 
 see https://www.getzola.org/documentation/getting-started/cli-usage/ for docs
