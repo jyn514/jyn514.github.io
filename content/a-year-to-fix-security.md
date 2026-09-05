@@ -15,6 +15,7 @@ Cheap models capable of dangerous hacking are now available to anyone, without t
 We need to fix vulnerabilities across the industry so that we aren't caught unawares.
 And for one of the first times in computing history, we have the ability to!
 We can use frontier LLMs that move faster than a human to find and fix these issues in the time we have left.
+The hard remaining part is deploying the fixes.
 
 This probably sounds like nonsense words or hysterical overreacting to most people, so here's what that means:
 - "GLM" is a kind of LLM (AI). The GLM family is *open-weight*, which means anyone can download and run the models.
@@ -189,6 +190,8 @@ If you're in a position to make policy, the following would help:
 Fund security engineering, preferably with flexible grants that can be used for hiring or technology products as decided by the organization.
 Create mandates and incentives for improving security, especially for frequent penetration testing.
 Encourage using frontier models with human oversight for that pentesting.
+Encourage increased airgapping and discourage over-the-air updates: updates should be frequent but require physical access.
+For systems where airgapping isn't feasible, incentivize frequent, signed, and tested deployments.
 Penalize *not* investigating and revising security posture regularly, with increased penalties if a hack happens as a result.
 Require findings to be fixed within a risk-based deadline from discovery, with federal funding for the fixes.
 Both carrot and stick.
@@ -241,9 +244,53 @@ Findings are getting very cheap; the fixes are not.
 ### Companies and open source foundations
 
 Take advantage of the (literal) billions of dollars that are flooding the industry to improve safety across the board.
-Hire as many security engineers as you can.
+Hire as many security engineers as you can and fund existing maintainers.
+Instruct those engineers and existing maintainers to *triage*, *design*, *review*, *backport*, and *deploy* patches, not primarily to find vulnerabilities or write new code.
+
 Use Astra, Mythos, and other frontier models for good, to find the risks before attackers do.
+Use structured prompts such as Google's [Unsafe Rust Review]; this is much more effective than telling them to look hard for bugs.
+
+[Unsafe Rust Review]: https://github.com/google/rust-skills/tree/main/unsafe_rust_review
+
+LLMs are good at writing patches, but [not as one-off-prompts][1pass-study].
+Give them structured prompts and [iterated self-review cycles][close-out-skill] until the LLM itself judges the patch to be high-quality.
+Whenever possible, get them to test their own fixes rather than guessing at whether their patch is effective.
+Only then show it to a human for review.
+
+[1pass-study]: https://1password.com/blog/why-ai-generated-patches-still-require-human-review
+[close-out-skill]: https://codeberg.org/jyn514/paracress/src/branch/code-dump/.agents/skills/_implementation-closeout.md
+
+Invest in formal verification, fuzzing and property testing, and memory-safe languages.
+LLMs are [good at writing Lean] and [fuzz tests][danluu-ai].
+I don't care whether you use Go or Rust but for the love of god please [don't use C or C++][android study] for new code.
+
+[good at writing Lean]: https://arxiv.org/html/2606.05632v1
+[danluu-ai]: https://danluu.com/ai-coding/#testing-background
+[android study]: https://blog.google/security/rust-in-android-move-fast-fix-things/
+
+Invest in triage:
+Record which versions of systems are affected,
+assign critical findings a human owner and a deadline,
+and create developer tooling to automatically update/close issues when they're fixed.
+
+Invest in backport, release, and deployment machinery.
+Test upgrades and rollbacks, all the boring stuff.
+Developer tooling is cheap now; throw tokens at it so you can spend less human time on each patch: dependency-update automation, signed and reproducible releases, increased deployment speed.
+Engineers should be spending their time on coordinated disclosure and frequent releases, not on individual patches.
+
+Deprecate old and insecure versions.
+There's a sea-change: you're in a rush, but the people depending on you are too.
+Use that as leverage to get them to upgrade.
+Where possible, write developer tooling that helps them automatically upgrade.
+
+Invest in supply-chain security.
+Inventory your software and infrastructure dependencies.
+Inventory your own systems too: what versions are running in prod? what services do you run that don't have a maintainer? which of your systems are EOL?
+You finally have the ability to review *all* your dependencies without skimming; do so, prioritizing privileged and security-exposed dependencies first.
+LLMs are really good at finding bugs given the source code: use that to your advantage.
+
 Pay attention to developments in frontier and open weight models.
+The more advanced that models get, the less time you have to patch and deploy.
 
 Even if you don't think the threat described here is real,
 you're getting a once-in-a-lifetime opportunity to improve security for your projects and communities.
