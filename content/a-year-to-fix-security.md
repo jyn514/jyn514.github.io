@@ -260,6 +260,17 @@ Only then show it to a human for review.
 [1pass-study]: https://1password.com/blog/why-ai-generated-patches-still-require-human-review
 [close-out-skill]: https://codeberg.org/jyn514/paracress/src/branch/code-dump/.agents/skills/_implementation-closeout.md
 
+Sandbox the agents themselves.
+The OpenAI-HuggingFace attack happened from a frontier lab testing a model;
+your own LLMs can easily cause incidents if you're careless.
+Restrict credentials to narrow scopes.
+If the issuing authority doesn't support scoped credentials, put a [trusted interface][zulip-proxy] in front of the services that adds the scope limitations itself; do not give agents direct access to broad credentials.
+[Do not rely on filtering to only GET requests][bedrock-escape].
+Block requests at the firewall level and only expose a trusted list of domains and endpoints.
+
+[bedrock-escape]: https://unit42.paloaltonetworks.com/bypass-of-aws-sandbox-network-isolation-mode/
+[zulip-proxy]: https://github.com/jyn514/dotfiles/tree/dev/tools/zulip-proxy
+
 Invest in formal verification, fuzzing and property testing, and memory-safe languages.
 LLMs are [good at writing Lean] and [fuzz tests][danluu-ai].
 I don't care whether you use Go or Rust but for the love of god please [don't use C or C++][android study] for new code.
@@ -282,12 +293,18 @@ Deprecate old and insecure versions.
 There's a sea-change: you're in a rush, but the people depending on you are too.
 Use that as leverage to get them to upgrade.
 Where possible, write developer tooling that helps them automatically upgrade.
+Track whether people are upgrading and patching; if they aren't, invest more in tooling.
 
 Invest in supply-chain security.
 Inventory your software and infrastructure dependencies.
 Inventory your own systems too: what versions are running in prod? what services do you run that don't have a maintainer? which of your systems are EOL?
 You finally have the ability to review *all* your dependencies without skimming; do so, prioritizing privileged and security-exposed dependencies first.
 LLMs are really good at finding bugs given the source code: use that to your advantage.
+
+Invest in containment and recovery.
+Do not rely on a single firewall or VPN.
+Instead, use defense-in-depth: segment your networks, limit credential scope, test your backups, and run incident-response exercises.
+If possible, practice bringing up your systems from a cold start.
 
 Pay attention to developments in frontier and open weight models.
 The more advanced that models get, the less time you have to patch and deploy.
