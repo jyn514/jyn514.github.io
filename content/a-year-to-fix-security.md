@@ -60,7 +60,7 @@ On September 22, Apple is releasing the M5 Mac Studio with 256 GB of unified mem
 That's more than enough to run 5.3-flash, and it will probably get around 30 tokens/second once it releases.
 For 256 GB, the price starts at around $9,500.
 
-Further improvements in user-space software can get half-again the throughput
+Further improvements in software can get half-again the throughput
 through [changes to the model decoder](https://arxiv.org/abs/2607.00501).
 If we extrapolate that to the M5, that would put the total throughput at around 45 tokens/second.
 
@@ -273,10 +273,11 @@ Preserve logs of every mutation or network request the agent makes.
 [bedrock-escape]: https://unit42.paloaltonetworks.com/bypass-of-aws-sandbox-network-isolation-mode/
 [zulip-proxy]: https://github.com/jyn514/dotfiles/tree/dev/tools/zulip-proxy
 
-Invest in formal verification, fuzzing and property testing, and memory-safe languages.
+Invest in formal verification, fuzzing and property testing, and [memory-safe languages][gaynor].
 LLMs are [good at writing Lean] and [fuzz tests][danluu-ai].
 I don't care whether you use Go or Rust but for the love of god please [don't use C or C++][android study] for new code.
 
+[gaynor]: https://www.usenix.org/conference/enigma2021/presentation/gaynor
 [good at writing Lean]: https://arxiv.org/html/2606.05632v1
 [danluu-ai]: https://danluu.com/ai-coding/#testing-background
 [android study]: https://blog.google/security/rust-in-android-move-fast-fix-things/
