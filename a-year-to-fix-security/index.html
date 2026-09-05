@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>we have a year to fix security everywhere</title>
+    
+    <meta name="description" content="consumer-grade hardware can run an LLM that hacks the planet. we can stop it, but we don&#x27;t have much time.">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=8tJ&#x2F;o6izdIdmOcNa7TGTO4g7n3WjyNTlSvo5hzzFryRPKyA2rf5jUOlVieM52+7x" defer></script>
+    <link rel="stylesheet" href="/minima.css?v=MNYwriDLJ+J&#x2F;g3SMidKfzKOFo49wFna3wwjm+ROJ5Js0IQJlEnAiwawtWgjgV2Q2">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="consumer-grade hardware can run an LLM that hacks the planet. we can stop it, but we don&#x27;t have much time." class="post-title" itemprop="name headline">we have a year to fix security everywhere</h1>
+    <p class="post-meta">
+      <time datetime="2026-09-04" itemprop="datePublished">
+        2026-09-04
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/llms/">llms</a>
+        
+      • <a href="https://jyn.dev/tags/security/">security</a>
+        
+      
+    </p>
+  </header>
+
+  
+
+	
+
+
+<div class=toc-container><div class="toc-content">
+	<details><summary>Table of contents</summary>
+	
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/a-year-to-fix-security/#glm">GLM</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/a-year-to-fix-security/#flash">Flash</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/a-year-to-fix-security/#frontier">Frontier</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/a-year-to-fix-security/#this-is-bad">This Is Bad</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/a-year-to-fix-security/#what-do-we-do">What do we do?</a>
+		
+
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/a-year-to-fix-security/#governments-and-regulatory-agencies">Governments and regulatory agencies</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/a-year-to-fix-security/#companies-and-open-source-foundations">Companies and open source foundations</a>
+		
+	</li>
+		</ol>
+	</li>
+	<li>
+		<a href="https://jyn.dev/a-year-to-fix-security/#summary">Summary</a>
+		
+	</li>
+		</ol></details></div></div>
+	
+
+  
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <p>GLM 5.3-flash <a href="https://z.ai/blog/glm-5.3-flash">released last week</a>, and that means <a href="https://www.anthropic.com/glasswing">Project Glasswing</a> and <a href="https://openai.com/index/daybreak-for-frontline-defenders/">Daybreak</a> are running out of time.
+Cheap models capable of dangerous hacking are now available to anyone, without the normal safeguards for refusing malicious actions.
+We need to fix vulnerabilities across the industry so that we aren't caught unawares.
+And for one of the first times in computing history, we have the ability to!
+We can use frontier LLMs that move faster than a human to find and fix these issues in the time we have left.
+The hard remaining part is deploying the fixes.</p>
+<p>This probably sounds like nonsense words or hysterical overreacting to most people, so here's what that means:</p>
+<ul>
+<li>"GLM" is a kind of LLM (AI). The GLM family is <em>open-weight</em>, which means anyone can download and run the models.</li>
+<li>"flash" means that it is <em>cheap</em> and <em>fast</em> to run, compared to most "frontier" models. "cheap" is relative, but think around 5-15k USD in hardware to run it locally.</li>
+<li>"frontier" here means that the LLM is "close to the frontier of what AI is currently able to achieve".</li>
+<li>Project Glasswing and Daybreak are initiatives to use LLMs to fix security issues across the tech industry.</li>
+<li>"malicious actions" includes things like hacking infrastructure and telling people how to build pipe bombs.</li>
+</ul>
+<p>The rest of this post is about what makes me so sure this is an imminent threat, and what we can do in response.</p>
+<h2 id="glm">GLM<a class="zola-anchor" href="#glm" aria-label="Anchor link for: glm"></a>
+</h2>
+<p>GLM 5.3-flash can be downloaded and modified by anyone in the world.</p>
+<p>The GLM ("General Language Model") family is developed by Z.ai Co. (formerly Zhipu AI), which is a Chinese AI lab.
+When the model is hosted by Z.ai, it comes with restrictions required by law:</p>
+<p><img src="/assets/pipebomb.png" alt="GLM 5.3-flash refuses to tell me how to build a pipe bomb" /></p>
+<p>Z.ai releases its models <a href="https://huggingface.co/zai-org/GLM-5.3-Flash/">publicly on the internet</a> ("open-weight" models).
+Once it does so, organizations such as <a href="https://dealign.ai/">DeAlignAI</a>
+release <a href="https://huggingface.co/dealignai/GLM-5.3-Flash-ABLITERATED-NVFP4">"abliterated" models</a> with their task refusals surgically removed.
+DealignAI says the abliterated model scores 0% on <a href="https://www.harmbench.org/">Harmbench-320</a>,
+which tests whether models refuse to complete tasks about disinformation, cybercrime, biological weapons, and other illegal acts such as building a pipe bomb.</p>
+<p>In other words, this model is willing to do basically anything.</p>
+<h2 id="flash">Flash<a class="zola-anchor" href="#flash" aria-label="Anchor link for: flash"></a>
+</h2>
+<p>GLM 5.3-flash is possible to run locally on stock consumer hardware.</p>
+<p>"Flash" is mostly an advertising term—it's relative to other models, not a specific technical approach.
+Various people online have run benchmarks of GLM 5.3-flash locally.
+Here's <a href="https://dev.classmethod.jp/en/articles/dgx-spark-glm-5-3-flash-first-touch/">one example</a> showing around 20 tokens/second on a ~6k USD NVIDIA GPU.</p>
+<p>On September 22, Apple is releasing the M5 Mac Studio with 256 GB of unified memory.
+"Unified memory" means it can be shared between the host operating system and the GPU.
+That's more than enough to run 5.3-flash, and it will probably get around 30 tokens/second once it releases.
+For 256 GB, the price starts at around $9,500.</p>
+<p>Further improvements in software can get half-again the throughput
+through <a href="https://arxiv.org/abs/2607.00501">changes to the model decoder</a>.
+If we extrapolate that to the M5, that would put the total throughput at around 45 tokens/second.</p>
+<p>45 tokens/second is enough to write this snippet of code in 3 seconds:</p>
+<details><summary>⚠️  LLM generated code</summary>
+<pre data-lang="python" class="language-python z-code"><code class="language-python" data-lang="python"><span class="z-source z-python"><span class="z-meta z-statement z-import z-python"><span class="z-keyword z-control z-import z-from z-python">from</span></span><span class="z-meta z-statement z-import z-python"><span class="z-meta z-import-source z-python"> <span class="z-meta z-import-path z-python"><span class="z-meta z-import-name z-python">pathlib</span></span> <span class="z-meta z-statement z-import z-python"><span class="z-keyword z-control z-import z-python">import</span></span></span></span><span class="z-meta z-statement z-import z-python"></span><span class="z-meta z-statement z-import z-python"> <span class="z-meta z-generic-name z-python">Path</span></span>
+</span><span class="z-source z-python"><span class="z-meta z-statement z-import z-python"><span class="z-keyword z-control z-import z-python">import</span> <span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">hashlib</span></span></span>
+</span><span class="z-source z-python">
+</span><span class="z-source z-python"><span class="z-meta z-function z-python"><span class="z-storage z-type z-function z-python"><span class="z-keyword z-declaration z-function z-python">def</span></span> <span class="z-entity z-name z-function z-python"><span class="z-meta z-generic-name z-python">digest</span></span></span><span class="z-meta z-function z-parameters z-python"><span class="z-punctuation z-section z-parameters z-begin z-python">(</span></span><span class="z-meta z-function z-parameters z-python"><span class="z-variable z-parameter z-python">path</span></span><span class="z-meta z-function z-parameters z-annotation z-python"><span class="z-punctuation z-separator z-annotation z-parameter z-python">:</span> <span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">Path</span></span></span><span class="z-meta z-function z-parameters z-python"><span class="z-punctuation z-section z-parameters z-end z-python">)</span></span><span class="z-meta z-function z-python"> </span><span class="z-meta z-function z-annotation z-return z-python"><span class="z-punctuation z-separator z-annotation z-return z-python">-&gt;</span> <span class="z-meta z-qualified-name z-python"><span class="z-support z-type z-python">str</span></span></span><span class="z-meta z-function z-python"><span class="z-punctuation z-section z-function z-begin z-python">:</span></span>
+</span><span class="z-source z-python">    <span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">hasher</span></span> <span class="z-keyword z-operator z-assignment z-python">=</span> <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">hashlib</span></span><span class="z-meta z-qualified-name z-python"><span class="z-punctuation z-accessor z-dot z-python">.</span></span><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">sha256</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span><span class="z-source z-python">    <span class="z-meta z-statement z-with z-python"><span class="z-keyword z-control z-flow z-with z-python">with</span> <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">path</span></span><span class="z-meta z-qualified-name z-python"><span class="z-punctuation z-accessor z-dot z-python">.</span></span><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">open</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">rb<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span> <span class="z-meta z-statement z-with z-python"><span class="z-keyword z-control z-flow z-with z-as z-python">as</span></span></span><span class="z-meta z-statement z-with z-python"> <span class="z-meta z-generic-name z-python">file</span><span class="z-punctuation z-section z-block z-with z-python">:</span></span>
+</span><span class="z-source z-python">        <span class="z-meta z-statement z-loop z-while z-python"><span class="z-keyword z-control z-loop z-while z-python">while</span> <span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">chunk</span></span> <span class="z-keyword z-operator z-assignment z-inline z-python">:=</span> <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">file</span></span><span class="z-meta z-qualified-name z-python"><span class="z-punctuation z-accessor z-dot z-python">.</span></span><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">read</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-constant z-numeric z-integer z-decimal z-python">1024</span> <span class="z-keyword z-operator z-arithmetic z-python">*</span> <span class="z-constant z-numeric z-integer z-decimal z-python">1024</span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span><span class="z-punctuation z-section z-block z-loop z-while z-python">:</span></span>
+</span><span class="z-source z-python">            <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">hasher</span></span><span class="z-meta z-qualified-name z-python"><span class="z-punctuation z-accessor z-dot z-python">.</span></span><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">update</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">chunk</span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span><span class="z-source z-python">    <span class="z-keyword z-control z-flow z-return z-python">return</span> <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">hasher</span></span><span class="z-meta z-qualified-name z-python"><span class="z-punctuation z-accessor z-dot z-python">.</span></span><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">hexdigest</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span><span class="z-source z-python">
+</span><span class="z-source z-python"><span class="z-meta z-function z-python"><span class="z-storage z-type z-function z-python"><span class="z-keyword z-declaration z-function z-python">def</span></span> <span class="z-entity z-name z-function z-python"><span class="z-meta z-generic-name z-python">main</span></span></span><span class="z-meta z-function z-parameters z-python"><span class="z-punctuation z-section z-parameters z-begin z-python">(</span></span><span class="z-meta z-function z-parameters z-python"><span class="z-punctuation z-section z-parameters z-end z-python">)</span></span><span class="z-meta z-function z-python"> </span><span class="z-meta z-function z-annotation z-return z-python"><span class="z-punctuation z-separator z-annotation z-return z-python">-&gt;</span> <span class="z-constant z-language z-python">None</span></span><span class="z-meta z-function z-python"><span class="z-punctuation z-section z-function z-begin z-python">:</span></span>
+</span><span class="z-source z-python">    <span class="z-meta z-statement z-import z-python"><span class="z-keyword z-control z-import z-python">import</span> <span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">sys</span></span></span>
+</span><span class="z-source z-python">
+</span><span class="z-source z-python">    <span class="z-meta z-statement z-conditional z-if z-python"><span class="z-keyword z-control z-conditional z-if z-python">if</span> <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-support z-function z-builtin z-python">len</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">sys</span><span class="z-punctuation z-accessor z-dot z-python">.</span><span class="z-meta z-generic-name z-python">argv</span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span> <span class="z-keyword z-operator z-comparison z-python">&lt;</span> <span class="z-constant z-numeric z-integer z-decimal z-python">2</span><span class="z-punctuation z-section z-block z-conditional z-if z-python">:</span></span>
+</span><span class="z-source z-python">        <span class="z-meta z-statement z-raise z-python"><span class="z-keyword z-control z-flow z-raise z-python">raise</span> <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-support z-type z-exception z-python">SystemExit</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">usage: hash.py FILE...<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span></span>
+</span><span class="z-source z-python">
+</span><span class="z-source z-python">    <span class="z-meta z-statement z-loop z-for z-python"><span class="z-keyword z-control z-loop z-for z-python">for</span> <span class="z-meta z-generic-name z-python">name</span> <span class="z-keyword z-control z-loop z-for z-in z-python">in</span></span><span class="z-meta z-statement z-loop z-for z-python"> <span class="z-meta z-item-access z-python"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">sys</span><span class="z-punctuation z-accessor z-dot z-python">.</span><span class="z-meta z-generic-name z-python">argv</span></span></span><span class="z-meta z-item-access z-python"><span class="z-punctuation z-section z-brackets z-begin z-python">[</span></span><span class="z-meta z-item-access z-arguments z-python"><span class="z-constant z-numeric z-integer z-decimal z-python">1</span><span class="z-punctuation z-separator z-slice z-python">:</span></span><span class="z-meta z-item-access z-python"><span class="z-punctuation z-section z-brackets z-end z-python">]</span></span></span><span class="z-meta z-statement z-loop z-for z-python"><span class="z-punctuation z-section z-block z-loop z-for z-python">:</span></span>
+</span><span class="z-source z-python">        <span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">path</span></span> <span class="z-keyword z-operator z-assignment z-python">=</span> <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">Path</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">name</span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span><span class="z-source z-python">        <span class="z-meta z-statement z-exception z-try z-python"><span class="z-keyword z-control z-exception z-try z-python">try</span><span class="z-punctuation z-section z-block z-exception z-try z-python">:</span></span>
+</span><span class="z-source z-python">            <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-support z-function z-builtin z-python">print</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-storage z-type z-string z-python">f</span><span class="z-meta z-string z-interpolated z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-interpolated z-python"><span class="z-meta z-interpolation z-python"><span class="z-punctuation z-section z-interpolation z-begin z-python">{</span><span class="z-source z-python z-embedded"><span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">digest</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">path</span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span></span></span><span class="z-meta z-interpolation z-python"><span class="z-punctuation z-section z-interpolation z-end z-python">}</span></span><span class="z-string z-quoted z-double z-python">  </span><span class="z-meta z-interpolation z-python"><span class="z-punctuation z-section z-interpolation z-begin z-python">{</span><span class="z-source z-python z-embedded"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">path</span></span></span></span><span class="z-meta z-interpolation z-python"><span class="z-punctuation z-section z-interpolation z-end z-python">}</span></span><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span><span class="z-source z-python">        <span class="z-meta z-statement z-exception z-catch z-python"><span class="z-keyword z-control z-exception z-catch z-python">except</span> <span class="z-support z-type z-exception z-python">OSError</span> <span class="z-keyword z-control z-exception z-catch z-as z-python">as</span></span><span class="z-meta z-statement z-exception z-catch z-python"> <span class="z-meta z-generic-name z-python">error</span></span><span class="z-meta z-statement z-exception z-catch z-python"><span class="z-punctuation z-section z-block z-exception z-catch z-python">:</span></span>
+</span><span class="z-source z-python">            <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-support z-function z-builtin z-python">print</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-storage z-type z-string z-python">f</span><span class="z-meta z-string z-interpolated z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-interpolated z-python"><span class="z-meta z-interpolation z-python"><span class="z-punctuation z-section z-interpolation z-begin z-python">{</span><span class="z-source z-python z-embedded"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">path</span></span></span></span><span class="z-meta z-interpolation z-python"><span class="z-punctuation z-section z-interpolation z-end z-python">}</span></span><span class="z-string z-quoted z-double z-python">: </span><span class="z-meta z-interpolation z-python"><span class="z-punctuation z-section z-interpolation z-begin z-python">{</span><span class="z-source z-python z-embedded"><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">error</span></span></span></span><span class="z-meta z-interpolation z-python"><span class="z-punctuation z-section z-interpolation z-end z-python">}</span></span><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-separator z-arguments z-python">,</span> <span class="z-variable z-parameter z-python">file</span><span class="z-keyword z-operator z-assignment z-python">=</span><span class="z-meta z-qualified-name z-python"><span class="z-meta z-generic-name z-python">sys</span><span class="z-punctuation z-accessor z-dot z-python">.</span><span class="z-meta z-generic-name z-python">stderr</span></span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span><span class="z-source z-python">
+</span><span class="z-source z-python"><span class="z-meta z-statement z-conditional z-if z-python"><span class="z-keyword z-control z-conditional z-if z-python">if</span> <span class="z-meta z-qualified-name z-python"><span class="z-support z-variable z-magic z-python">__name__</span></span> <span class="z-keyword z-operator z-comparison z-python">==</span> <span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python"><span class="z-punctuation z-definition z-string z-begin z-python">&quot;</span></span></span><span class="z-meta z-string z-python"><span class="z-string z-quoted z-double z-python">__main__<span class="z-punctuation z-definition z-string z-end z-python">&quot;</span></span></span><span class="z-punctuation z-section z-block z-conditional z-if z-python">:</span></span>
+</span><span class="z-source z-python">    <span class="z-meta z-function-call z-python"><span class="z-meta z-qualified-name z-python"><span class="z-variable z-function z-python"><span class="z-meta z-generic-name z-python">main</span></span></span></span><span class="z-meta z-function-call z-arguments z-python"><span class="z-punctuation z-section z-arguments z-begin z-python">(</span><span class="z-punctuation z-section z-arguments z-end z-python">)</span></span>
+</span></code></pre>
+</details>
+<p>In other words, it's not just possible to run this model locally, it's possible to do so from an ordinary individual's savings, and use it round-the-clock at high speeds.</p>
+<h2 id="frontier">Frontier<a class="zola-anchor" href="#frontier" aria-label="Anchor link for: frontier"></a>
+</h2>
+<p>GLM 5.3-flash is very close to the abilities of the best AIs we have made.
+The AIs we've made are already finding and exploiting real security vulnerabilities in the wild.
+The AIs we make in the future are going to get more and more capable.</p>
+<p>GLM 5.3 <a href="https://docs.z.ai/guides/llm/glm-5.3#emergent-cyber-capability">scores</a> 84.5% on CyberGym and 54.4% on ExploitBench.
+We don't have data for 5.3-flash directly, but it will probably be around the same or a bit lower.
+Abliterated models will be slightly lower again.</p>
+<p>CyberGym measures <em>real world vulnerabilities</em> that have been found and patched by open source projects in the past.
+In other words, 84.5% of vulnerabilities in this representative sample would have been reproduced by GLM 5.3 just by looking at publicly available source code and a CVE description.</p>
+<p>ExploitBench measures whether the model can actually use vulnerabilities to cause harm.
+It scores on a sliding scale that gives partial points for partial exploits, with the final step being arbitrary code execution.</p>
+<p>For comparison, the leading ("frontier") model on ExploitBench is GPT-6 Astra (100%), with GPT-5.6 Sol as the runner-up with 78.5% <sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">1</a></sup>.
+The leading model on CyberGym is ... GLM-5.3.
+The runner-up is GPT-5.6 Sol with 83.6%.
+OpenAI hasn't released numbers for Astra on CyberGym yet, but once they do it'll likely beat GLM 5.3.</p>
+<p><img src="/assets/cybersec-eval.png" alt="cybersecurity evals visualizing the above stats" /></p>
+<p>You might think these are just synthetic benchmarks,
+but security experts are reporting that they <a href="https://blog.includesecurity.com/2026/04/ctfs-in-the-ai-era/">can no longer be competitive in security challenges</a> without the assistance of an LLM.</p>
+<p>We don't have many standard benchmarks for remote-code and reverse-engineering exploits,
+but we do have evidence of GPT 5.6-Sol <a href="https://openai.com/index/hugging-face-incident-and-the-road-ahead/">exploiting infrastructure in the real world</a>, without human involvement.</p>
+<p>I think it is quite likely that people will be able to point GLM 5.3-flash at the open internet—real services, running real infrastructure—and it will be able and willing to find and exploit vulnerabilities.</p>
+<h2 id="this-is-bad">This Is Bad<a class="zola-anchor" href="#this-is-bad" aria-label="Anchor link for: this-is-bad"></a>
+</h2>
+<p>Together, this means:</p>
+<ul>
+<li>Just about anyone can run GLM 5.3-flash if they have a bit of savings, continuously, day and night.</li>
+<li>Just about anyone can use GLM 5.3-flash for just about any task, including to malicious ends.</li>
+<li>GLM 5.3-flash is so good at those tasks that human involvement in those tasks can be negligible.</li>
+</ul>
+<p>As a result, <a href="https://manishearth.github.io/blog/2026/06/17/the-future-of-the-con-is-already-here/">we are now in a world where cybersecurity attacks can be run in a <code>for</code> loop</a>.</p>
+<p>Now, the frontier US labs have been aware of this coming for a while and have been working on getting security patches out.
+<a href="https://www.anthropic.com/glasswing">Project Glasswing</a> and <a href="https://openai.com/index/daybreak-for-frontline-defenders/">Daybreak</a> have been working with companies, foundations, governments, and NGOs across the tech industry to find and fix vulnerabilities using frontier models before this capability was open-sourced.
+They've done a lot of good, and I'm very glad that this was funded.
+Both have been sold as products after the initial funding, which feels a little bit sketchy at best, but they're at least giving out free credits to security organizations.</p>
+<p>However, we are running out of time.
+And despite the good that Daybreak and Glasswing have done, the hard part is <em>deployment</em>, not fixing the bugs themselves.
+Critical systems often require physical access or carefully planned staged rollouts to avoid downtime, both of which delay deploying patches.
+It doesn't help to have a patched Linux kernel if your power grid is running Windows Server 2012.</p>
+<p>There are some caveats: the 1.5 speedup might not be so high on GLM 5.3-flash; abliterated models might be worse on malicious tasks they weren't trained on; it might be hard to go from "break this" to an exploit without extensive human involvement.
+But those things are temporary and models keep getting better.
+Historically, GLM has lagged around 3-6 months behind OpenAI and Anthropic, and I think it's likely we'll see an Astra-level GLM model by this time next year.
+And when that happens, there's going to be a high risk of successful cybersecurity attacks on public or private infrastructure.
+We may be getting a lesson on <a href="https://jyn.dev/brownouts-reveal-system-boundaries/">brownouts</a> sooner than we'd like.</p>
+<p>In general, attackers are getting more capable faster than defenders are improving their posture.
+Even if models stop scaling so fast (which they currently show no sign of doing),
+it's only a matter of time before they get capable enough to start exploiting these vulns.
+We need to act now, the sooner the better.</p>
+<h2 id="what-do-we-do">What do we do?<a class="zola-anchor" href="#what-do-we-do" aria-label="Anchor link for: what-do-we-do"></a>
+</h2>
+<p>Things are getting weird, and scary, very quickly.
+We need to act with urgency, not panic.
+Some things we can do:</p>
+<h3 id="governments-and-regulatory-agencies">Governments and regulatory agencies<a class="zola-anchor" href="#governments-and-regulatory-agencies" aria-label="Anchor link for: governments-and-regulatory-agencies"></a>
+</h3>
+<p>Scanning with frontier models is relatively cheap and does not need major incentives.
+What does need incentives is <em>deployment</em> and <em>remediation</em>, and requiring organizations to look at their security practices in the first place.
+On the current policy trajectory, the biggest risk is a heap of untriaged warnings that never get fixed.</p>
+<p>If you're in a position to make policy, the following would help:
+Fund security engineering, preferably with flexible grants that can be used for hiring or technology products as decided by the organization.
+Create mandates and incentives for improving security, especially for frequent penetration testing.
+Encourage using frontier models with human oversight for that pentesting.
+Encourage increased airgapping and discourage over-the-air updates: updates should be frequent but require physical access.
+For systems where airgapping isn't feasible, incentivize frequent, signed, and tested deployments.
+Penalize <em>not</em> investigating and revising security posture regularly, with increased penalties if a hack happens as a result.
+Require findings to be fixed within a risk-based deadline from discovery, with federal funding for the fixes.
+Both carrot and stick.</p>
+<p>Some specific things that may be worth looking into:</p>
+<ul>
+<li>Be especially sure to fund local governments and hospitals, which are unlikely to get this funding through other channels.
+<a href="https://www.whitehouse.gov/presidential-actions/2026/06/promoting-advanced-artificial-intelligence-innovation-and-security/">EO 14409</a> is not enough because it's unfunded and voluntary.</li>
+<li>For banks, extend DORA's <a href="https://eba.europa.eu/activities/single-rulebook/regulatory-activities/operational-resilience/joint-regulatory-technical-standards-specifying-elements-related-threat-led-penetration-tests">TLPT</a> in the EU and <a href="https://www.ftc.gov/business-guidance/resources/ftc-safeguards-rule-what-your-business-needs-know?utm_source=chatgpt.com">FTC</a>/<a href="https://www.ecfr.gov/current/title-12/chapter-I/part-30/appendix-Appendix%20B%20to%20Part%2030">OCC</a>/<a href="https://www.ecfr.gov/current/title-12/chapter-VII/subchapter-A/part-748">NCUA</a> in the US.
+TLPT should increase the frequency and coverage of penetration testing.
+NCUA currently only suggests pentesting; upgrade it to a mandate.
+The FTC doesn't mandate pentesting if the financial institution has "continuous monitoring": it should be unconditionally mandated.</li>
+<li>For power companies in the US, adopt guidelines similar to <a href="https://www.nerc.com/standards/reliability-standards/cip">NERC Critical Infrastructure Protection</a> at the state and local level, including for distribution systems and others that aren't currently regulated, not just for the highest-risk and largest systems.
+Create federal grants for implementing those guidelines.
+Extend NERC-CIP to require active testing for all systems, not just high-impact systems.
+Change NERC-CIP and the EU's <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02022L2555-20221227">NIS2</a> / <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02024R1366-20250914">Network Code on Cybersecurity</a> to increase the frequency of required tests.</li>
+<li>Telecoms in the US are currently high risk and have no unified mandatory cybersecurity risk standards.
+Create one and enforce it, using existing regulations for banks and power companies as a starting point.</li>
+</ul>
+<p>Across the board, require security postures to be updated <em>frequently</em>.
+Mandating specific models or providers will become outdated as new models are released.
+This is a rapidly changing field and defenses that were effective 12 months ago may not be effective in a year as threat models (both senses) change.
+Mandate testing and accountability, not specific techniques.</p>
+<p>Banning GLM 5.3-flash weights from being hosted anywhere in the US or Europe will be hardly any use in the short term,
+and no use at all in the long term.
+In the short-term, it will just pop up again on file-sharing sites; you'll have no more luck killing it than killing piracy.
+In the long-term, some other lab will release another model that's just as capable.</p>
+<p>Blanket-banning access to Mythos or Astra will actively make things worse; it will remove defenders' most powerful tool at exactly the moment they need it most.
+Instead, restrict access to approved organizations and individuals, as frontier labs are already doing.
+This likely doesn't need new policy unless a lab shows signs of breaking ranks.</p>
+<p>Banning the sale/export of new GPUs or large unified memory will extend the year-long window for a bit but won't help long-term.
+It can't do anything about existing hardware, and it will be massively unpopular.
+Memory in particular is hard to regulate because <em>everything</em> uses it, not just specialized AI systems.</p>
+<p>In general, prioritize policies that address <em>triaging</em> and <em>fixing</em> security findings.
+Findings are getting very cheap; the fixes are not.</p>
+<h3 id="companies-and-open-source-foundations">Companies and open source foundations<a class="zola-anchor" href="#companies-and-open-source-foundations" aria-label="Anchor link for: companies-and-open-source-foundations"></a>
+</h3>
+<p>Take advantage of the (literal) billions of dollars that are flooding the industry to improve safety across the board.
+Hire as many security engineers as you can and fund existing maintainers.
+Instruct those engineers and existing maintainers to <em>triage</em>, <em>design</em>, <em>review</em>, <em>backport</em>, and <em>deploy</em> patches, not primarily to find vulnerabilities or write new code.</p>
+<p>Use Astra, Mythos, and other frontier models for good, to find the risks before attackers do.
+Use structured prompts such as Google's <a href="https://github.com/google/rust-skills/tree/main/unsafe_rust_review">Unsafe Rust Review</a>; this is much more effective than telling them to look hard for bugs.</p>
+<p>LLMs are good at writing patches, but <a href="https://1password.com/blog/why-ai-generated-patches-still-require-human-review">not as one-off-prompts</a>.
+Give them structured prompts and <a href="https://codeberg.org/jyn514/paracress/src/branch/code-dump/.agents/skills/_implementation-closeout.md">iterated self-review cycles</a> until the LLM itself judges the patch to be high-quality.
+Whenever possible, get them to test their own fixes rather than guessing at whether their patch is effective.
+Only then consider it ready for a human to review.</p>
+<p>Sandbox the agents themselves.
+The OpenAI-HuggingFace attack happened from a frontier lab testing a model;
+your own LLMs can easily cause incidents if you're careless.
+Restrict credentials to narrow scopes.
+If the issuing authority doesn't support scoped credentials, put a <a href="https://github.com/jyn514/dotfiles/tree/dev/tools/zulip-proxy">trusted interface</a> in front of the services that adds the scope limitations itself; do not give agents direct access to broad credentials.
+<a href="https://unit42.paloaltonetworks.com/bypass-of-aws-sandbox-network-isolation-mode/">Do not rely on filtering to only GET requests</a>.
+Block requests at the firewall level and only expose a trusted list of domains.
+Filter endpoints using network proxies and trusted interfaces, not local configuration that the LLM can override.
+Preserve logs of every mutation or network request the agent makes.</p>
+<p>Invest in formal verification, fuzzing and property testing, and <a href="https://www.usenix.org/conference/enigma2021/presentation/gaynor">memory-safe languages</a>.
+LLMs are <a href="https://arxiv.org/html/2606.05632v1">good at writing Lean</a> and <a href="https://danluu.com/ai-coding/#testing-background">fuzz tests</a>.
+I don't care whether you use Go or Rust but for the love of god please <a href="https://blog.google/security/rust-in-android-move-fast-fix-things/">don't use C or C++</a> for new code.</p>
+<p>Invest in triage:
+Record which versions of systems are affected,
+assign critical findings a human owner and a deadline,
+and create developer tooling to automatically update/close issues when they're fixed.</p>
+<p>Invest in backport, release, and deployment machinery.
+Test upgrades and rollbacks, all the boring stuff.
+Developer tooling is cheap now; throw tokens at it so you can spend less human time on each patch: dependency-update automation, signed and reproducible releases, increased deployment speed.
+Engineers should be spending their time on coordinated disclosure and frequent releases, not on individual patches.</p>
+<p>Deprecate old and insecure versions.
+There's a sea-change: you're in a rush, but the people depending on you are too.
+Use that as leverage to get them to upgrade.
+Where possible, write developer tooling that helps them automatically upgrade.
+Track whether people are upgrading and patching; if they aren't, invest more in tooling.</p>
+<p>There are going to be a lot of patches and they will be exploited <em>very</em> quickly after the embargo lifts.
+Measure how long it takes end-to-end from a patch being reported to being deployed and adopted.
+Conduct campaigns to speed it up, focusing on the bottlenecks.
+Wherever possible, try to shorten embargo times: if you can find a flaw, an attacker probably can too, so the coordination window is much narrower than you're used to.</p>
+<p>Invest in supply-chain security.
+Inventory your software and infrastructure dependencies.
+Inventory your own systems too: what versions are running in prod? what services do you run that don't have a maintainer? which of your systems are EOL?
+You finally have the ability to review <em>all</em> your dependencies without skimming; do so, prioritizing privileged and security-exposed dependencies first.
+LLMs are really good at finding bugs given the source code: use that to your advantage.</p>
+<p>Invest in containment and recovery.
+Do not rely on a single firewall or VPN.
+Instead, use defense-in-depth: segment your networks, limit credential scope, test your backups, and run incident-response exercises.
+If possible, practice bringing up your systems from a cold start.</p>
+<p>Pay attention to developments in frontier and open weight models.
+The more advanced that models get, the less time you have to patch and deploy.</p>
+<p>Even if you don't think the threat described here is real,
+you're getting a once-in-a-lifetime opportunity to improve security for your projects and communities.
+Please take it.</p>
+<h2 id="summary">Summary<a class="zola-anchor" href="#summary" aria-label="Anchor link for: summary"></a>
+</h2>
+<p>We are living in interesting times.
+We can't hide our heads in the sand.
+We should act now, while there's still time.</p>
+<p><small>Thank you to Manish Goregaokar and several others for their feedback on this post. Thank you to everyone who is working tirelessly to make Glasswing and Daybreak a reality. And a big fuck you to DeAlignAI, Z.ai, and everyone else who's been participating in this race to the bottom.</small></p>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-1">
+<p>depending who you ask, Z.ai and OpenAI disagree on exact numbers. <a href="#fr-1-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+  </div>
+</article>
+
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+    
+    
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;a-year-to-fix-security&#x2F;&amp;type=story">Hacker News</a>,
+    
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;a-year-to-fix-security&#x2F;">Lobste.rs</a>,
+    
+    <a href="https:&#x2F;&#x2F;tech.lgbt&#x2F;@jyn&#x2F;117214788473336507">Mastodon</a>, or
+    <a href="https:&#x2F;&#x2F;bsky.app&#x2F;profile&#x2F;jyn.dev&#x2F;post&#x2F;3mupufnreis2n">Bluesky</a></small>
+
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>consumer-grade hardware can run an LLM that hacks the planet. we can stop it, but we don&#x27;t have much time.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>
