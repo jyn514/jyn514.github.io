@@ -321,6 +321,34 @@ Even if you don't think the threat described here is real,
 you're getting a once-in-a-lifetime opportunity to improve security for your projects and communities.
 Please take it.
 
+### Self-hosted infra
+
+<small>Note: this section was written several days after the original post.</small>
+
+I have gotten several requests from individuals asking for suggestions about how they can harden their self-hosted infrastructure.
+I think this is well-meaning but ultimately misguided.
+It doesn't help to have your own Immich instance if the website for the post office is down and you can't get packages delivered, or if Firefox or Chrome has a 0-day.
+We Live In A Society, and a "rugged individualism of cybersecurity" is neither plausible nor effective.
+
+Furthermore, hardening self-hosted infra doesn't help any of the poor people who *aren't* running their own self-hosted infra.
+I guess you could imagine a world where there are "software co-ops" where people in an apartment building share the same infrastructure run by the 2-3 people there working in tech, but that's not the world we live in today, and it's not going to happen in the next 12 *months.*
+
+That said, I think a good start would be to look at Google's "[Rule of 2]"
+(no more than 2/3 of {untrusted input, memory unsafe language, unsandboxed}), and go to Rule of *1* for all your own infrastructure.
+For example, you could proxy all network access through a [broker] which:
+- has access to the internet but not any resources on the host other than a local socket,
+- parses untrusted input into structured data, and
+- sends it over the local socket to a service that has host access but no network access.
+
+### Individuals
+
+There's really not much individuals can do by themselves, to be honest.
+I would read [The Future Of The Con], use a cross-platform password manager, update software regularly, and hope for the best.
+
+[Rule of 2]: https://chromium.googlesource.com/chromium/src/+/main/docs/security/rule-of-2.md
+[broker]: https://ai-maintainers.jyn.dev/sandboxing/credentials.html
+[The Future Of The Con]: https://manishearth.github.io/blog/2026/06/17/the-future-of-the-con-is-already-here/
+
 ## Summary
 
 We are living in interesting times.
