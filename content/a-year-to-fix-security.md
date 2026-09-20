@@ -331,7 +331,7 @@ It doesn't help to have your own Immich instance if the website for the post off
 We Live In A Society, and a "rugged individualism of cybersecurity" is neither plausible nor effective.
 
 Furthermore, hardening self-hosted infra doesn't help any of the poor people who *aren't* running their own self-hosted infra.
-I guess you could imagine a world where there are "software co-ops" where people in an apartment building share the same infrastructure run by the 2-3 people there working in tech, but that's not the world we live in today, and it's not going to happen in the next 12 *months.*
+I guess you could imagine a world where there are "software co-ops" where people in an apartment building share the same infrastructure run by the 2-3 people there working in tech, but that's not the world we live in today, and it's not going to happen in the next 12 months.
 
 That said, I think a good start would be to look at Google's "[Rule of 2]"
 (no more than 2/3 of {untrusted input, memory unsafe language, unsandboxed}), and go to Rule of *1* for all your own infrastructure.
