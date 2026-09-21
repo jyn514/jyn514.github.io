@@ -102,7 +102,7 @@ All numbers below are for serving workloads, not offline.
 
 [vLLM](https://vllm.ai/) is an open-source inference engine and it's getting more efficient over time.
 
-In the graph below ([source][ml-energy]), the Y-axis is Joules/token, the j-axis is batch size (roughly: "how big is the input fed to the model?"), and the blue/red lines are different software versions.
+In the graph below ([source][ml-energy]), the Y-axis is Joules/token, the X-axis is batch size (roughly: "how many inputs are processed in parallel?"), and the blue/red lines are different software versions.
 Smaller Y-axis numbers mean more efficient.
 
 ![](/assets/llama-energy-per-token-dark.svg)
@@ -143,7 +143,7 @@ Models are using architectures that are fundamentally more efficient than early 
 
 Early LLMs were based around "dense" models.
 This means that every part of the model is "activated" (runs a matrix multiplication) on every input.
-Recent architectures use "Mixture-of-Experts" (MoE) architectures to avoid using "specialized" layers unless they're necessary.
+Recent architectures use "Mixture-of-Experts" (MoE) architectures to deactivate "specialized" layers when they aren't necessary.
 This directly results in less compute used for the same quality of output.
 In the graph below, a model can be *7x smaller* (6B ➝ 0.8B parameters) while achieving the same performance on benchmarks ([source][greater-leverage]):
 
@@ -332,7 +332,7 @@ something that would have been unthinkable even 5 years ago for anyone who's not
 
 [malleable software]: https://jyn.dev/operators-not-users-and-programmers/
 
-## Summary
+# Summary
 
 I don't know what's next.
 I do think we should plan for a world where we don't just see cheap *compute* but also cheap *intelligence*.
