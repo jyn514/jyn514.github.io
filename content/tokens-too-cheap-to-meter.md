@@ -2,7 +2,7 @@
 title: "tokens too cheap to meter"
 date: 2026-09-16
 draft: true
-description: "the price of tokens is going to *zero* in the next decade"
+description: "tokens are going to be as cheap as electricity within the decade"
 taxonomies:
  tags: [llms, economics]
 #  computer-of-the-future: ["0"]
@@ -16,8 +16,9 @@ extra:
 ---
 
 The price of using machine learning intelligence is decreasing by several orders of magnitude a year and shows no signs of slowing.
-We are likely to see LLMs integrated into every part of computing as *infrastructure*, not just as a product, in the next year or two.
+We are likely to see LLMs integrated into every part of computing as infrastructure, not just as a product, in the next year or two.
 We are likely to see LLMs running locally at current frontier-quality on commodity hardware in the next 3-6 years.
+Starting very soon, we are likely to see *quality* and *access* become the limiting factor to AI use, not sheer number of tokens.
 
 # Is this really happening?
 
@@ -51,8 +52,8 @@ But the cost per *task* is.
 Smaller models may cost less per token, but use more tokens overall than a larger model for the same task, because they have to think more or correct their first drafts.
 This section is about the cost to complete the task from beginning to end.
 
-The chart below ([source][2025-pareto-frontier]) shows the "[pareto frontier]" of cost/task from the start to end of 2025.
-A "pareto frontier" shows the best *tradeoff* you can get, not just the best in a single category.
+The chart below ([source][2026 frontier]) shows the "[pareto frontier]" of cost/task at present.
+A pareto frontier shows the best *tradeoff* you can get, not just the best in a single category.
 Here, our tradeoffs are:
 - Y-axis: the "quality" of the model (as measured by a suite of benchmarks)
 - X-axis: the cost to complete those benchmarks
@@ -62,20 +63,26 @@ Here, our tradeoffs are:
 Cost is on a logarithmic scale.
 Larger Y-axis and smaller X-axis numbers are better.
 
-![](/assets/pareto-frontier-2024-2025.png)
-
-As you can see, models are getting smarter *and* cheaper on a per-task basis.
-If you draw a straight horizontal line at basically any task on the Y-axis, the cost to do it at the end of 2025 was cheaper than at the start;
-and if you draw a straight vertical line at basically any point on the X-axis, models can do more for the same cost.
-This gets even more pronounced if you look at a recent chart from 2026 ([source][2026-frontier]):
-
 ![](/assets/2026-pareto-frontier.png)
 
-The Y-axis is about the same, with less of a fall-off towards the cheap end.
-The X-axis has gotten *two orders of magnitude cheaper*.
+This is showing us a wide range of models on the pareto frontier as of 2026.
+Towards the top-right we have Claude Fable-5.1 (expensive and intelligent); towards the middle-left we have GPT-5.6 Luna (cheap and less intelligent).
+Models below the dotted line are basically not worth considering.[^4]
 
-[2025-pareto-frontier]: https://artificialanalysiscdn.com/public-reports/state-of-ai-2025-year-end-highlights-artificial-analysis.pdf
-[2026-frontier]: https://artificialanalysis.ai/?cost=intelligence-vs-cost-per-task
+Now, look at this chart showing the frontier at the start, middle, and end of [2025][2025 frontier]:
+
+![](/assets/pareto-frontier-2024-2025.png)
+
+The chart shows models are getting smarter *and* cheaper on a per-task basis over 2025.
+If you draw a straight horizontal line at basically any task on the Y-axis, the cost to do it at the end of 2025 was cheaper than at the start;
+and if you draw a straight vertical line at basically any point on the X-axis, models can do more for the same cost.
+
+Now, compare that 2025 chart to the 2026 chart.
+The Y-axis (intelligence) is about the same, with less of a fall-off towards the cheap end.
+The X-axis (cost) has gotten *two orders of magnitude cheaper*.
+
+[2025 frontier]: https://artificialanalysiscdn.com/public-reports/state-of-ai-2025-year-end-highlights-artificial-analysis.pdf
+[2026 frontier]: https://artificialanalysis.ai/?cost=intelligence-vs-cost-per-task
 
 ## Inference Engines
 
@@ -237,6 +244,30 @@ All of these are still immature and are likely to get better over time; we're st
 
 # What happens next?
 
+## Tokens become cheaper than tool calls
+
+What gets really interesting is when you compare this to the *other* costs of computing.
+For example, let's look at how expensive tool calls are.
+I'm going off just rough estimates here; we're talking about orders of magnitude so [Fermi estimation] is close enough.
+
+GPT-5.6 Luna costs about 30 cents per million tokens ([source][llm-price]).
+Let's say Luna uses 10k tokens every time it decides to call a tool, i.e. a third of a cent per turn.
+Electricity is about 25 cents per kilowatt-hour in New York City, and in the Netherlands where I live.
+My MacBook Air draws about 10 W idle and 30 W under heavy use. [^6]
+That gives us a table that looks like this:
+
+| Tool | Power (W) | Duration (s) | Price (¢) | Orders of magnitude cheaper than Luna turn
+| ---- | --------- | ------------ | --------- | ------
+| `grep` | 10 | .1 | 0.000007 | 4.5
+| parse HTML | 10 | 1 | 0.00007 | 3.5
+| `cargo build` | 30 | 30 | 0.00625 | 1.5
+
+This is ... not unthinkable in the next couple years!
+
+[Fermi estimation]: https://en.wikipedia.org/wiki/Fermi_problem#Justification
+[llm-price]: https://llmprice.gitlab.io/
+
+
 ## Supply-side Jevons Paradox
 
 As models get cheaper to run, companies respond by ... [building more compute][stargate].
@@ -284,6 +315,8 @@ Here are some things I think are possible, although not all of them are likely.
   We'll see even more things like AWS Hosted Apache Kafka and even fewer things like JetBrains IDEs and Blackboard.
 - Probably a lot more things! The future is getting weird!!
 
+## Optionality
+
 What I think is really interesting is that previously, people had three basic options when considering a piece of software:
 1. Use it.
 2. Don't use it.
@@ -293,6 +326,11 @@ Now they have a fourth option, which is to tell an LLM to build it.
 The *quality* of the LLMs output may be better or worse, but the option is there when it wasn't before.
 Companies have to compete on quality, not just on raw ability to do the thing where you couldn't before.
 Incumbents in regulated industries will have a massive advantage compared to the free market [^3].
+
+What's really cool about this is it makes it much easier to create [malleable software] that's tailor-made to the exact person using it,
+something that would have been unthinkable even 5 years ago for anyone who's not a programmer [^5].
+
+[malleable software]: https://jyn.dev/operators-not-users-and-programmers/
 
 ## Summary
 
@@ -307,3 +345,9 @@ I do think we should plan for a world where we don't just see cheap *compute* bu
 [^3]: One of the things that make software such as electronic medical-record services so miserable to use for doctors is that doctors are *not* allowed to simply not use them. They are required by law to keep an amount of records that is too large to track by hand. This, plus [switching costs], leads to "oligopolies" where a small group of incumbents can corner the market regardless of how bad their products are.
 
 [switching costs]: ./you-are-in-a-box.md#switching-costs-and-growth
+
+[^4]: unless you have some other benchmark in mind, such as "will tell me the capital of Taiwan" or "will write election speeches", which are disallowed by Chinese and US models respectively
+
+[^5]: outside of very limited niches like Apple Shortcuts, Salesforce, and Excel spreadsheets
+
+[^6]: This is unusually efficient for hardware; server software is tuned for throughput, not efficiency, so it likely takes an order of magnitude more power for the same tool execution.
