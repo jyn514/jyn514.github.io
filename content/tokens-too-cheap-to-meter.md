@@ -18,13 +18,24 @@ extra:
 The price of using machine learning intelligence is decreasing by several orders of magnitude a year and shows no signs of slowing.
 We are likely to see LLMs integrated into every part of computing as infrastructure, not just as a product, in the next year or two.
 We are likely to see LLMs running locally at current frontier-quality on commodity hardware in the next 3-6 years.
-Starting very soon, we are likely to see *quality* and *access* become the limiting factor to AI use, not sheer number of tokens.
+Starting very soon, we are likely to see *quality* and *access* become the limiting factor to AI [^7] use, not sheer number of tokens.
 
 # Is this really happening?
 
 Extraordinary claims require extraordinary evidence, so I collected a whole bunch of evidence.
 
-## GPUs
+AI can be either proprietary (such as GPT-6 Astra) or open weight (such as GLM-5.3-flash).
+Open weight models can be either hosted (e.g. by Z.ai) or local.
+Generally, models intended to be run locally will be much smaller, such as [Muse Glimmer] or [Qwen3 Coder].
+
+Improvements in one don't always affect improvements in the others.
+
+[Muse Glimmer]: https://huggingface.co/meta-models/Muse-Glimmer-30B
+[Qwen3 Coder]: https://huggingface.co/Qwen/Qwen3-Coder-30B-A3B-Instruct
+
+## Improvements that affect all AI
+
+### GPUs
 
 GPUs are getting exponentially more efficient with every generation.
 
@@ -39,7 +50,7 @@ In this particular case, the logarithm is 1.3, which means efficiency doubles ab
 
 This is an increase in efficiency that we haven't seen since Moore's Law in the 1960s.
 
-## Models
+### Models
 
 The cost to complete a given task with a model is going down sharply over time.
 
@@ -84,7 +95,7 @@ The X-axis (cost) has gotten *two orders of magnitude cheaper*.
 [2025 frontier]: https://artificialanalysiscdn.com/public-reports/state-of-ai-2025-year-end-highlights-artificial-analysis.pdf
 [2026 frontier]: https://artificialanalysis.ai/?cost=intelligence-vs-cost-per-task
 
-## Inference Engines
+### Inference Engines
 
 An "inference engine" is a software package that takes a trained model and an input text and actually runs it on a GPU.
 
@@ -98,7 +109,7 @@ Serving is getting efficient much more rapidly than offline inference.
 
 All numbers below are for serving workloads, not offline.
 
-### vLLM
+#### vLLM
 
 [vLLM](https://vllm.ai/) is an open-source inference engine and it's getting more efficient over time.
 
@@ -118,7 +129,7 @@ There aren't clean comparisons of efficiency over time for multiple releases in 
 
 
 
-### NVIDIA
+#### NVIDIA
 
 This isn't isolated to a single software package.
 NVIDIA is showing up to 50% efficiency improvements on their [MLPerf] stack from 2.0 to 2.1:
@@ -127,7 +138,7 @@ NVIDIA is showing up to 50% efficiency improvements on their [MLPerf] stack from
 
 [mlperf]: https://developer.nvidia.com/blog/full-stack-innovation-fuels-highest-mlperf-inference-2-1-results-for-nvidia/
 
-### Intel
+#### Intel
 
 This isn't isolated to old benchmarks.
 Intel [recently showed][intel-6-1] a 2.4x throughput increase solely by improving MLPerf between 6.0 and 6.1.
@@ -137,13 +148,15 @@ but the hardware stays fixed while the software changes so it's likely that a fa
 
 [intel-6-1]: https://www.intel.com/content/www/us/en/newsroom/news/data-center/intel-software-optimizations-boost-ai-inference-in-mlperf-v6-1.html
 
-## Mixture-of-Experts
+## Improvements that help hosted AI
+
+### Mixture-of-Experts
 
 Models are using architectures that are fundamentally more efficient than early ways we knew how to build an LLM.
 
 Early LLMs were based around "dense" models.
 This means that every part of the model is "activated" (runs a matrix multiplication) on every input.
-Recent architectures use "Mixture-of-Experts" (MoE) architectures to deactivate "specialized" layers when they aren't necessary.
+Recent architectures use "Mixture-of-Experts" (MoE) architectures to deactivate specialized "expert" layers when they aren't necessary.
 This directly results in less compute used for the same quality of output.
 In the graph below, a model can be *7x smaller* (6B ➝ 0.8B parameters) while achieving the same performance on benchmarks ([source][greater-leverage]):
 
@@ -151,9 +164,18 @@ In the graph below, a model can be *7x smaller* (6B ➝ 0.8B parameters) while a
 
 This means we're going to see the cost and memory usage of models go down over time, relative to the quality of the model.
 
+Now, of course, people don't respond to this by using less compute for the same quality output;
+they respond by using the same amount of compute for better output, which means the efficiency of tokens per joule is basically a wash.
+However, the efficiency of *quality* per joule is going up rapidly.
+
+Note that MoE tends to not help as much on local machines, because you still need to swap the experts into memory to use them.
+See 
+
 [greater-leverage]: https://proceedings.iclr.cc/paper_files/paper/2026/hash/32b640528f5b67975562210f00c131ed-Abstract-Conference.html
 
-## Mamba
+## Improvements that help local AI
+
+### Mamba
 
 One of the current limitations to running LLMs locally is you need an absolutely ungodly amount of RAM,
 and you can't buy it because [all the AI companies bought it first][toms-hardware].
@@ -171,14 +193,12 @@ but Mamba-Transformer hybrids are seeing massive decreases in the amount of RAM 
 The [Nemotron-H-47B] can hold over a million tokens in 32 GB of VRAM ("GPU RAM", roughly) when quantized [^1] to 4-bit weights.
 A comparable-quality Llama-3.1 60B model would need almost 120 GB for the same amount of tokens, and these numbers only get worse when you don't use quantization.
 
-Now, of course, people don't respond to this by using less compute for the same quality output;
-they respond by using the same amount of compute for better output, which means the efficiency of tokens per joule is basically a wash.
-However, the efficiency of *quality* per joule is going up rapidly.
-
 [Mamba]: https://arxiv.org/abs/2603.15569?utm_source=chatgpt.com
 [Nemotron-H-47B]: https://research.nvidia.com/labs/adlr/nemotronh/
 
-## Jev
+## Improvements that don't fit a category
+
+### Jev and Laya
 
 By using AI only for specialized yes/no answers, you can decrease their cost by two orders of magnitude.
 
@@ -226,7 +246,18 @@ There are other weirder things.
 It determines priority not by labels, but by *looking at every comment*.
 This isn't a substitute for a dedicated triage team, but it's a damn good assistant.
 
+Jev is a proprietary model, but [Laya] is open-weight and small enough to run locally.
+It can also be faster and more accurate than Jev when fine-tuned.
+The downside is that it's a codebase, not a product:
+- It's not hosted, so you need to do a lot of the setup yourself.
+- It performs poorly unless fine-tuned, so you need to know a fair amount of ML to make the best use of it.
+- It only supports contexts of up to 512 bytes, so it doesn't scale as well to large inputs.
+
+Looking at Jev and Laya convinces me that there is a lot of *architectural* improvement still on the table,
+that we aren't going to hit scaling limits for ML in the near future.
+
 [Jev triage]: https://github.com/cephalization/jev-triage
+[Laya]: https://laya.convaiinnovations.com/
 
 ## Putting it together
 
@@ -237,8 +268,8 @@ If we combine all this, we see about *2.5 orders of magnitude* decrease in token
 - Engines are about 1.4x as energy-efficient per-token.
 
 If we stop looking at raw token cost and consider other benchmarks, we see other kinds of improvements:
-- New architectures allow fitting 5x or more tokens in the same amount of RAM.
-- Specialized models such as Jev allow decreasing the cost by another 1-2 *orders of magnitude*.
+- New architectures allow fitting 5x or more tokens in the same amount of RAM, allowing more intelligent models to be run locally.
+- Specialized models such as Jev and Laya allow decreasing the cost by another 1-2 *orders of magnitude*.
 
 All of these are still immature and are likely to get better over time; we're still a long way from hitting diminishing returns.
 
@@ -351,3 +382,5 @@ I do think we should plan for a world where we don't just see cheap *compute* bu
 [^5]: outside of very limited niches like Apple Shortcuts, Salesforce, and Excel spreadsheets
 
 [^6]: This is unusually efficient for hardware; server software is tuned for throughput, not efficiency, so it likely takes an order of magnitude more power for the same tool execution.
+
+[^7]: I use "AI" instead of "LLM" intentionally here: there are new machine learning classifiers such as Jev which are not LLMs but are still comparable in capability.
