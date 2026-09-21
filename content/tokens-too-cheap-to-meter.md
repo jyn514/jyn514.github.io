@@ -258,7 +258,7 @@ That gives us a table that looks like this:
 
 | Tool | Power (W) | Duration (s) | Price (¢) | Orders of magnitude cheaper than Luna turn
 | ---- | --------- | ------------ | --------- | ------
-| `grep` | 10 | .1 | 0.000007 | 4.5
+| `grep` | 10 | 0.1 | 0.000007 | 4.5
 | parse HTML | 10 | 1 | 0.00007 | 3.5
 | `cargo build` | 30 | 30 | 0.00625 | 1.5
 

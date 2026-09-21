@@ -337,6 +337,23 @@ button#expandAll {
 .column-container{
   display: flex;
 }
+
+/* tables */
+table {
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+th, td {
+  border: 1px solid $grey-color-dark;
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+}
+
+td code {
+  white-space: nowrap;
+}
+
 /* @media screen and (max-width: $device) { */
 @include media-query(1600px) {
   .column-container{
