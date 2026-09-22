@@ -75,7 +75,7 @@ Here, our tradeoffs are:
 Cost is on a logarithmic scale.
 Larger Y-axis and smaller X-axis numbers are better.
 
-![](/assets/2026-pareto-frontier.png)
+![](/assets/2026-pareto-frontier-corrected.png)
 
 This is showing us a wide range of models on the pareto frontier as of 2026.
 Towards the top-right we have Claude Fable-5.1 (expensive and intelligent); towards the middle-left we have GPT-5.6 Luna (cheap and less intelligent).
@@ -87,14 +87,10 @@ Now, look at this chart showing the frontier at the start, middle, and end of [2
 
 The chart shows models are getting smarter *and* cheaper on a per-task basis over 2025.
 If you draw a straight horizontal line at basically any task on the Y-axis, the cost to do it at the end of 2025 was cheaper than at the start;
-and if you draw a straight vertical line at basically any point on the X-axis, models can do more for the same cost.
-
-Now, compare that 2025 chart to the 2026 chart.
-The Y-axis (intelligence) is about the same, with less of a fall-off towards the cheap end.
-The X-axis (cost) has gotten *two orders of magnitude cheaper*.
+and if you draw a straight vertical line at basically any point on the X-axis, models can do more for the same cost [^8].
 
 [2025 frontier]: https://artificialanalysiscdn.com/public-reports/state-of-ai-2025-year-end-highlights-artificial-analysis.pdf
-[2026 frontier]: https://artificialanalysis.ai/?cost=intelligence-vs-cost-per-task
+[2026 frontier]: https://artificialanalysis.ai/?cost=intelligence-vs-cost-per-task&total-cost=intelligence-vs-total-cost
 
 ### Inference Engines
 
@@ -395,3 +391,7 @@ I do think we should plan for a world where we don't just see cheap *compute* bu
 [^6]: This is unusually efficient for hardware; server software is tuned for throughput, not efficiency, so it likely takes an order of magnitude more power for the same tool execution.
 
 [^7]: I use "AI" instead of "LLM" intentionally here: there are new machine learning classifiers such as Jev which are not LLMs but are still comparable in capability.
+
+[^8]: The original version of this section incorrectly compared "cost of running a single task in 2026" with "cost of running the full benchmark suite in 2025".
+It has since been corrected.
+Even in the time since I published this post, several new models have been released that are cheaper and smarter on the Pareto frontier, so the corrected 2026 chart has slightly different data than the original post.

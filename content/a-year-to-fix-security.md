@@ -355,6 +355,6 @@ We are living in interesting times.
 We can't hide our heads in the sand.
 We should act now, while there's still time.
 
-<small>Thank you to Manish Goregaokar and several others for their feedback on this post. Thank you to everyone who is working tirelessly to make Glasswing and Daybreak a reality. And a big fuck you to DeAlignAI, Z.ai, and everyone else who's been participating in this race to the bottom.</small>
+<small>Thank you to Manish Goregaokar and several others for their feedback on this post, and thank you to everyone who is working tirelessly to make Glasswing and Daybreak a reality.</small>
 
 [^1]: depending who you ask, Z.ai and OpenAI disagree on exact numbers.
