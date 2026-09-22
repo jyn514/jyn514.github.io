@@ -341,7 +341,7 @@ once compute gets cheap enough, what are people going to use it for?
 What do you do with a million tokens? A billion?
 
 Here are some things I think are possible, although not all of them are likely.
-- [Cybersecurity is going to get really bad](./a-year-to-fix-security.md).
+- [Cybersecurity is going to get really bad](../a-year-to-fix-security/).
   Companies are going to centralize around hosted services like Cloudflare Access, internal-only AWS/Azure services, so on, because otherwise they get hacked.
 - Raw compute gets more of advantage.
   Oxide Computer Company, AWS, Cloudflare, all the hyperscalers are going to benefit.
