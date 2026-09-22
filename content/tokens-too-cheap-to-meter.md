@@ -300,6 +300,8 @@ This is ... not unthinkable in the next couple years!
 
 Once models are cheaper than a tool, it becomes attractive to put models *in* tools.
 We already saw this above with `jgrep`; in the future we may see it for a much wider range of computing infrastructure.
+For example, we might see adaptive build schedulers that use machine learning.
+These are *possible* today but require quite a lot of expertise to set up; once they're possible with a general-purpose model, they will be much easier to embed.
 
 [Fermi estimation]: https://en.wikipedia.org/wiki/Fermi_problem#Justification
 [llm-price]: https://llmprice.gitlab.io/
