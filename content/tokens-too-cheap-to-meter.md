@@ -169,7 +169,7 @@ Now, of course, people don't respond to this by using less compute for the same 
 they respond by using the same amount of compute for better output, which means the efficiency of tokens per joule is basically a wash.
 However, the efficiency of *quality* per joule is going up rapidly.
 
-Note that MoE tends to not help as much on local machines, because you still need to the experts in memory to use them.
+Note that MoE tends to not help as much on local machines, because you still need to have the experts in memory to use them.
 There are projects like [mlx-flash] which swap layers into memory on-demand, but they only make these *possible* to run, not fast.
 
 [mlx-flash]: https://github.com/szibis/mlx-flash
