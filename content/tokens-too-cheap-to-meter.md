@@ -148,7 +148,7 @@ but the hardware stays fixed while the software changes so it's likely that a fa
 
 [intel-6-1]: https://www.intel.com/content/www/us/en/newsroom/news/data-center/intel-software-optimizations-boost-ai-inference-in-mlperf-v6-1.html
 
-## Improvements that help hosted AI
+## Improvements that affect hosted AI
 
 ### Mixture-of-Experts
 
@@ -173,7 +173,7 @@ See
 
 [greater-leverage]: https://proceedings.iclr.cc/paper_files/paper/2026/hash/32b640528f5b67975562210f00c131ed-Abstract-Conference.html
 
-## Improvements that help local AI
+## Improvements that affect local AI
 
 ### Mamba
 
@@ -196,7 +196,7 @@ A comparable-quality Llama-3.1 60B model would need almost 120 GB for the same a
 [Mamba]: https://arxiv.org/abs/2603.15569?utm_source=chatgpt.com
 [Nemotron-H-47B]: https://research.nvidia.com/labs/adlr/nemotronh/
 
-## Improvements that don't fit a category
+## Improvements that affect specialized use cases
 
 ### Jev and Laya
 
