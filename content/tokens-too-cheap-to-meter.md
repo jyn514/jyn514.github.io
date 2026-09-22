@@ -386,7 +386,7 @@ I do think we should plan for a world where we don't just see cheap *compute* bu
 
 [^3]: One of the things that make software such as electronic medical-record services so miserable to use for doctors is that doctors are *not* allowed to simply not use them. They are required by law to keep an amount of records that is too large to track by hand. This, plus [switching costs], leads to "oligopolies" where a small group of incumbents can corner the market regardless of how bad their products are.
 
-[switching costs]: ./you-are-in-a-box.md#switching-costs-and-growth
+[switching costs]: ../you-are-in-a-box/#switching-costs-and-growth
 
 [^4]: unless you have some other benchmark in mind, such as "will tell me the capital of Taiwan" or "will write election speeches", which are disallowed by Chinese and US models respectively
 
