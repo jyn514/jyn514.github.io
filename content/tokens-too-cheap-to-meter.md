@@ -344,7 +344,7 @@ Here are some things I think are possible, although not all of them are likely.
   Ideally, we'd see an resurgence in QA and UI/UX positions.
 - Renting software is going to become a lot more scarce.
   Software codebases stop being a moat; operations and security are the real drivers of value.
-  We'll see even more things like AWS Hosted Apache Kafka and even fewer things like JetBrains IDEs and Blackboard.
+  We'll see even more things like Amazon Managed Streaming for Apache Kafka and even fewer things like JetBrains IDEs and Blackboard.
 - Probably a lot more things! The future is getting weird!!
 
 [runpod]: https://www.runpod.io/
