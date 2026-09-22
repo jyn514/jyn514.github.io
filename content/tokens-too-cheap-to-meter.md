@@ -298,13 +298,16 @@ That gives us a table that looks like this:
 
 This is ... not unthinkable in the next couple years!
 
+Once models are cheaper than a tool, it becomes attractive to put models *in* tools.
+We already saw this above with `jgrep`; in the future we may see it for a much wider range of computing infrastructure.
+
 [Fermi estimation]: https://en.wikipedia.org/wiki/Fermi_problem#Justification
 [llm-price]: https://llmprice.gitlab.io/
 
 
 ## Supply-side Jevons Paradox
 
-As models get cheaper to run, companies respond by ... [building more compute][stargate].
+As models get cheaper to run, companies respond by [building more compute][stargate].
 Why? Because they make more money per dollar invested.
 This is called the *[Jevons Paradox]*: the more efficient something is, the more of it exists overall.
 In particular, as things get cheaper, people want to use it more.
