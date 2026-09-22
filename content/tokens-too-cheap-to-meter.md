@@ -7,6 +7,8 @@ taxonomies:
 #  computer-of-the-future: ["0"]
 extra:
   toc: 2
+  fedi: https://tech.lgbt/@jyn/117315448893865380
+  bsky: https://bsky.app/profile/jyn.dev/post/3mw4ktkxl3s2n
 #  category: "tools"
 #  audience: "everyone"
 #  unlisted: true
