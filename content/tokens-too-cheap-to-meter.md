@@ -39,7 +39,8 @@ Improvements in one don't always affect improvements in the others.
 
 GPUs are getting exponentially more efficient with every generation.
 
-In the graph below ([source][GFLOP/J]), the X-axis is time, the Y-axis is power efficiency of the GPU itself, and the size of the circle is the absolute amount of power drawn. Larger Y-axis numbers mean more efficient.
+In the graph below ([source][GFLOP/J]), the X-axis is time and the Y-axis is power efficiency of the GPU itself.
+Larger Y-axis numbers mean more efficient.
 
 ![](/assets/epoch-ml-hardware.png)
 
@@ -168,8 +169,10 @@ Now, of course, people don't respond to this by using less compute for the same 
 they respond by using the same amount of compute for better output, which means the efficiency of tokens per joule is basically a wash.
 However, the efficiency of *quality* per joule is going up rapidly.
 
-Note that MoE tends to not help as much on local machines, because you still need to swap the experts into memory to use them.
-See 
+Note that MoE tends to not help as much on local machines, because you still need to the experts in memory to use them.
+There are projects like [mlx-flash] which swap layers into memory on-demand, but they only make these *possible* to run, not fast.
+
+[mlx-flash]: https://github.com/szibis/mlx-flash
 
 [greater-leverage]: https://proceedings.iclr.cc/paper_files/paper/2026/hash/32b640528f5b67975562210f00c131ed-Abstract-Conference.html
 
