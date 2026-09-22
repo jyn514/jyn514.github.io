@@ -338,6 +338,7 @@ Here are some things I think are possible, although not all of them are likely.
 - Raw compute gets more of advantage.
   Oxide Computer Company, AWS, Cloudflare, all the hyperscalers are going to benefit.
   We'll see more and more companies renting out specialized GPUs optimized for inference, not just general-purpose EC2.
+  This is already happening with services such as [runpod].
 - The hard part of software becomes product requirements, testing, and user-interface design, not algorithms.
   The job market gets really weird.
   Ideally, we'd see an resurgence in QA and UI/UX positions.
@@ -345,6 +346,8 @@ Here are some things I think are possible, although not all of them are likely.
   Software codebases stop being a moat; operations and security are the real drivers of value.
   We'll see even more things like AWS Hosted Apache Kafka and even fewer things like JetBrains IDEs and Blackboard.
 - Probably a lot more things! The future is getting weird!!
+
+[runpod]: https://www.runpod.io/
 
 ## Optionality
 
