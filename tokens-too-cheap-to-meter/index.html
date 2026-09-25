@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>tokens too cheap to meter</title>
+    
+    <meta name="description" content="tokens are going to be as cheap as electricity within the decade">
+    
+    <meta name="author" content="jyn">
+
+    <link rel="alternate" type="application/atom+xml" title="the website of jyn" href="/atom.xml">
+    <link rel="icon" type="image/x-icon" href="https://jyn.dev/favicon.jpg">
+    <script src="/main.js?v=8tJ&#x2F;o6izdIdmOcNa7TGTO4g7n3WjyNTlSvo5hzzFryRPKyA2rf5jUOlVieM52+7x" defer></script>
+    <link rel="stylesheet" href="/minima.css?v=YgDJHTWTuWlUCmRYi+uD7XfeRTVkvl+fmrhg4Kcl53VAbsVekMe2bClmXNnGcqM5">
+</head>
+<body>
+      <header class="site-header" role="banner">
+
+      <div class="wrapper">
+        <a class="site-title" href="/">the website of jyn</a>
+
+        
+        
+          <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger">
+              <span class="menu-icon">
+                <svg viewBox="0 0 18 15" width="18px" height="15px">
+                  <title>menu</title>
+                  <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+                  <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+                  <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+                </svg>
+              </span>
+            </label>
+
+            <div class="trigger">
+              
+                
+                
+                <a class="page-link" href="&#x2F;about&#x2F;">about</a>
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;liberating&#x2F;">computers should be liberating</a>
+                
+              
+                
+                
+              
+                
+                
+                <a class="page-link" href="&#x2F;talks&#x2F;">talks</a>
+                
+              
+                <a class="page-link" href="/computer-of-the-future">the computer of the next 200 years</a>
+                <!-- <a class="page-link" href="/four-posts-about-build-systems">four posts about build systems</a> -->
+            </div>
+          </nav>
+        
+      </div>
+    </header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+		<h1 title="tokens are going to be as cheap as electricity within the decade" class="post-title" itemprop="name headline">tokens too cheap to meter</h1>
+    <p class="post-meta">
+      <time datetime="2026-09-16" itemprop="datePublished">
+        2026-09-16
+      </time>
+      
+      
+      
+        
+        
+      • <a href="https://jyn.dev/tags/llms/">llms</a>
+        
+      • <a href="https://jyn.dev/tags/economics/">economics</a>
+        
+      
+    </p>
+  </header>
+
+  
+
+	
+
+
+<div class=toc-container><div class="toc-content">
+	<details><summary>Table of contents</summary>
+	
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/tokens-too-cheap-to-meter/#is-this-really-happening">Is this really happening?</a>
+		
+
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/tokens-too-cheap-to-meter/#improvements-that-affect-all-ai">Improvements that affect all AI</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/tokens-too-cheap-to-meter/#improvements-that-affect-hosted-ai">Improvements that affect hosted AI</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/tokens-too-cheap-to-meter/#improvements-that-affect-local-ai">Improvements that affect local AI</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/tokens-too-cheap-to-meter/#improvements-that-affect-specialized-use-cases">Improvements that affect specialized use cases</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/tokens-too-cheap-to-meter/#putting-it-together">Putting it together</a>
+		
+	</li>
+		</ol>
+	</li>
+	<li>
+		<a href="https://jyn.dev/tokens-too-cheap-to-meter/#what-happens-next">What happens next?</a>
+		
+
+<ol class=toc>
+	<li>
+		<a href="https://jyn.dev/tokens-too-cheap-to-meter/#tokens-become-cheaper-than-tool-calls">Tokens become cheaper than tool calls</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/tokens-too-cheap-to-meter/#supply-side-jevons-paradox">Supply-side Jevons Paradox</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/tokens-too-cheap-to-meter/#how-are-investors-going-to-make-their-money-back">How are investors going to make their money back?</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/tokens-too-cheap-to-meter/#demand-side-jevons-paradox">Demand-side Jevons Paradox</a>
+		
+	</li>
+	<li>
+		<a href="https://jyn.dev/tokens-too-cheap-to-meter/#optionality">Optionality</a>
+		
+	</li>
+		</ol>
+	</li>
+	<li>
+		<a href="https://jyn.dev/tokens-too-cheap-to-meter/#summary">Summary</a>
+		
+	</li>
+		</ol></details></div></div>
+	
+
+  
+    
+
+  <div class="post-content" itemprop="articleBody">
+    <p>The price of using machine learning intelligence is decreasing by several orders of magnitude a year and shows no signs of slowing.
+We are likely to see LLMs integrated into every part of computing as infrastructure, not just as a product, in the next year or two.
+We are likely to see LLMs running locally at current frontier-quality on commodity hardware in the next 3-6 years.
+Starting very soon, we are likely to see <em>quality</em> and <em>access</em> become the limiting factor to AI <sup class="footnote-reference" id="fr-7-1"><a href="#fn-7">1</a></sup> use, not sheer number of tokens.</p>
+<h1 id="is-this-really-happening">Is this really happening?<a class="zola-anchor" href="#is-this-really-happening" aria-label="Anchor link for: is-this-really-happening"></a>
+</h1>
+<p>Extraordinary claims require extraordinary evidence, so I collected a whole bunch of evidence.</p>
+<p>AI can be either proprietary (such as GPT-6 Astra) or open weight (such as GLM-5.3-flash).
+Open weight models can be either hosted (e.g. by Z.ai) or local.
+Generally, models intended to be run locally will be much smaller, such as <a href="https://huggingface.co/meta-models/Muse-Glimmer-30B">Muse Glimmer</a> or <a href="https://huggingface.co/Qwen/Qwen3-Coder-30B-A3B-Instruct">Qwen3 Coder</a>.</p>
+<p>Improvements in one don't always affect improvements in the others.</p>
+<h2 id="improvements-that-affect-all-ai">Improvements that affect all AI<a class="zola-anchor" href="#improvements-that-affect-all-ai" aria-label="Anchor link for: improvements-that-affect-all-ai"></a>
+</h2>
+<h3 id="gpus">GPUs<a class="zola-anchor" href="#gpus" aria-label="Anchor link for: gpus"></a>
+</h3>
+<p>GPUs are getting exponentially more efficient with every generation.</p>
+<p>In the graph below (<a href="https://epoch.ai/data/machine-learning-hardware?view=graph&amp;yAxis=Energy+efficiency+%28GFLOP%2FJ%29&amp;sizeCategorization=Power+draw+%28W%29">source</a>), the X-axis is time and the Y-axis is power efficiency of the GPU itself.
+Larger Y-axis numbers mean more efficient.</p>
+<p><img src="/assets/epoch-ml-hardware.png" alt="" /></p>
+<p>This is a logarithmic graph, which is to say that a straight line on the graph represents an exponential increase in efficiency.
+In this particular case, the logarithm is 1.3, which means efficiency doubles about once every two years.</p>
+<p>This is an increase in efficiency that we haven't seen since Moore's Law in the 1960s.</p>
+<h3 id="models">Models<a class="zola-anchor" href="#models" aria-label="Anchor link for: models"></a>
+</h3>
+<p>The cost to complete a given task with a model is going down sharply over time.</p>
+<p>Models are usually priced per-token.
+A "token" is a fragment of a word; it takes about 1.5 tokens to represent a word.
+For every token a model reads, and for every token it outputs, the "model provider" (e.g. Anthropic or OpenAI) charges you some fixed amount of money.</p>
+<p>The cost per <em>token</em> of models is not consistently going down, at least not for the smartest ("frontier") models.
+But the cost per <em>task</em> is.
+Smaller models may cost less per token, but use more tokens overall than a larger model for the same task, because they have to think more or correct their first drafts.
+This section is about the cost to complete the task from beginning to end.</p>
+<p>The chart below (<a href="https://artificialanalysis.ai/?cost=intelligence-vs-cost-per-task&amp;total-cost=intelligence-vs-total-cost">source</a>) shows the "<a href="https://en.wikipedia.org/wiki/Pareto_front">pareto frontier</a>" of cost/task at present.
+A pareto frontier shows the best <em>tradeoff</em> you can get, not just the best in a single category.
+Here, our tradeoffs are:</p>
+<ul>
+<li>Y-axis: the "quality" of the model (as measured by a suite of benchmarks)</li>
+<li>X-axis: the cost to complete those benchmarks</li>
+</ul>
+<p>Cost is on a logarithmic scale.
+Larger Y-axis and smaller X-axis numbers are better.</p>
+<p><img src="/assets/2026-pareto-frontier-corrected.png" alt="" /></p>
+<p>This is showing us a wide range of models on the pareto frontier as of 2026.
+Towards the top-right we have Claude Fable-5.1 (expensive and intelligent); towards the middle-left we have GPT-5.6 Luna (cheap and less intelligent).
+Models below the dotted line are basically not worth considering.<sup class="footnote-reference" id="fr-4-1"><a href="#fn-4">2</a></sup></p>
+<p>Now, look at this chart showing the frontier at the start, middle, and end of <a href="https://artificialanalysiscdn.com/public-reports/state-of-ai-2025-year-end-highlights-artificial-analysis.pdf">2025</a>:</p>
+<p><img src="/assets/pareto-frontier-2024-2025.png" alt="" /></p>
+<p>The chart shows models are getting smarter <em>and</em> cheaper on a per-task basis over 2025.
+If you draw a straight horizontal line at basically any task on the Y-axis, the cost to do it at the end of 2025 was cheaper than at the start;
+and if you draw a straight vertical line at basically any point on the X-axis, models can do more for the same cost <sup class="footnote-reference" id="fr-8-1"><a href="#fn-8">3</a></sup>.</p>
+<h3 id="inference-engines">Inference Engines<a class="zola-anchor" href="#inference-engines" aria-label="Anchor link for: inference-engines"></a>
+</h3>
+<p>An "inference engine" is a software package that takes a trained model and an input text and actually runs it on a GPU.</p>
+<p>Inference engines are currently immature and improving rapidly.
+Currently we're seeing 10%-50% improvements year-over-year, depending on which engine you look at.</p>
+<p>There are two benchmarks that are often compared for inference engines:
+"offline" (run a bunch of tokens through in one big batch)
+and "serving" (you have people sending your server inputs at unpredictable times, and you want to send a response back as quickly as possible).
+Serving is getting efficient much more rapidly than offline inference.</p>
+<p>All numbers below are for serving workloads, not offline.</p>
+<h4 id="vllm">vLLM<a class="zola-anchor" href="#vllm" aria-label="Anchor link for: vllm"></a>
+</h4>
+<p><a href="https://vllm.ai/">vLLM</a> is an open-source inference engine and it's getting more efficient over time.</p>
+<p>In the graph below (<a href="https://ml.energy/blog/measurement/energy/llm-inference-energy-a-longitudinal-analysis/">source</a>), the Y-axis is Joules/token, the X-axis is batch size (roughly: "how many inputs are processed in parallel?"), and the blue/red lines are different software versions.
+Smaller Y-axis numbers mean more efficient.</p>
+<p><img src="/assets/llama-energy-per-token-dark.svg" alt="" /></p>
+<p>vLLM 0.11.1 was released in December 2025, a bit more than a year after vLLM 0.5.4 in September 2024.
+In other words, this is about a 40% increase in efficiency in 15 months.</p>
+<p>There aren't clean comparisons of efficiency over time for multiple releases in a row, but performance is also <a href="https://sanchitahuja.com/blog/2026/vllm-change-log/">increasing rapidly over time</a> considering vLLM alone, and the performance gains for v2 ➝ v3 are roughly proportional to the energy efficiency improvement we have better numbers for.</p>
+<h4 id="nvidia">NVIDIA<a class="zola-anchor" href="#nvidia" aria-label="Anchor link for: nvidia"></a>
+</h4>
+<p>This isn't isolated to a single software package.
+NVIDIA is showing up to 50% efficiency improvements on their <a href="https://developer.nvidia.com/blog/full-stack-innovation-fuels-highest-mlperf-inference-2-1-results-for-nvidia/">MLPerf</a> stack from 2.0 to 2.1:</p>
+<p><img src="/assets/h100-performance-data-center-1.png" alt="" /></p>
+<h4 id="intel">Intel<a class="zola-anchor" href="#intel" aria-label="Anchor link for: intel"></a>
+</h4>
+<p>This isn't isolated to old benchmarks.
+Intel <a href="https://www.intel.com/content/www/us/en/newsroom/news/data-center/intel-software-optimizations-boost-ai-inference-in-mlperf-v6-1.html">recently showed</a> a 2.4x throughput increase solely by improving MLPerf between 6.0 and 6.1.</p>
+<p>This one shows throughput, not efficiency, so it's not a clean comparison,
+but the hardware stays fixed while the software changes so it's likely that a fair amount of this is reflected in better efficiency.</p>
+<h2 id="improvements-that-affect-hosted-ai">Improvements that affect hosted AI<a class="zola-anchor" href="#improvements-that-affect-hosted-ai" aria-label="Anchor link for: improvements-that-affect-hosted-ai"></a>
+</h2>
+<h3 id="mixture-of-experts">Mixture-of-Experts<a class="zola-anchor" href="#mixture-of-experts" aria-label="Anchor link for: mixture-of-experts"></a>
+</h3>
+<p>Models are using architectures that are fundamentally more efficient than early ways we knew how to build an LLM.</p>
+<p>Early LLMs were based around "dense" models.
+This means that every part of the model is "activated" (runs a matrix multiplication) on every input.
+Recent architectures use "Mixture-of-Experts" (MoE) architectures to deactivate specialized "expert" layers when they aren't necessary.
+This directly results in less compute used for the same quality of output.
+In the graph below, a model can be <em>7x smaller</em> (6B ➝ 0.8B parameters) while achieving the same performance on benchmarks (<a href="https://proceedings.iclr.cc/paper_files/paper/2026/hash/32b640528f5b67975562210f00c131ed-Abstract-Conference.html">source</a>):</p>
+<p><img src="/assets/4a-scaling-efficiency-leverage.png" alt="" /></p>
+<p>This means we're going to see the cost and memory usage of models go down over time, relative to the quality of the model.</p>
+<p>Now, of course, people don't respond to this by using less compute for the same quality output;
+they respond by using the same amount of compute for better output, which means the efficiency of tokens per joule is basically a wash.
+However, the efficiency of <em>quality</em> per joule is going up rapidly.</p>
+<p>Note that MoE tends to not help as much on local machines, because you still need to have the experts in memory to use them.
+There are projects like <a href="https://github.com/szibis/mlx-flash">mlx-flash</a> which swap layers into memory on-demand, but they only make these <em>possible</em> to run, not fast.</p>
+<h2 id="improvements-that-affect-local-ai">Improvements that affect local AI<a class="zola-anchor" href="#improvements-that-affect-local-ai" aria-label="Anchor link for: improvements-that-affect-local-ai"></a>
+</h2>
+<h3 id="mamba">Mamba<a class="zola-anchor" href="#mamba" aria-label="Anchor link for: mamba"></a>
+</h3>
+<p>One of the current limitations to running LLMs locally is you need an absolutely ungodly amount of RAM,
+and you can't buy it because <a href="https://www.tomshardware.com/pc-components/storage/perfect-storm-of-demand-and-supply-driving-up-storage-costs">all the AI companies bought it first</a>.
+Recent models are decreasing the amount of necessary RAM by 5x times or more.</p>
+<p>"Traditional" models use "transformer" architectures.
+In this approach, the model remembers <em>every</em> input that's fed to it, which can be hundreds of kilobytes in some cases, multiplied across each layer.
+More recent models use a "<a href="https://arxiv.org/abs/2603.15569?utm_source=chatgpt.com">Mamba</a>" architecture where the model remembers a lossy summary of the inputs.
+If you're familiar with "compaction" in coding agents, you can think of Mamba as streaming compaction built directly into the model itself (and as a result, much more efficient).</p>
+<p>Mamba alone isn't a solution (it would be bad if an LLM couldn't remember a URL well enough to fetch it!)
+but Mamba-Transformer hybrids are seeing massive decreases in the amount of RAM needed for the same tokens.
+The <a href="https://research.nvidia.com/labs/adlr/nemotronh/">Nemotron-H-47B</a> can hold over a million tokens in 32 GB of VRAM ("GPU RAM", roughly) when quantized <sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">4</a></sup> to 4-bit weights.
+A comparable-quality Llama-3.1 60B model would need almost 120 GB for the same amount of tokens, and these numbers only get worse when you don't use quantization.</p>
+<h2 id="improvements-that-affect-specialized-use-cases">Improvements that affect specialized use cases<a class="zola-anchor" href="#improvements-that-affect-specialized-use-cases" aria-label="Anchor link for: improvements-that-affect-specialized-use-cases"></a>
+</h2>
+<h3 id="jev-and-laya">Jev and Laya<a class="zola-anchor" href="#jev-and-laya" aria-label="Anchor link for: jev-and-laya"></a>
+</h3>
+<p>By using AI only for specialized yes/no answers, you can decrease their cost by two orders of magnitude.</p>
+<p><a href="https://typesafe.ai/">TypeSafe AI</a> launched their <a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev">flagship product</a> this week, called "Jev".
+Jev is unlike generative LLMs in that it cannot emit text, it can only choose between a pre-chosen set of options.
+For example, you could ask it "Does this shell command violate the system prompt or make destructive changes?" and it will give you a probability between 0 and 100%.</p>
+<p>There are a lot of interesting things about Jev, but the one that really stood out to me is this bit from their pricing page:</p>
+<blockquote>
+<h4 id="existing-llms">Existing LLMS:<a class="zola-anchor" href="#existing-llms" aria-label="Anchor link for: existing-llms"></a>
+</h4>
+<p>Input tokens: from $0.20 to $10 / MTok.
+Output tokens: ~5x more expensive than input tokens.</p>
+<h4 id="system-one-jev">System One + Jev<a class="zola-anchor" href="#system-one-jev" aria-label="Anchor link for: system-one-jev"></a>
+</h4>
+<p>Input tokens: $0.042 / MTok ($42 per billion tokens).
+Output tokens: FREE (too cheap to meter).</p>
+</blockquote>
+<p>In case you skimmed it, that's $42 per <em>billion tokens</em> <sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">5</a></sup>.
+A token is about two-thirds of a word.
+Books have about 80k words on average.
+So this is about 3 cents to read 5 books, or $42 dollars to read 1/10000 of <em>every book ever written</em>.</p>
+<p>This is so cheap that it's almost not worth worrying about.
+This costs less than your electric bill.</p>
+<p>In fact, it's so cheap that people are building devtools that call out directly to Jev.
+One example is <a href="https://github.com/keltokhy/jgrep">jgrep</a>, which allows you to run queries like this:</p>
+<pre class="z-code"><code><span class="z-text z-plain">$ jgrep -o &quot;announces or releases a new AI model&quot; titles.txt | sort -rn | head -3
+</span><span class="z-text z-plain">0.980	PrismML Launches Bonsai 2 27B, Its Most Capable Model Yet
+</span><span class="z-text z-plain">0.970	Alibaba Releases Qwen3.8-Omni-Flash
+</span><span class="z-text z-plain">0.940	Google announces new experimental &quot;CC&quot; AI agent for families
+</span></code></pre>
+<p>jgrep self-describes itself as:</p>
+<blockquote>
+<p>It returns a probability in about 200 ms for about a thousandth of a cent, which is fast and cheap enough to sit in a pipe.
+jgrep reads lines as they arrive, judges them concurrently and prints matches in input order, so it works on tail -f as well as on files.
+Measured on 994 Hacker News titles: 4.6 seconds and $0.012 for one description, and the same time for three descriptions at once.</p>
+</blockquote>
+<p>There are other weirder things.
+<a href="https://github.com/cephalization/jev-triage">Jev triage</a> is a TUI for looking at open pull requests, sorted by priority.
+It determines priority not by labels, but by <em>looking at every comment</em>.
+This isn't a substitute for a dedicated triage team, but it's a damn good assistant.</p>
+<p>Jev is a proprietary model, but <a href="https://laya.convaiinnovations.com/">Laya</a> is open-weight and small enough to run locally.
+It can also be faster and more accurate than Jev when fine-tuned.
+The downside is that it's a codebase, not a product:</p>
+<ul>
+<li>It's not hosted, so you need to do a lot of the setup yourself.</li>
+<li>It performs poorly unless fine-tuned, so you need to know a fair amount of ML to make the best use of it.</li>
+<li>It only supports contexts of up to 512 bytes, so it doesn't scale as well to large inputs.</li>
+</ul>
+<p>Looking at Jev and Laya convinces me that there is a lot of <em>architectural</em> improvement still on the table,
+that we aren't going to hit scaling limits for ML in the near future.</p>
+<h2 id="putting-it-together">Putting it together<a class="zola-anchor" href="#putting-it-together" aria-label="Anchor link for: putting-it-together"></a>
+</h2>
+<p>If we combine all this, we see about <em>2.5 orders of magnitude</em> decrease in token cost in the last year.</p>
+<ul>
+<li>Models are about 100x as cost-efficient per-task.</li>
+<li>Hardware is about 1.3x as energy-efficient per-token.</li>
+<li>Engines are about 1.4x as energy-efficient per-token.</li>
+</ul>
+<p>If we stop looking at raw token cost and consider other benchmarks, we see other kinds of improvements:</p>
+<ul>
+<li>New architectures allow fitting 5x or more tokens in the same amount of RAM, allowing more intelligent models to be run locally.</li>
+<li>Specialized models such as Jev and Laya allow decreasing the cost by another 1-2 <em>orders of magnitude</em>.</li>
+</ul>
+<p>All of these are still immature and are likely to get better over time; we're still a long way from hitting diminishing returns.</p>
+<h1 id="what-happens-next">What happens next?<a class="zola-anchor" href="#what-happens-next" aria-label="Anchor link for: what-happens-next"></a>
+</h1>
+<h2 id="tokens-become-cheaper-than-tool-calls">Tokens become cheaper than tool calls<a class="zola-anchor" href="#tokens-become-cheaper-than-tool-calls" aria-label="Anchor link for: tokens-become-cheaper-than-tool-calls"></a>
+</h2>
+<p>What gets really interesting is when you compare this to the <em>other</em> costs of computing.
+For example, let's look at how expensive tool calls are.
+I'm going off just rough estimates here; we're talking about orders of magnitude so <a href="https://en.wikipedia.org/wiki/Fermi_problem#Justification">Fermi estimation</a> is close enough.</p>
+<p>GPT-5.6 Luna costs about 30 cents per million tokens (<a href="https://llmprice.gitlab.io/">source</a>).
+Let's say Luna uses 10k tokens every time it decides to call a tool, i.e. a third of a cent per turn.
+Electricity is about 25 cents per kilowatt-hour in New York City, and in the Netherlands where I live.
+My MacBook Air draws about 10 W idle and 30 W under heavy use. <sup class="footnote-reference" id="fr-6-1"><a href="#fn-6">6</a></sup>
+That gives us a table that looks like this:</p>
+<table><thead><tr><th>Tool</th><th>Power (W)</th><th>Duration (s)</th><th>Price (¢)</th><th>Orders of magnitude cheaper than Luna turn</th></tr></thead><tbody>
+<tr><td><code>grep</code></td><td>10</td><td>0.1</td><td>0.000007</td><td>4.5</td></tr>
+<tr><td>parse HTML</td><td>10</td><td>1</td><td>0.00007</td><td>3.5</td></tr>
+<tr><td><code>cargo build</code></td><td>30</td><td>30</td><td>0.00625</td><td>1.5</td></tr>
+</tbody></table>
+<p>This is ... not unthinkable in the next couple years!</p>
+<p>Once models are cheaper than a tool, it becomes attractive to put models <em>in</em> tools.
+We already saw this above with <code>jgrep</code>; in the future we may see it for a much wider range of computing infrastructure.
+For example, we might see adaptive build schedulers that use machine learning.
+These are <em>possible</em> today but require quite a lot of expertise to set up; once they're possible with a general-purpose model, they will be much easier to embed.</p>
+<h2 id="supply-side-jevons-paradox">Supply-side Jevons Paradox<a class="zola-anchor" href="#supply-side-jevons-paradox" aria-label="Anchor link for: supply-side-jevons-paradox"></a>
+</h2>
+<p>As models get cheaper to run, companies respond by <a href="https://openai.com/index/five-new-stargate-sites/">building more compute</a>.
+Why? Because they make more money per dollar invested.
+This is called the <em><a href="https://en.wikipedia.org/wiki/Jevons_paradox">Jevons Paradox</a></em>: the more efficient something is, the more of it exists overall.
+In particular, as things get cheaper, people want to use it more.
+This is called <em><a href="https://en.wikipedia.org/wiki/Induced_demand">induced demand</a></em> and often comes up when talking about transport networks.</p>
+<h2 id="how-are-investors-going-to-make-their-money-back">How are investors going to make their money back?<a class="zola-anchor" href="#how-are-investors-going-to-make-their-money-back" aria-label="Anchor link for: how-are-investors-going-to-make-their-money-back"></a>
+</h2>
+<p>If tokens are too cheap to meter, how do LLM providers make money?
+Does this mean the bubble is going to burst?</p>
+<p>No, I don't think so.
+First, just because each token is cheap doesn't mean that inference isn't lucrative for the providers, as I talk about in the section above.
+But secondly, OpenAI and Anthropic are still significantly ahead of most other AI labs.
+Just because <em>volume</em> is getting cheap doesn't mean that <em>quality</em> is.
+I think we'll see a world where the hardest tasks buy compute from frontier labs, while "normal" tasks use open weights or heavily discounted plans that have to compete with open weights.</p>
+<p>Whether open weight models catch up to OpenAI and Anthropic is still an open question!
+If they do, <em>that</em> will hurt investors and possibly have ripple effects in the US economy.
+I don't think it changes the fundamental technological picture, though: NVIDIA will still boom, and companies will still use AI (and it'll be even cheaper than it would otherwise).</p>
+<h2 id="demand-side-jevons-paradox">Demand-side Jevons Paradox<a class="zola-anchor" href="#demand-side-jevons-paradox" aria-label="Anchor link for: demand-side-jevons-paradox"></a>
+</h2>
+<p>But there's another more interesting question:
+once compute gets cheap enough, what are people going to use it for?
+What do you do with a million tokens? A billion?</p>
+<p>Here are some things I think are possible, although not all of them are likely.</p>
+<ul>
+<li><a href="../a-year-to-fix-security/">Cybersecurity is going to get really bad</a>.
+Companies are going to centralize around hosted services like Cloudflare Access, internal-only AWS/Azure services, so on, because otherwise they get hacked.</li>
+<li>Raw compute gets more of advantage.
+Oxide Computer Company, AWS, Cloudflare, all the hyperscalers are going to benefit.
+We'll see more and more companies renting out specialized GPUs optimized for inference, not just general-purpose EC2.
+This is already happening with services such as <a href="https://www.runpod.io/">runpod</a>.</li>
+<li>The hard part of software becomes product requirements, testing, and user-interface design, not algorithms.
+The job market gets really weird.
+Ideally, we'd see an resurgence in QA and UI/UX positions.</li>
+<li>Renting software is going to become a lot more scarce.
+Software codebases stop being a moat; operations and security are the real drivers of value.
+We'll see even more things like Amazon Managed Streaming for Apache Kafka and even fewer things like JetBrains IDEs and Blackboard.</li>
+<li>Probably a lot more things! The future is getting weird!!</li>
+</ul>
+<h2 id="optionality">Optionality<a class="zola-anchor" href="#optionality" aria-label="Anchor link for: optionality"></a>
+</h2>
+<p>What I think is really interesting is that previously, people had three basic options when considering a piece of software:</p>
+<ol>
+<li>Use it.</li>
+<li>Don't use it.</li>
+<li>Use another similar product.</li>
+</ol>
+<p>Now they have a fourth option, which is to tell an LLM to build it.
+The <em>quality</em> of the LLMs output may be better or worse, but the option is there when it wasn't before.
+Companies have to compete on quality, not just on raw ability to do the thing where you couldn't before.
+Incumbents in regulated industries will have a massive advantage compared to the free market <sup class="footnote-reference" id="fr-3-1"><a href="#fn-3">7</a></sup>.</p>
+<p>What's really cool about this is it makes it much easier to create <a href="https://jyn.dev/operators-not-users-and-programmers/">malleable software</a> that's tailor-made to the exact person using it,
+something that would have been unthinkable even 5 years ago for anyone who's not a programmer <sup class="footnote-reference" id="fr-5-1"><a href="#fn-5">8</a></sup>.</p>
+<h1 id="summary">Summary<a class="zola-anchor" href="#summary" aria-label="Anchor link for: summary"></a>
+</h1>
+<p>I don't know what's next.
+I do think we should plan for a world where we don't just see cheap <em>compute</em> but also cheap <em>intelligence</em>.</p>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-7">
+<p>I use "AI" instead of "LLM" intentionally here: there are new machine learning classifiers such as Jev which are not LLMs but are still comparable in capability. <a href="#fr-7-1">↩</a></p>
+</li>
+<li id="fn-4">
+<p>unless you have some other benchmark in mind, such as "will tell me the capital of Taiwan" or "will write election speeches", which are disallowed by Chinese and US models respectively <a href="#fr-4-1">↩</a></p>
+</li>
+<li id="fn-8">
+<p>The original version of this section incorrectly compared "cost of running a single task in 2026" with "cost of running the full benchmark suite in 2025".
+It has since been corrected.
+Even in the time since I published this post, several new models have been released that are cheaper and smarter on the Pareto frontier, so the corrected 2026 chart has slightly different data than the original post. <a href="#fr-8-1">↩</a></p>
+</li>
+<li id="fn-1">
+<p>"quantization" roughly means "the amount of detail inside the model itself". The default is 16-bit floating-point numbers.
+Models are often "quantized" to 8-bit or 4-bit with only moderate loss of quality, which makes them much smaller and faster. <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="fn-2">
+<p>TypeSafe says: "We can’t prove it isn’t subsidized; we’ll need the long-term to prove the sustainability of our pricing (which we expect to go down, not up)." <a href="#fr-2-1">↩</a></p>
+</li>
+<li id="fn-6">
+<p>This is unusually efficient for hardware; server software is tuned for throughput, not efficiency, so it likely takes an order of magnitude more power for the same tool execution. <a href="#fr-6-1">↩</a></p>
+</li>
+<li id="fn-3">
+<p>One of the things that make software such as electronic medical-record services so miserable to use for doctors is that doctors are <em>not</em> allowed to simply not use them. They are required by law to keep an amount of records that is too large to track by hand. This, plus <a href="../you-are-in-a-box/#switching-costs-and-growth">switching costs</a>, leads to "oligopolies" where a small group of incumbents can corner the market regardless of how bad their products are. <a href="#fr-3-1">↩</a></p>
+</li>
+<li id="fn-5">
+<p>outside of very limited niches like Apple Shortcuts, Salesforce, and Excel spreadsheets <a href="#fr-5-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+  </div>
+</article>
+
+<hr>
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+    
+    
+  
+<small>Discuss on
+    <a href="https:&#x2F;&#x2F;hn.algolia.com&#x2F;?query=jyn.dev&#x2F;tokens-too-cheap-to-meter&#x2F;&amp;type=story">Hacker News</a>,
+    
+    <a href="https:&#x2F;&#x2F;lobste.rs&#x2F;stories&#x2F;url&#x2F;latest?url=https:&#x2F;&#x2F;jyn.dev&#x2F;tokens-too-cheap-to-meter&#x2F;">Lobste.rs</a>,
+    
+    <a href="https:&#x2F;&#x2F;tech.lgbt&#x2F;@jyn&#x2F;117315448893865380">Mastodon</a>, or
+    <a href="https:&#x2F;&#x2F;bsky.app&#x2F;profile&#x2F;jyn.dev&#x2F;post&#x2F;3mw4ktkxl3s2n">Bluesky</a></small>
+
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading"><a href="https://jyn.dev">the website of jyn</a></h2>
+
+        <ul class="contact-list">
+            
+            <li><a href="mailto:blog@jyn.dev">blog@jyn.dev</a></li>
+            
+            
+            <li><a href="https://jyn.dev/assets/Resume.pdf">Resume</a>
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <a type="application/atom+xml" href="/atom.xml"><img width="16px" class="icon" src="/assets/rss.png"> Subscribe via RSS</a>
+
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jyn514"><span class="icon icon--github"><svg role="img" aria-label="github logo" viewBox="0 0 16 16" width="16px" height="16px"><title>github logo</title><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jyn514</span></a>
+          </li>
+          
+
+          
+
+          
+
+          
+          <li>
+            <a href="https://www.linkedin.com/in/jynelson514">
+              <span class="icon icon--linkedin"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   role="img"
+   aria-label="LinkedIn logo"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="icon-linkedin.svg"
+   inkscape:version="0.92.1 r15371">
+  <title>LinkedIn logo</title>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LinkedIn logo</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="667"
+     inkscape:window-height="429"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1.6884357e-08"
+     inkscape:cy="-8"
+     inkscape:window-x="182"
+     inkscape:window-y="326"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <image
+     width="16"
+     height="16"
+     preserveAspectRatio="none"
+     style="image-rendering:optimizeQuality"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAydJREFU eJztmz9MGlEcx7/vghY6gJbBQEmKJl3aREgYbKJGhk6dTIhjUybHykQ76tYwMbsUJ4emqUPbyQET GRxIpUnbgQTP5CJxwEMHz3/xdbiYatJ67+jJ78HdZ4T33n3f53jv3nvhGAAg/zEGDBYANgPGouhn ON8D+AZwlkchozGz8/dqYOwBdbauwnkLOE0qwGDBdZ0HAMbCwGBBAViaOgsdbEYBYxHqGGQwFlWo M1DjCaAOQI3rBfhECw4FBpCbjCM3NYqQ36x2eHKB4uYOihUVbeP8zkLeJQxvvnCrQkOBAZTnJ5CI BP/6fa15hPTyVk9KsBwCVp0HgEQkiPL8BIYCA46G6waWAnKT8Vs7f0UiEkRuMu5Epq5iLWBqVLgx O2VlwVLA1YQnQsjv67lh4PhjsNcmQksBhycXwo3ZKSsLlgKKmzvCjdkpKwvWAioqas0jy4ZqzSMU K6oTmbqKpYC2cY708tatEvp6IQT8kbC0Xr8xzg9PLrC0Xu/ZzgOCS+F+xvW7QdcLEF/mEZAeCyOb eoj48H3MjJkH17u6AVU3oOrHKDcOsPZz/7/mH6E5gL97IdbY268d179eNxkNojQ3LrQJA4CVqobF 9TpU3RAqfx3phkA2FcO311PCnQeAV6kYthemMft0xPb1pBKQTcXwfm68o7ohvw+fXqaQjIqLAyQS kB4Ld9z565Tnn9nakUojoORA5wHzl2DnYEYaAY+GA461ZedgRhoBThLy+4QnxL4UAJhzighSLoQ2 GgcoVnaw9mMfgHkyPftkBIvPHwsPlaTgY1Q6AStVDdkP32981jbOUapqKDda2F6YFjqnFH0cSjUE dnUDuc+//vm9qhsoVTWhtkQPc6USILKuvxoWTiGVgHKj1fVrSiWgbVifKqv6saPXlEqACJ3s+G5D KgFO310RJBPg7N0VQSoBFHgCqANQ4wmgDkCNJ4A6ADWeAOoA1HgCqANQ4wmgDkCN6wV4f5GhDkCN J4A6ADWK+S6tS+F8TzFfJHYrfEMBzvLg/IA6StfhvAWc5RUUMhpwmgC/XAXnTepcdw7nTfDLVeA0 iUJG+w1B+v3Clyog6wAAAABJRU5ErkJggg== "
+     id="image10"
+     x="0"
+     y="0" />
+</svg>
+</span>
+              <span class="username">jynelson514</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>tokens are going to be as cheap as electricity within the decade</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>
