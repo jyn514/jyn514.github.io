@@ -24,6 +24,10 @@ Starting very soon, we are likely to see *quality* and *access* become the limit
 
 Extraordinary claims require extraordinary evidence, so I collected a whole bunch of evidence.
 
+<small>Update 30 September: [Epoch.AI] has released a similar blog post with more of a focus on benchmarking and precision and less of a focus on future predictions.</small>
+
+[epoch.ai]: https://epoch.ai/publications/the-plunging-price-of-thought
+
 AI can be either proprietary (such as GPT-6 Astra) or open weight (such as GLM-5.3-flash).
 Open weight models can be either hosted (e.g. by Z.ai) or local.
 Generally, models intended to be run locally will be much smaller, such as [Muse Glimmer] or [Qwen3 Coder].

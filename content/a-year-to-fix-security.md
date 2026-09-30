@@ -10,6 +10,12 @@ extra:
   bsky: https://bsky.app/profile/jyn.dev/post/3mupufnreis2n
 ---
 
+<small>Update 30 September: [Anthropic] has released a similar post.
+Although they have a financial motivation to tell people not to use open models,
+in this case I do believe they're right.</small>
+
+[Anthropic]: https://www.anthropic.com/research/glm-5-3-and-the-spread-of-advanced-cyber-capabilities
+
 GLM 5.3-flash [released last week](https://z.ai/blog/glm-5.3-flash), and that means [Project Glasswing] and [Daybreak] are running out of time.
 Cheap models capable of dangerous hacking are now available to anyone, without the normal safeguards for refusing malicious actions.
 We need to fix vulnerabilities across the industry so that we aren't caught unawares.
