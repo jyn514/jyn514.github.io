@@ -16,8 +16,16 @@ or see https://www.getzola.org/documentation/getting-started/installation/ for a
 ### run zola
 
 ```
-zola build  # generate a standalone page
-./run  # run a toy server and live-reload changes. works with relative domain names.
+zola build  # generate a standalone site
+./run       # run a toy server and live-reload changes. works with relative domain names.
 ```
 
 see https://www.getzola.org/documentation/getting-started/cli-usage/ for docs
+
+## editing
+
+```
+./post title  # create a new post
+./deploy      # publish to cloudflare pages as a draft
+./redirect    # add a new redirect
+```
