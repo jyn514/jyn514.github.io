@@ -3,7 +3,7 @@ title: "tokens too cheap to meter"
 date: 2026-09-16
 description: "tokens are going to be as cheap as electricity within the decade"
 taxonomies:
- tags: [llms, economics]
+ tags: [ai, economics]
 #  computer-of-the-future: ["0"]
 extra:
   toc: 2

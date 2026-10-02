@@ -3,7 +3,7 @@ title: "we have a year to fix security everywhere"
 date: 2026-09-04
 description: "consumer-grade hardware can run an LLM that hacks the planet. we can stop it, but we don't have much time."
 taxonomies:
- tags: [llms, security]
+ tags: [ai, security]
 extra:
   toc: 2
   fedi: https://tech.lgbt/@jyn/117214788473336507
