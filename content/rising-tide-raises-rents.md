@@ -7,6 +7,8 @@ taxonomies:
 extra:
   toc: 3
   audience: "everyone"
+  fedi: https://tech.lgbt/@jyn/117503139873608046
+  bsky: https://bsky.app/profile/jyn.dev/post/3mypw36kgzk2n
 ---
 
 {% quote(url="https://x.com/VincentGeloso/status/1806109883647008946/", author="Michael from The Good Place (paraphrased)") %}
