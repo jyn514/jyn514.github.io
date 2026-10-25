@@ -258,6 +258,10 @@ For example, a radio broadcast company retains their broadcast towers if they lo
 
 ### Tax cash flow, not income
 
+<small>Note 26 October: This section has been substantially rewritten for clarity based on user feedback.</small>
+
+#### What is economic rent?
+
 Another term in economics is *[economic rent]*.
 This refers to income that is not necessary to incentivize valuable work or investment.
 In other words, the "rentier" is collecting more income than justified (in the sense of "economically worthwhile") by their risk + investment + labor.
@@ -281,34 +285,53 @@ The owner takes some profit off the resulting fixes after paying the contractors
 This is also a form of economic rent:
 The owner's income comes from controlling access to the authorization, not from labor, risk [^10], or investment.
 
+#### Taxing rent doesn't require us to distinguish rent-seeking
+
 How do we distinguish the rent extracted by this MSP from the valuable production?
 With LVT, we can value the land separately from the improvements built on top,
 but here the authorization is inextricably tied to the work being done in its name.
 We want to share the rents that the MSP receives, without discouraging the real positive impact it has by fixing computers.
 
 One possible solution is to not try to separate these in the first place.
+"Rent-seeking" is when you try to build a company with high rents (in Silicon Valley terms, "build a moat").
+But you don't have to intentionally build a moat in order to receive economic rent.
+If you are, say, Larry Page in 1998, spend about $25 million on Google's first 5 years of business, and make back 500 million, you are still collecting economic rent!
+You've built something useful, you're not exploiting people, but that half a billion is *far* beyond what you'd need in order for the time, effort, and risk to be worthwhile.
+
+If we generalize our idea of rent to economic rent and not just moats, we have more options.
 *Cash flow tax* is a generalization of LVT to other kinds of resources, keeping the same idea of taxing rents and deducting investments.
+
+How is this different from a corporate profit tax?
+Let's look at exactly what's charged in each case.
+For cash-flow taxes, the government charges a percentage on `sales receipts - operating payments - investments in capital`. [^13]
+For profit taxes, the government charges a percentage on `sales revenue - operating expenses - depreciation - interest`.
+
+So there are three differences here:
+- Tax receipts instead of revenue. The difference is that "revenue" is when you *provide* a good or service, but a "receipt" is when they actually pay you for it. Ditto for expenses and payments, from the other side.
+- Deduct investments all-at-once up-front, rather than over-time through depreciation.
+- Remove the deduction for interest repayment.  [^8]
+
+There's also a fourth difference: the tax can be negative.
+Profit taxes are "capped" at a minimum of $0; if you have no profit from which to deduct, you get no benefit from a deduction.
+You need a future [^16] profitable year before you see any benefit from the deduction.
+By contrast, cash-flow taxes will immediately *pay* businesses who lose money.
+
+We could design the tax to initially be just a revenue-neutral tax-swap [^14].
+What's useful about it is that, because it causes no economic distortion [^15], we can raise the tax much higher without disincentivizing useful work.
+
 The UK's Institute for Fiscal Studies has [published a paper][full-expensing] on exactly this:
 
-> The intuition is that the company is taxed immediately on all receipts but can immediately deduct all outgoings at the same rate: with a 25% tax rate, the government covers 25% of the investment cost and takes 25% of the return, essentially becoming a compulsory silent partner in the project. If the revenue is worth more than the cost, 75% of the revenue will be worth more than 75% of the cost, so any project that is worthwhile before tax will be worthwhile after tax [^8]. That is a good thing.
+> The intuition is that the company is taxed immediately on all receipts but can immediately deduct all outgoings at the same rate: with a 25% tax rate, the government covers 25% of the investment cost and takes 25% of the return, essentially becoming a compulsory silent partner in the project. If the revenue is worth more than the cost, 75% of the revenue will be worth more than 75% of the cost, so any project that is worthwhile before tax will be worthwhile after tax. That is a good thing.
 
 "Any project that is worthwhile before tax will be worthwhile after tax" is another way of saying this is an efficient tax that causes no deadweight loss. [^7]
 "Compulsory silent partner" means that every citizen of the country is invested in every company, indirectly through the government.
-This applies to companies that fail, not just companies that succeed!
-Under this scheme, a company that loses money receives a tax refund, not just a tax deduction.
 Just like LVT would be the only tax on property, this would be the only tax on corporate profits, replacing existing taxes.
 Norway [already does something like this][norway-resource-rent] for oil and hydropower.
 
-We would apply deductions and refunds to wages, not just to capital investment.
+We would apply deductions and refunds to wages, not just to capital investment, just like profit taxes today.
 The government would pay a portion of every salary and independent contract, at the same rate as the rest of the cash-flow tax.
-This avoids incentivizing investment over labor.
 
 [norway-resource-rent]: https://www.regjeringen.no/en/documents/prop.-1-ls-20242025/id3057469/?ch=2#kap2-3-3
-
-Why is this better than a corporate profit tax?
-Precisely because the refunds and deductions avoid deadweight loss.
-Because it causes no economic distortion, we can raise the tax much higher without disincentivizing useful work.
-If we take our earlier MSP as an example, they would pay more tax on their profits, but much less in wages, because the government helps them cover that cost.
 
 [full-expensing]: https://ifs.org.uk/publications/full-expensing-and-corporation-tax-base
 
@@ -437,9 +460,8 @@ To all a good night.
 
 [^7]: Within a country. It can still incentivize companies to change their headquarters to another country.
 
-[^8]: In many countries, this would mean an investment can be "double-deducted": first the investment itself gets a tax deduction, then the interest repayment gets a deduction.
-     In some cases this can result in the government losing money while the company gains.
-     This can be avoided by simply removing the deduction on the interest payment.
+[^8]: If we didn't remove the interest deduction, this would mean an investment can be "double-deducted": first the investment itself gets a tax deduction, then the interest repayment gets a deduction.
+    In some cases this can result in the government losing money while the company gains.
 
 [^9]: And landlords are not purely rentiers; they do *some* amount of work in the form of repairs and upkeep.
 
@@ -450,3 +472,14 @@ To all a good night.
 [moores]: https://moores.samaltman.com/
 
 [^12]: I try very hard to distinguish "housing costs" from "economic rent" in this article, but in this one place I've blurred it because I don't know a better common phrase for it. I mean housing costs specifically.
+
+[^13]: IFS refers to this as an "R-base". It also discussed other bases, such as R+F-base.
+      "in capital" means that this only applies to goods and services, not stocks.
+
+[^14]: across the whole country. individual companies will still see a different tax bill.
+
+[^15]: kinda, sorta, mostly. the IFS has a [section][ifs-returns-to-effort] on how investments of effort and skill aren't compensated in this scheme.
+
+[ifs-returns-to-effort]: https://ifs.org.uk/books/18-corporate-taxation-international-context#18.1.3:~:text=Rents%2C%20and%20Location%2DSpecific%20Rents
+
+[^16]: or, occasionally, past
