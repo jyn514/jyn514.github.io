@@ -4,7 +4,7 @@ use{Iterator as I,Option as O,std::{fs,fs::File as F,io::Write,iter::Peekable as
 use pulldown_cmark::{Event as E,Options as PO,Parser as P,Tag as T,TagEnd as TE,LinkType as K};
 use scraper::{Html as H,Selector as Sel,ElementRef as El};
 type R<O=()>=anyhow::Result<O>;type M=BTreeMap<Str,Str>;
-const L:&str="links.bin";const B:&str="bibliography";
+const L:&str="data/links.bin";const B:&str="bibliography";
 fn load()->R<M>{Ok(fs::read_to_string(L)?.lines().flat_map(|l|{
 	let(k,v)=l.split_once('\0')?;S((k.into(),v.into()))}).collect())}
 fn save(m:&M)->R{let mut fd=F::create(L)?;for(k,v)in m{
