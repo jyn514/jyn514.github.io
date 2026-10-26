@@ -345,7 +345,7 @@ People still spend their income on housing, but most of the money goes back into
 Similarly, money spent on goods and services goes back into the pool, tying dividends to *the whole economy* rather than to the minimum necessary to live.
 
 This is not new.
-Both [Alaska] and [Norway] both discovered enormous reserves of oil and put the profits into reserves that are saved and redistributed for the benefit of all citizens.
+Both [Alaska] and [Norway] discovered enormous reserves of oil and put the profits into reserves that are saved and redistributed for the benefit of all citizens.
 It really is politically feasible to make these changes when there's sufficient wealth floating around.
 
 [Alaska]: https://apfc.org/about/history/
