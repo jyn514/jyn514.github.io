@@ -121,7 +121,7 @@ What happens if that *stops* being the case?
 [snow-crash]: https://en.wikipedia.org/wiki/Snow_Crash
 [the-penultimate-truth]: https://en.wikipedia.org/wiki/The_Penultimate_Truth
 
-If this gets bad enough, I see one of three possible *political* reactions, in the sense of an action taken by a country's government.
+If this gets bad enough, I see one of three possible political reactions, in the sense of an action taken by a country's government.
 
 ### Stable equilibria
 
@@ -446,6 +446,16 @@ To all a good night.
 - [“Canaries in the Coal Mine? Six Facts about the Recent Employment Effects of Artificial Intelligence”, Brynjolfsson et al.](https://digitaleconomy.stanford.edu/publication/canaries-in-the-coal-mine-six-facts-about-the-recent-employment-effects-of-artificial-intelligence/)
 - [“Automation and New Tasks: How Technology Displaces and Reinstates Labor”, Acemoglu and Restrepo](https://www.nber.org/papers/w25684)
 - [“Robots, Growth, and Inequality”, Berg et al.](https://www.imf.org/external/pubs/ft/fandd/2016/09/berg.htm)
+- [“Big Tech — Magnificent Seven­”, Wikipedia](https://en.wikipedia.org/wiki/Big_Tech)
+- [“Why We Build the Wall”, Hadestown Original Broadway Company](https://www.youtube.com/watch?v=Q1VDxMe54Og)
+- [“Utopia (Tawfik novel)”, Wikipedia](https://en.wikipedia.org/wiki/Utopia_(Tawfik_novel))
+- [“The Diamond Age”, Wikipedia](https://en.wikipedia.org/wiki/The_Diamond_Age?utm_source=chatgpt.com)
+- [“Beggars in Spain”, Wikipedia](https://en.wikipedia.org/wiki/Beggars_in_Spain)
+- [“Player Piano (novel)”, Wikipedia](https://en.wikipedia.org/wiki/Player_Piano_(novel))
+- [“Oryx and Crake”, Wikipedia](https://en.wikipedia.org/wiki/Oryx_and_Crake)
+- [“Snow Crash”, Wikipedia](https://en.wikipedia.org/wiki/Snow_Crash)
+- [“The Penultimate Truth”, Wikipedia](https://en.wikipedia.org/wiki/The_Penultimate_Truth)
+- [“Altered Carbon (TV series)”, Wikipedia](https://en.wikipedia.org/wiki/Altered_Carbon_(TV_series))
 - [“Karl Marx”, Ben Macready](https://blogs.kent.ac.uk/ageofrevolution/revolutionary-figures/karl-marx/)
 - [“The Culture”, Culture Wiki](https://theculture.fandom.com/wiki/The_Culture)
 - [“Butlerian Jihad”, Dune Wiki](https://dune.fandom.com/wiki/Butlerian_Jihad)
@@ -476,6 +486,8 @@ To all a good night.
 - [“1978 California Proposition 13”, Wikipedia](https://en.wikipedia.org/wiki/1978_California_Proposition_13)
 - [“The 30-year Mortgage is an Intrinsically Toxic Product”, Byrne Hobart](https://byrnehobart.medium.com/the-30-year-mortgage-is-an-intrinsically-toxic-product-200c901746a)
 - [“Moore’s Law for Everything”, Sam Altman](https://moores.samaltman.com/)
+- [”Corporate Taxation in an International Context”, Adam et al.](https://ifs.org.uk/books/18-corporate-taxation-international-context)
+
 
 [^5]: it's a lot more complicated than this in practice, but this is a reasonable mental model.
 
