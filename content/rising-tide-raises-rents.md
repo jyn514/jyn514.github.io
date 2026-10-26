@@ -101,6 +101,25 @@ This plutocratic world is not stable.
 It's the nature of plutocrats to try and accumulate more and more power, and to automate more and more of the labor that generates their income.
 Unlike today, they will actually have the power to do so, and unemployment spreads like wildfire.
 An increasing portion of the population is simply unable to find a job.
+Eventually there's just no one left to buy the goods and services that are being produced, and the bottom falls out of our society.
+Either there's not enough demand from governments and foreign countries that the [Magnificent Seven] can sustain themselves, and the economy collapses;
+or there *is*, and we get an
+["enclave"][why-we-build-the-wall] [of][Utopia-tawfik] [massively][Diamond Age] [rich][Beggars in Spain] [capitalists][Player Piano] [surrounded][Oryx and Crake] [by][snow-crash] [the][the-penultimate-truth] [unemployed][Altered Carbon].
+
+Historically, humanity has always been coupled to its labor value.
+Incomes, purchases, well-being, and freedom, has been tied to the usefulness of labor.
+What happens if that *stops* being the case?
+
+[Magnificent Seven]: https://en.wikipedia.org/wiki/Big_Tech#Magnificent_Seven
+[why-we-build-the-wall]: https://www.youtube.com/watch?v=Q1VDxMe54Og
+[Oryx and Crake]: https://en.wikipedia.org/wiki/Oryx_and_Crake
+[Diamond Age]: https://en.wikipedia.org/wiki/The_Diamond_Age?utm_source=chatgpt.com
+[Beggars in Spain]: https://en.wikipedia.org/wiki/Beggars_in_Spain
+[Player Piano]: https://en.wikipedia.org/wiki/Player_Piano_(novel)
+[Altered Carbon]: https://en.wikipedia.org/wiki/Altered_Carbon_(TV_series)
+[Utopia-tawfik]: https://en.wikipedia.org/wiki/Utopia_(Tawfik_novel)
+[snow-crash]: https://en.wikipedia.org/wiki/Snow_Crash
+[the-penultimate-truth]: https://en.wikipedia.org/wiki/The_Penultimate_Truth
 
 If this gets bad enough, I see one of three possible *political* reactions, in the sense of an action taken by a country's government.
 
@@ -198,6 +217,10 @@ This is the world I want to build together.
 
 How do we build a post-scarcity world?
 How do we distribute the enormous amount of material wealth in our society to everyone within it?
+
+Corporations are neither good nor bad but amoral.
+Changing their actions is in a way very similar to AI alignment:
+you have to change their *incentives*, not just the actions they have available.
 
 ### Tax rents, not capital
 
