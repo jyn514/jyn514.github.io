@@ -458,7 +458,7 @@ Say that creating Google was interesting, fun, and easy for Larry Page; does he 
 Instead, I offer a consequentialist argument:
 We are morally obligated to do that which results in a better world.
 Our redistributive tax leads to a better world, and so Larry Page has a moral obligation to give up at least part of his billions in order to help build it.
-The economic argument of "deadweight loss" is way to run [The Sort] so that Larry keep doing what he loves, without a [Singer-style self-abnegation][famine-and-morality].
+The economic argument of "deadweight loss" is way to run [The Sort] so that Larry can keep doing what he loves, without a [Singer-style self-abnegation][famine-and-morality].
 
 [state-of-nature]: https://respublicalibrary.org/locke-second-treatise/5/#Locke.5.28
 [locke-41]: https://respublicalibrary.org/locke-second-treatise/5/#Locke.5.41
