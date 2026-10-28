@@ -1,6 +1,7 @@
 function run() {
   addFootnoteLine();
   addFootnoteTooltips();
+  addImageTitles();
   addTimestamps();
   closeDraftPopup();
   expandDetails();
@@ -76,6 +77,15 @@ function addFootnoteTooltips() {
       popup.style.left = '5px';
       elem.parentElement.style.position = 'unset';
     }
+  }
+}
+
+function addImageTitles() {
+  // Run after footnote tooltips so their copied images get titles too.
+  // Attribute presence matters: an explicit title="" opts out of the fallback.
+  for (const image of document.querySelectorAll('img[alt]:not([title])')) {
+    const alt = image.getAttribute('alt');
+    if (alt !== '') image.setAttribute('title', alt);
   }
 }
 
