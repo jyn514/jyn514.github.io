@@ -423,6 +423,50 @@ The strongest opposition would be from businesses who make few investments but c
 If government budgets are a problem, we could "ease in" the tax over time for new projects, keeping current profit tax rates and adding investment deductions until the two rates match.
 Only then would we raise the overall cash-flow tax rate.
 
+## Moral rights
+
+You might look at this redistribution scheme and say
+“Look, I think I see how this works out economically, and maybe we do need something like it if automation continues to increase, but isn't it in some sense unjust?
+Aren't we taking away people's property, isn't this a form of taxation-as-theft?”
+
+Under Anglo-American philosophy of property, maybe.
+[According to Locke][state-of-nature], the first person whose “labour put[s] a distinction between [goods] and common” owns those goods.
+The owner can transfer, lease, or sell those goods, but "morally" the goods cannot be taken away unless the owner gives them away.
+He then uses this labor idea to [argue that it is good and right][locke-41] that the English colonists are annexing land from the Native Americans 🙄, because the colonists are laboring on and planting it, while the Native Americans are "only" living on it; he says the land is “neglected” and “lying waste” and the colonists should be allowed to exploit it.
+
+But later thinkers ask, why does this labor argument only apply at the very first time you gather resources from nature?
+[Proudhon], writing between the French Revolutions of 1830 and 1848, asks “Why does the tenant no longer acquire through his labor the land which was formerly acquired by the labor of the proprietor?”.
+If the owner claimed the land through his labor, why doesn't that also entitle workers to a share of the land?
+
+Under Locke, taxes are moral as long as they're agreed to by a majority of people in a democratic society.
+Under Proudhon, taxes should be used to redistribute wealth away from landowners towards laborers.
+So we have some historical precedent for the idea of a land-value tax that is morally justified, not just economically justified.
+
+But neither morally justify our redistributive cash-flow tax.
+Under Proudhon, property comes from labor; property is *tied* to labor [^17].
+How do we reconcile this with UBI, which distributes dividends universally, without regard to labor?
+Let's ignore corporate structures for a second; say that Larry Page was able to make Google all on his lonesome, and earns that half billion.
+Isn't he morally entitled to that money? Didn't he really make that large an impact on the world?
+
+For this, I turn to Ursula K. LeGuin, writing in [The Dispossessed][goodreads]:
+> For we each of us deserve everything, every luxury that was ever piled in the tombs of the dead kings, and we each of us deserve nothing, not a mouthful of bread in hunger. Have we not eaten while another starved? Will you punish us for that? Will you reward us for the virtue of starving while others ate? No man earns punishment, no man earns reward. Free your mind of the idea of deserving, the idea of earning, and you will begin to be able to think.
+
+We cannot reason solely from the idea of "deserving" rewards, because the idea of deserving breaks down at the edges.
+Does a disabled woman who struggles to feed herself "deserve" food, even if she performs no productive labor?
+Say that creating Google was interesting, fun, and easy for Larry Page; does he "deserve" half a billion?
+
+Instead, I offer a consequentialist argument:
+We are morally obligated to do that which results in a better world.
+Our redistributive tax leads to a better world, and so Larry Page has a moral obligation to give up at least part of his billions in order to help build it.
+The economic argument of "deadweight loss" is way to run [The Sort] so that Larry keep doing what he loves, without a [Singer-style self-abnegation][famine-and-morality].
+
+[state-of-nature]: https://respublicalibrary.org/locke-second-treatise/5/#Locke.5.28
+[locke-41]: https://respublicalibrary.org/locke-second-treatise/5/#Locke.5.41
+[Proudhon]: https://www.marxists.org/reference/subject/economics/proudhon/property/ch03.htm
+[goodreads]: https://www.goodreads.com/quotes/126050-for-we-each-of-us-deserve-everything-every-luxury-that
+[The Sort]: https://wiki.roshangeorge.dev/w/The_Sort
+[famine-and-morality]: https://rintintin.colorado.edu/~vancecd/phil308/Singer2.pdf
+
 ## Conclusion
 
 The goal of this proposal is not to take away profits from people who are earning 'too much', or to single out landlords as uniquely bad.
@@ -437,7 +481,10 @@ Land is different from capital.
 Economic rent is a curse.
 Economic security is freedom.
 
-To all a good night.
+[Bring][marching] the [Jubilee][sefaria].
+
+[marching]: https://www.youtube.com/watch?v=AAFEWL0-1sc
+[sefaria]: https://www.sefaria.org/topics/jubilee?sort=Relevance&tab=notable-sources
 
 ---
 
@@ -485,10 +532,15 @@ To all a good night.
 - [“Deferral of Local Property Tax (LPT) payment”, Irish Tax and Customs](https://www.revenue.ie/en/property/local-property-tax/deferral-of-payment/index.aspx)
 - [“1978 California Proposition 13”, Wikipedia](https://en.wikipedia.org/wiki/1978_California_Proposition_13)
 - [“The 30-year Mortgage is an Intrinsically Toxic Product”, Byrne Hobart](https://byrnehobart.medium.com/the-30-year-mortgage-is-an-intrinsically-toxic-product-200c901746a)
+- [“Chapter V: Of PROPERTY”, John Locke](https://respublicalibrary.org/locke-second-treatise/5/)
+- [“What is Property?”, Proudhon](https://www.marxists.org/reference/subject/economics/proudhon/property/ch03.htm)
+- [“The Dispossessed”, Ursula K. LeGuin](https://www.goodreads.com/quotes/126050-for-we-each-of-us-deserve-everything-every-luxury-that)
+- [“The Sort”, Patrick McKenzie](https://wiki.roshangeorge.dev/w/The_Sort)
+- [“Famine, Affluence, and Morality”, Peter Singer](https://rintintin.colorado.edu/~vancecd/phil308/Singer2.pdf)
+- [“Marching Through Georgia”, Ernie Ford](https://www.youtube.com/watch?v=AAFEWL0-1sc)
+- [“Jubilee”, Sefaria Library](https://www.sefaria.org/topics/jubilee?sort=Relevance&tab=notable-sources)
 - [“Moore’s Law for Everything”, Sam Altman](https://moores.samaltman.com/)
 - [”Corporate Taxation in an International Context”, Adam et al.](https://ifs.org.uk/books/18-corporate-taxation-international-context)
-
-
 [^5]: it's a lot more complicated than this in practice, but this is a reasonable mental model.
 
 [^6]: I am explicitly *not* considering a "singularity" or "FOOM"-type situation. I don't think it's possible to make any useful predictions about singularity, and furthermore I don't think singularity is very plausible in the first place.
@@ -518,3 +570,5 @@ To all a good night.
 [ifs-returns-to-effort]: https://ifs.org.uk/books/18-corporate-taxation-international-context#18.1.3:~:text=Rents%2C%20and%20Location%2DSpecific%20Rents
 
 [^16]: or, occasionally, past
+
+[^17]: this is to the extent that he supports property at all; he argues that no one has an unlimited right to own and rent out goods.
