@@ -308,7 +308,7 @@ The owner takes some profit off the resulting fixes after paying the contractors
 This is also a form of economic rent:
 The owner's income comes from controlling access to the authorization, not from labor, risk [^10], or investment.
 
-#### Taxing rent doesn't require us to distinguish rent-seeking
+#### Tax rents, not rent-seeking
 
 How do we distinguish the rent extracted by this MSP from the valuable production?
 With LVT, we can value the land separately from the improvements built on top,
