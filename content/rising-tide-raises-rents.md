@@ -496,7 +496,7 @@ Economic security is freedom.
 - [“Big Tech — Magnificent Seven­”, Wikipedia](https://en.wikipedia.org/wiki/Big_Tech)
 - [“Why We Build the Wall”, Hadestown Original Broadway Company](https://www.youtube.com/watch?v=Q1VDxMe54Og)
 - [“Utopia (Tawfik novel)”, Wikipedia](https://en.wikipedia.org/wiki/Utopia_(Tawfik_novel))
-- [“The Diamond Age”, Wikipedia](https://en.wikipedia.org/wiki/The_Diamond_Age?utm_source=chatgpt.com)
+- [“The Diamond Age”, Wikipedia](https://en.wikipedia.org/wiki/The_Diamond_Age)
 - [“Beggars in Spain”, Wikipedia](https://en.wikipedia.org/wiki/Beggars_in_Spain)
 - [“Player Piano (novel)”, Wikipedia](https://en.wikipedia.org/wiki/Player_Piano_(novel))
 - [“Oryx and Crake”, Wikipedia](https://en.wikipedia.org/wiki/Oryx_and_Crake)
