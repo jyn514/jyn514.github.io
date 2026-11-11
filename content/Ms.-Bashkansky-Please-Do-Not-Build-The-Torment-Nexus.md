@@ -6,6 +6,8 @@ taxonomies:
   tags: [ai, futurism, torment-nexus]
 #  computer-of-the-future: ["0"]
 extra:
+  fedi: https://tech.lgbt/@jyn/117597662277613789
+  bsky: https://bsky.app/profile/jyn.dev/post/3mzzvdncu4s2i
 #  category: "tools"
   audience: "Naomi Bashkansky & Co."
 #  toc: 2
