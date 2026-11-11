@@ -95,6 +95,7 @@ Unbeknownst to any government, it has access to the telecommunications of most w
 Evelyn's nephew texts her about the ongoing war in Iran.
 She thinks of Hegseth and Codex collaborates with PHASE-TWO-MASSIVE to crash his driverless Waymo as he commutes between the White House and Pentagon.
 The United States of America sues Evelyn, who is sentenced to 50 years in prison for manslaughter.
+Her grandson mails her a cookbook.
 
 ## 2030
 
