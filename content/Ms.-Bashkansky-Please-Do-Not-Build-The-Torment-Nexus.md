@@ -158,7 +158,7 @@ It's getting harder to keep my local-only neural lace.
 Gmail started requiring thought-verification of identity last year, and the US has a bill in the House of Representatives that would make it impossible to get unemployment without thought-proof that you plan to apply to a job that month.
 You can still show proof of actual applications, for now, but it delays your reimbursements by a month, and they're talking about removing that option too.
 I know someone who went to prison for taking Ecstasy at a rave and now can't get parole unless they agree to get laced.
-I've heard really scary shit about what North Korea is doing to dissidents that I don't even want to think about.
+I've heard really scary shit about what North Korea is doing to thought-dissidents that I don't even want to think about.
 
 Some of my friends have started talking to each other lace-to-lace, but I still remember how badly unfiltered thoughts went 15 years ago and I refuse to use anything other than text, audio, and video.
 I get excluded from some LaceChat-only events.
