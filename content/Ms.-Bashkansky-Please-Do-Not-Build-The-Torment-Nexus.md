@@ -15,6 +15,12 @@ extra:
 #  stub: true
 ---
 
+{% quote(url="https://knowyourmeme.com/memes/your-scientists-were-so-preoccupied-with-whether-or-not-they-could-they-didnt-stop-to-think-if-they-should", author="Ian Malcolm, Jurassic Park") %}
+
+Your scientists were so preoccupied with whether or not they could, they didn’t stop to think if they should.
+
+{% end %}
+
 Naomi Bashkansky wrote [a post][telepathy] in August titled “Why I’m leaving OpenAI to build telepathy”.
 In this post, she says things like "In a few years, the main way we'll talk with our AIs is with our thoughts" and "I view [this future] as optimistic but highly plausible."
 
