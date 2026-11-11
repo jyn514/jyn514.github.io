@@ -1,13 +1,11 @@
 ---
 title: "Ms. Bashkansky, Please Do Not Build The Torment Nexus"
-date: 2026-11-10
-draft: true
+date: 2026-11-11
 description: "AI that reads your mind is bad, actually"
-#taxonomies:
-#  tags: []
+taxonomies:
+  tags: [ai, futurism, torment-nexus]
 #  computer-of-the-future: ["0"]
 extra:
-  draft: true
 #  category: "tools"
   audience: "Naomi Bashkansky & Co."
 #  toc: 2
