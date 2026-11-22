@@ -205,6 +205,9 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
   - “But we live in a concrete society, [and] with concrete social and historical circumstances and political realities in this society, it is perfectly obvious that when something like a computer is invented, then it is going to be adopted will be for military purposes.”
   - "The questioning should start the other way -- it should perhaps start with the question of what education is supposed to accomplish in the first place."
   - Computers allow existing institutions to metastasize rather than decentralize
+  - > "Why can't Johnny read?" must still be asked. [...] questions of that kind are uncomfortable. When we ask this question, we may discover that Johnny is hungry when he comes to school, or that Johnny comes from a milieu in which reading is irrelevant to concrete problems or survival on the street [...]
+- at a certain point, the problems of education are problems of society, not problems of teaching
+    - and we would combat them better by reducing economic stress and social inequality than by designing better curricula
 - [What's wrong with universities?, Henry Snow](https://buttondown.com/anotherway/archive/whats-wrong-with-universities/)
   - "Employers claim they value the critical thinking skills students learn in the process of getting a well-rounded education. The actual job market experience suggests otherwise."
   - "A narrow and transactional focus on job training thus means underinvesting in the future. [...] A better higher ed system needs not only more money, but more freedom from market logic."
@@ -220,6 +223,7 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
 ## positive visions of the future
 
 ### Revisiting Asimov on education
+- (see "Weizenbaum on education", above, for more context)
 - [The New Teachers, Asimov](https://hermiene.net/literature/essays/new-teachers)
   - "In other words, the student will ask questions, answer questions, make statements, offer opinions, and from all of this, the machine will be able to gauge the student well enough to adjust the speed and intensity of its course of instruction and, what's more, shift it in the direction of the student interest displayed."
   - To a great extent, AI makes this a reality today: [Koji—A world-class tutor in every home, Brilliant](https://blog.brilliant.org/a-world-class-tutor-in-every-home/)
@@ -228,6 +232,11 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
   - No shared group projects, social interaction, mentoring.
     - teaching ≠ mentoring; you don't want an AI giving life advice
   - If you look at a modern classroom, everyone is staring down at their laptop screens
+- Not everyone has a computer!
+    - *certainly* not everyone has home access, but even some schools don't have computer labs, at least not enough for everyone
+    - which means that computers can assist, but they cannot be the primary mechanism of learning
+    - but maybe we can get the benefits of computing without the drawbacks of personal computers?
+        - can we make computers *economical*? can they be *shared*?
 - [Dynamicland](https://dynamicland.org/2024/Intro/)
   - Dynamicland is made by Bret Victor: [Stop Drawing Dead Fish](https://www.youtube.com/watch?v=KUDh6sCtm8s&t=624s)
   - Vision of computing as *out in the real world*, not buried in a screen. Projectors, not VR goggles.
@@ -286,6 +295,7 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
 #### generality through systems thinking
 - languages have to constantly recreate features from scratch, which gets more expensive as the baseline for features grows
 - new operating systems Simply do not get adopted
+    - [Systems Software Research is Irrelevant, Rob Pike](http://herpolhode.com/rob/utah2000.pdf)
 - implementing in userspace, but at the OS level, allows solving the problem once for all time, without locking you in
   - for that OS. but most OSes support enough tracing/sandboxing features that you can port, and those that don't can usually be emulated with a performance slowdown.
   - implementing at the OS level requires thinking about all possible interactions between the program and the OS
@@ -298,10 +308,10 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
   - expressiveness give the *author* more power
   - structure gives *everyone else* more power
   - consider plugin ecosystems
-  - https://www.tedinski.com/2018/01/30/the-one-ring-problem-abstraction-and-power.html
+  - [The one ring problem: abstraction and our quest for power, Ted Kaminski](https://www.tedinski.com/2018/01/30/the-one-ring-problem-abstraction-and-power.html)
   - in particular you can view spawning a process as an RPC call, which means its inputs are contravariant and its outputs are covariant
-    - https://doc.rust-lang.org/nomicon/subtyping.html
-  - https://buttondown.com/hillelwayne/archive/the-capability-tractability-tradeoff/
+    - [Subtyping and variance, Rust Nomicon](https://doc.rust-lang.org/nomicon/subtyping.html)
+  - [The Capability-Tractability Tradeoff, Hillel Wayne](https://buttondown.com/hillelwayne/archive/the-capability-tractability-tradeoff/)
 #### capabilities, service management, and generalized erlang
 - systemd socket-activated services
   - maybe the other end isn't connected until you actually send a request. the client doesn't have to care.
@@ -313,8 +323,7 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
 - emacs `describe-key` (go to command that implements keybind, generalized version of `tmux list-keys`)
   - now that for every single program on your computer
   - [CTF](https://lwn.net/Articles/795564/)
-  - DWARF-fs
-    - https://news.ycombinator.com/item?id=23444893
+  - [DWARF-fs](https://github.com/edolstra/dwarffs/blob/master/README.md)
   - "inside google this is easier"
     - corresponding unstripped binary for everything in prod
     - debuginfo servers are *kinda* this but not as reliable
