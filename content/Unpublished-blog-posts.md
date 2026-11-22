@@ -283,7 +283,7 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
 
 ### computer of the future
 
-### generality through systems thinking
+#### generality through systems thinking
 - languages have to constantly recreate features from scratch, which gets more expensive as the baseline for features grows
 - new operating systems Simply do not get adopted
 - implementing in userspace, but at the OS level, allows solving the problem once for all time, without locking you in
@@ -302,14 +302,14 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
   - in particular you can view spawning a process as an RPC call, which means its inputs are contravariant and its outputs are covariant
     - https://doc.rust-lang.org/nomicon/subtyping.html
   - https://buttondown.com/hillelwayne/archive/the-capability-tractability-tradeoff/
-### capabilities, service management, and generalized erlang
+#### capabilities, service management, and generalized erlang
 - systemd socket-activated services
   - maybe the other end isn't connected until you actually send a request. the client doesn't have to care.
 - [telefork](https://github.com/trishume/telefork)
   - you don't have "a bunch of computers", you have "The Computer" with a bunch of nodes
   - c.f. Plan9 "CPU servers"
 - everything is serializable, because erlang function calls can be remote
-### editable programs
+#### editable programs
 - emacs `describe-key` (go to command that implements keybind, generalized version of `tmux list-keys`)
   - now that for every single program on your computer
   - [CTF](https://lwn.net/Articles/795564/)
@@ -325,7 +325,7 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
   - “no code/data distinction”
   - [the postmodern build system][postmodern-build] makes builds ~instant
   - need to write "decentralized build caching" before the rest of this section makes sense
-### trustfall and composable compilers
+#### trustfall and composable compilers
 - "don't solve a problem, obliterate the problem class"
 - map-reduce on arbitrary programs
 - work at the right meta language (composable compilers)
@@ -344,14 +344,14 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
   - Clippy: “this part of the query system looks like a Prolog, do you want me to rewrite it for you”
   - "compilers are partial evaluators"
     - [Futamura projection](https://blog.sigfpe.com/2009/05/three-projections-of-doctor-futamura.html)
-### deterministic concurrent programs
+#### deterministic concurrent programs
 - [Optimistic Concurrency Control](https://en.wikipedia.org/wiki/Optimistic_concurrency_control), but generalized to any program with threads
 - For this to work, you need deterministic rewind and replay
 - Rewind: Oh right, that's [orthogonal persistence]
   - cc [DynamicRIO](https://dynamorio.org/)
 - Replay: Can forcibly make concurrent programs serial using `sched_setaffinity`, like `rr`
 - Can avoid how much you need to replay with a [generalized red-green incremental system][postmodern-build]
-### decentralized build caching
+#### decentralized build caching
 - oh god everything here is a giant mess i'm only making it public because it's buried in a dozen other posts
 - uhhhh imagine bittorrent but you're distributing the source code, the binary, *and* a proof that the two correspond to each other
 - "what's the proof" something something when you run gcc, do it on a risc0 VM and create a fancy ZKP at the same time. look i don't understand the math ok
