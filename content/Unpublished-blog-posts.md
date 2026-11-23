@@ -89,6 +89,41 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
 - psych Amos already built it it's called Vixen
 - also very similar to my existing [four posts about build systems](https://jyn.dev/four-posts-about-build-systems/)
 - Buck/Bazel are *not* this because they're too hard to use and have high switching costs
+- what's wrong with cargo anyway?
+  - prior art
+    - [The missing parts in Cargo, Weihang Lo](https://weihanglo.tw/posts/2024/the-missing-parts-in-cargo/)
+    - [Scaling Rust builds with Bazel, Roman Kashitsyn](https://mmapped.blog/posts/17-scaling-rust-builds-with-bazel)
+  - it's impossible to detangle the different parts
+    - you can't say "replace Cargo's built-in executor with Ninja or my distributed/hermetic executor"
+    - no way to sandbox just build scripts, you have to sandbox the whole build graph. Cargo also wants to own its cache dirs which makes sandboxing harder.
+    - you can't opt out of feature unification
+  - the declarative language is not flexible enough
+    - Cargo is intentionally not general purpose, which is fine, but makes it frustrating when everyone insists your project should build with Cargo
+    - you simply cannot write integration tests for build scripts
+    - closely related, you can't have "staged builds"; builds are at the package level and even then many commands only support packages in the workspace
+    - many things that could be declarative require compiling a build.rs instead
+  - it's not sound or minimal
+    - rebuilds all the time for silly reasons
+        - needed to add a new `[lints]` table to just to avoid rebuilding the world when you add `-A unused`
+        - `--deny=warnings` needed its own special configuration option built on top of Rustc JSON output
+        - doing things this way legitimately makes the UX nicer than a naïve approach that rebuilds everything in the workspace! but there's no middle ground between "rebuild the world" and "dedicated Cargo feature"
+    - no way to make the cache key content-hashes rather than timestamps
+    - no way to express negative dependencies (admittedly this is true of ~all build systems i know about)
+    - no way to cache tests (for incremental re-testing)
+  - build scripts are very very poorly supported
+    - if you get it wrong, tough luck
+    - not possible or practical to express all the dependencies a build script has
+    - no interface for expressing which system packages you depend on. in practice people often end up vendoring C source code and building it from scratch inside the build script.
+  - workspaces, .cargo/config, and user-wide config don't interact well
+  - you can't query it very well
+    - cargo metadata is simultaneously too much info (slow, heavy) and too little (works at the wrong level of abstraction for many use cases)
+    - you can't ask "what would be rebuilt next time" except by actually building
+    - you can't ask "what files were used on the last run" except by parsing .d files yourself
+    - you can't ask "what source code corresponds to this built `.rmeta` file" — in particular cargo semver-checks wanted this so it didn't have to rebuild the world to get cross-crate links from rustdoc-json
+  - poor discovery for the underlying commands it wraps; inconsistent where it adds wrapping flags or requires `--` style forwarding
+  - the difference between compiling for the host and cross-compiling is stupidly complicated for no good reason other than back-compat
+    - just adding `--target $(rustc --print=host-tuple)` changes behavior!
+    - complications around proc-macros and build scripts, caused docs.rs no end of trouble
 - design:
   - start by importing Cargo metadata from Cargo.toml, so that 80% of builds can still be declarative.
   - have a FUSE filesystem that tracks reads and writes
@@ -96,6 +131,9 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
     - record accesses in a way similar to tup. notice and rebuild when the accessed files change.
     - if processes are interrupted, delete all the artifacts they created in the latest (partial) run (this also fixes "ctrl-c breaks incremental linking sometimes").
   - extend the tup model to system dependencies by strace-ing all spawned processes. rebuild if a system dependency changes.
+    - don't need reproducibility for our purposes, just rebuilding on file changes is enough
+    - tracking environment variables [is hard][envp], but we can still get quite a long ways by tracking FS access
+    - we could allow trading back-compat for additional correct guarantees: opt-in mode where only the env variables you explicitly declare are available in a build script
   - disallow setting `-l` and `-L`; instead require that build scripts print the path to all shared objects they want to link. rebuild if any of those change.
   - expose all this info with a nextest-like query language
     - for example RA could ask "all used files" cheaply (because it's cached from the previous build)
@@ -112,6 +150,7 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
     - weird example: glibc upgrades between builds
 
 [orthogonal persistence]: https://jyn.dev/complected-and-orthogonal-persistence/
+[envp]: https://jyn.dev/i-want-a-better-build-executor/#environment-variables
 
 ### the Nix-hater's handbook
 - i am opposed philosophically
@@ -158,8 +197,14 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
 
 ### "just talk to people"
 - "talking to people wins again"
+    - most personal/professional conflicts i have are resolved by talking to the other person
+    - this sounds obvious but is surprisingly hard when the two of you are mad at each other
 - "joke about the outcomes you want to see"
+    - i’ve seen multiple people get jobs by joking on social media “so anyone want to hire me?” 
 - "focus on the outcomes you want to see more of"
+    - you need a positive vision of the future or you accidentally steer towards the thing you’re afraid of
+    - this is why the EAs and rationalists are doomed, no matter how smart and influential they are
+    - cannot emphasize enough how important it is to have positive visions of the future
 
 ### You can't do things ironically.
 - Jokes are not actually jokes. At some level you mean the things you are saying.
@@ -199,6 +244,13 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
 - one side is focused on "does the thing do what i want"
 - the other is focused on "is it high-quality, does it build a community, does it bring people meaning and joy"
 - it used to be that these were symbiotic. now someone can sit in their room alone and build quite a complicated project without talking to anyone.
+    - "artisan" work is slowly becoming a hobby/bespoke rather than economically compensated, like leatherworking
+    - we're early in this transition, for many projects it's still economically rational to hand-write code, especially for long-lived complicated projects with high stakes for failure
+- where is this going to go?
+    - [After Work, We'll Have Each Other, Clara Collier](https://asteriskmag.com/issues/15/after-work-we-ll-have-each-other)
+        - > The modern labor market has dissolved the bonds of tradition, family, and clan. In the modern world, relationships matter less. And because they matter less, we can do much more inside them. They are freer. They have room to breathe.
+    - if people don't get status hierarchies from work, they'll get them from somewhere else. people want to belong, it's very fundamental.
+    - not purely about in-groups and out-groups; there will always be parties with a limited guest list, and people enjoy parties in their own right
 
 ### Revisiting Weizenbaum on education and society
 - [Weizenbaum, German-American inventor of Eliza, writes about how computers are a fundamentally conservative force](http://tech.mit.edu/V105/N16/weisen.16n.html)
