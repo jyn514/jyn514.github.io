@@ -226,9 +226,12 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
     - maybe not originally. but they certainly do now.
   - pfrazee is doing the coolest shit now, but a decade ago he was indistinguishable from everyone else really into blockchain
 - tech workers get *fast* feedback on complex systems. most other fields need decades.
+  - in CS, people can learn within their own careers
+    - my pet theory is that this is why we so undervalue studying our past (because there's an overemphasis on learning from your personal mistakes)
+  - other fields take longer to learn, but as a result actually look at their own field's history.
+    - [How Complex Systems Fail, Richard I. Cook](https://how.complexsystems.fail/)
   - [Complex Systems podcast, Patrick McKenzie](https://www.complexsystemspodcast.com/)
   - [Are We Really Engineers?, Hillel Wayne](https://www.hillelwayne.com/post/are-we-really-engineers/)
-  - [How Complex Systems Fail, Richard I. Cook](https://how.complexsystems.fail/)
   - [Reading postmortems, Dan Luu](https://danluu.com/postmortem-lessons/)
   - [tef on queues](https://web.archive.org/web/20230628032904/https://cohost.org/tef/post/1764930-how-not-to-write-a)
 - doesn't mean they're right as often as they think they are. does mean they often have a different perspective that isn't purely a result of ignorance.
