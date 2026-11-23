@@ -203,8 +203,12 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
     - i’ve seen multiple people get jobs by joking on social media “so anyone want to hire me?” 
 - "focus on the outcomes you want to see more of"
     - you need a positive vision of the future or you accidentally steer towards the thing you’re afraid of
+        - latent space is very large; saying "not this" points you in a random direction
+        - [Leverage Points, Donella Meadows](https://donellameadows.org/archives/leverage-points-places-to-intervene-in-a-system/): “People know intuitively where leverage points are [...] Everyone is trying very hard to push it IN THE WRONG DIRECTION!”
     - this is why the EAs and rationalists are doomed, no matter how smart and influential they are
     - cannot emphasize enough how important it is to have positive visions of the future
+        - [it's all about intentionality](https://jyn.dev/how-to-communicate-with-intent/)
+        - Dune, Frank Herbert: “And always, he fought the temptation to choose a clear, safe course, warning 'That path leads ever down into stagnation'”
 
 ### You can't do things ironically.
 - Jokes are not actually jokes. At some level you mean the things you are saying.
