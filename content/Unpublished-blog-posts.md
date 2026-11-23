@@ -259,6 +259,7 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
     - [After Work, We'll Have Each Other, Clara Collier](https://asteriskmag.com/issues/15/after-work-we-ll-have-each-other)
         - > The modern labor market has dissolved the bonds of tradition, family, and clan. In the modern world, relationships matter less. And because they matter less, we can do much more inside them. They are freer. They have room to breathe.
     - if people don't get status hierarchies from work, they'll get them from somewhere else. people want to belong, it's very fundamental.
+        - social hierarchy is compatible with meaningful and supportive relationships
     - not purely about in-groups and out-groups; there will always be parties with a limited guest list, and people enjoy parties in their own right
 
 ### Revisiting Weizenbaum on education and society
