@@ -166,7 +166,11 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
     - why do i have to think about a "Nix runtime environment"? why are all of Nix's build paths tied to the nix store?
       - yes i know why this is true in a technical sense, but why should i *as a user* have to think about it?
   - you are solving a problem that most people do not need to solve!
-    - Nix solves "i have three versions of libLLVM.so on my system and i need to keep them all straight"
+    - problems Nix solves:
+      - "i have three versions of libLLVM.so on my system and i need to keep them all straight"
+      - "i don't want programs running on my machine unless i've intentionally installed them"
+      - "i want to patch GCC system-wide"
+      - "i want every engineer at my company to have the same hermetic environment, without preventing them from installing devtools or forcing them to use a remote server"
     - but most people use it as a package manager
       - if you just need a project manager, you can use mise-en-place or the dozen other things like it
       - if you need a system-wide package manager, what was wrong with the existing ones?
