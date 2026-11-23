@@ -221,6 +221,7 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
 ### why do tech bros think they know everything?
 - "tech bro" is not actually a coherent concept
   - > “tech bro” is a slur against autistic trans women—deleted bluesky post
+  - [I am tired of the word 'techbro', Ash](https://catgirl.ai/log/verbum-techbro-delenda-est/)
   - "bro" is inherently gendered in this context (c.f. "bro culture") but people use "tech bro" to mean "anyone in tech with opinions i don't like"
     - maybe not originally. but they certainly do now.
   - pfrazee is doing the coolest shit now, but a decade ago he was indistinguishable from everyone else really into blockchain
@@ -245,6 +246,7 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
 - the other is focused on "is it high-quality, does it build a community, does it bring people meaning and joy"
 - it used to be that these were symbiotic. now someone can sit in their room alone and build quite a complicated project without talking to anyone.
     - "artisan" work is slowly becoming a hobby/bespoke rather than economically compensated, like leatherworking
+        - this is not necessarily a good thing; but see "Weizenbaum" below
     - we're early in this transition, for many projects it's still economically rational to hand-write code, especially for long-lived complicated projects with high stakes for failure
 - where is this going to go?
     - [After Work, We'll Have Each Other, Clara Collier](https://asteriskmag.com/issues/15/after-work-we-ll-have-each-other)
