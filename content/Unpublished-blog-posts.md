@@ -207,7 +207,26 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
 
 ## misc culture
 
-### "just talk to people"
+### solving life problems
+- it's impossible to explain anything, all you can do is demonstrate and gesture vaguely
+  - nevertheless, we persist
+- treat your own life you're a project manager
+  - break down big problems into smaller ones
+  - consult specialists (n.b. *not* the same as paid professionals)
+  - use mental aids
+    - *not* TODO lists, those are [evil magic](https://contemplatonist.substack.com/p/to-do-lists-considered-as-evil-magic)
+      - calendars are far better because they force you to choose what you're giving up in order to squeeze in one more thing
+      - if you must use a TODO list, i like [Day Plans](https://drmaciver.substack.com/p/using-a-list-to-manage-executive)
+    - graphs, mental maps, gantt charts, venn diagrams, etc. can all be useful
+- notice when you're stuck
+  - have you had this problem before? do you know where it goes? try something new!
+  - "try something new" is by far the hardest part of that
+  - you don't control how you feel but you do control how you act, even when it doesn't feel like it
+  - incentives vs decisions
+    - it is simultaneously true that structural incentives drive aggregate behavior and that decisions drive individual behavior
+    - you *must* act as if you have free will. it is very very very important.
+    - it doesn't matter whether you literally have free will or not, you have to act as if you do
+    - try to make decisions that change your own daily incentives
 - "talking to people wins again"
     - most personal/professional conflicts i have are resolved by talking to the other person
     - this sounds obvious but is surprisingly hard when the two of you are mad at each other
@@ -218,9 +237,11 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
         - latent space is very large; saying "not this" points you in a random direction
         - [Leverage Points, Donella Meadows](https://donellameadows.org/archives/leverage-points-places-to-intervene-in-a-system/): “People know intuitively where leverage points are [...] Everyone is trying very hard to push it IN THE WRONG DIRECTION!”
     - this is why the EAs and rationalists are doomed, no matter how smart and influential they are
+      - (the machine) God helps those who help themselves
     - cannot emphasize enough how important it is to have positive visions of the future
         - [it's all about intentionality](https://jyn.dev/how-to-communicate-with-intent/)
         - Dune, Frank Herbert: “And always, he fought the temptation to choose a clear, safe course, warning 'That path leads ever down into stagnation'”
+          - Paul vs. Leto II
 
 ### You can't do things ironically.
 - Jokes are not actually jokes. At some level you mean the things you are saying.
