@@ -171,11 +171,15 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
       - "i don't want programs running on my machine unless i've intentionally installed them"
       - "i want to patch GCC system-wide"
       - "i want every engineer at my company to have the same hermetic environment, without preventing them from installing devtools or forcing them to use a remote server"
-    - but most people use it as a package manager
+    - most people use it as a package manager
       - if you just need a project manager, you can use mise-en-place or the dozen other things like it
       - if you need a system-wide package manager, what was wrong with the existing ones?
+        - if you specifically want a system-wide package manager that supports building from source, Gentoo has cached builds now
       - if you want a user-wide configuration manager, you can use dotbot or the dozen other things like it
-      - if you want a system-wide configuration manager, admittedly the options for that are pretty slim, but you could build one that's a *lot* simpler than Nix
+      - if you want a system-wide configuration manager, admittedly the options for that are pretty slim, but you can use [`bootc`] or something like it
+    - Nix *can* be used as a package manager, but it's overcomplicated for the task
+      - "obliterates the problem domain" — good if the problem domain is causing you constant issues, but, is it?
+      - "makes installation uniform" — but `mise` *can* do source builds, it's not that hard even, it's just a pain to work with patches
 - i am opposed technically
   - your docs are not good
     - no, REPLs don't make up for bad docs
@@ -190,12 +194,16 @@ note: some of these bullets are *not* cleaned up and will probably piss people o
     - did you really need to name this the same as "*nix" (which is now completely out of style because it's too confusing)
       - the `nix` crate i guess came after you guys, but still
   - i thought NixOS would let me declaratively configure my disk setup and various other early-boot options but it very much does not let me do that
+    - i've been informed that [`disko`](https://github.com/nix-community/disko) maybe can do this
 - i am opposed culturally
   - have you guys seen your community?
   - i can see your internal divisions from your CLI help, docs, and feature flags
   - everyone i know who's worked on Nix core says it's made them miserable
   - for a system that's designed to be correct-by-construction it sure seems to break a lot
     - very "academic project that unexpectedly got users" vibe
+  - because Nix exists, it "sucks all the oxygen out of the room", no one builds something better
+
+[`bootc`]: https://bootc.dev/bootc/
 
 ## misc culture
 
